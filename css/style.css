@@ -1,0 +1,20 @@
+#top {
+	margin: 5px;
+
+}
+
+#menubutton, #sharebutton {
+	width: 100px;
+	/*height: 40px;*/
+	padding: 0.75em 0.5;
+	background: orange;
+	text-align: center;
+}
+
+#menubutton {
+	float: left;
+}
+
+#sharebutton {
+	float: right;
+}
