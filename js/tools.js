@@ -1,6 +1,3 @@
-
-app.tools = {}
-
 app.tools.genRandomHash = function (n) {
 	var hash = "";
 	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -11,5 +8,5 @@ app.tools.genRandomHash = function (n) {
 };
 
 app.tools.rand = function (n) {
-	return Math.floor(Math.random()*n);	
+	return Math.floor(Math.random()*n);
 };
