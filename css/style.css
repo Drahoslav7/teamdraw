@@ -40,8 +40,12 @@ html, body {
 
 #menu {
 	float: left;
+	overflow: hidden;
+	text-align: center;
+	margin-top: 0.2em;
+	padding: 0.5em 0;
 	width: 0;
-	background: red;
+	background: darkorange;
 }
 
 #toolbar .tool {
@@ -50,4 +54,3 @@ html, body {
 	background: #b00;
 	margin: 4px;
 }
-
