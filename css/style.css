@@ -6,7 +6,7 @@ html, body {
 #area {
 	width: 100%;
 	height: 100%;
-	background: #aaaa9f;
+	background: #eee;
 }
 
 #bars {
@@ -48,9 +48,40 @@ html, body {
 	background: darkorange;
 }
 
+#toolbarholder {
+	clear: both;
+	float: left;
+	position: relative;
+}
+#toolbar {
+	width: 100px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 0.75em 0.5em;
+}
+
+#userbarholder {
+	clear: both;
+	float: right;
+	position: relative;
+}
+#userbar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0.75em 0.5em;
+}
+
+
 #toolbar .tool {
 	width: 32px;
 	height: 32px;
-	background: #b00;
-	margin: 4px;
+	background: #bbb;
+	margin: 6px;
 }
+
+.box {
+	clear:; both;
+}
+
