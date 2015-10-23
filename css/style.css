@@ -1,5 +1,6 @@
 html, body {
 	height: 100%;
+	overflow: hidden;
 }
 
 #area {
@@ -16,6 +17,7 @@ html, body {
 
 #top {
 	margin: 5px;
+	height: 0;
 
 }
 
@@ -35,8 +37,17 @@ html, body {
 	float: right;
 }
 
+
 #menu {
 	float: left;
 	width: 0;
 	background: red;
 }
+
+#toolbar .tool {
+	width: 32px;
+	height: 32px;
+	background: #b00;
+	margin: 4px;
+}
+
