@@ -34,6 +34,7 @@ html, body {
 
 #sharebutton {
 	float: right;
+
 }
 
 
@@ -77,6 +78,12 @@ html, body {
 	height: 32px;
 	background: #bbb;
 	margin: 6px;
+}
+
+#savebutton, #necobutton, #jinebutton {
+	float: left;
+	overflow: hidden;
+	width: 33%;
 }
 
 .box {
