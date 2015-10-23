@@ -25,7 +25,6 @@ html, body {
 	width: 100px;
 	/*height: 40px;*/
 	padding: 0.75em 0.5em;
-	background: orange;
 	text-align: center;
 }
 
@@ -44,7 +43,7 @@ html, body {
 	text-align: center;
 	padding: 0.75em 0;
 	width: 0;
-	background: orange;
+	background: #5BC0DE;
 }
 
 #toolbarholder {
@@ -86,4 +85,14 @@ html, body {
 
 .btn {
 	border: 0;
+}
+
+.btn-menubutton-open {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.btn-sharebutton-open {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
 }
