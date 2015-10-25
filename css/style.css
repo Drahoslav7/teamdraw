@@ -13,10 +13,19 @@ html, body {
 	position: absolute;
 	top: 0;
 	width: 100%;
+	height: 0;
+}
+
+.statusbar {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	background: rgba(0,0,0,0.1);
+	padding: 0.5em 1em;
 }
 
 #top {
-	margin: 5px;
+	margin: 8px;
 	height: 0;
 
 }

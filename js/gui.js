@@ -1,4 +1,6 @@
 $(function () {
+
+
 	var menubutton = $("#menubutton");
 	var sharebutton = $("#sharebutton");
 	var menu = $("#menu");
