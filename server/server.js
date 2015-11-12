@@ -1,17 +1,40 @@
-var PORT = 7890; // TODO include from file shared for server
+const PORT = 7890;
 
 var io = require('socket.io')(PORT); 
+var tool = require("./tools");
 
 io.on('connection', function (socket) {
-  io.emit('greeting', { msg: 'hi there'});
+	console.log("user connected");
 
-  socket.on('msg', function (data) {
-    console.log('msg', data);
-  });
+	/* pingpong */
+	io.emit('ping', "hello");
 
-  socket.on('disconnect', function () {
-    io.emit('user disconnected');
-  });
+	socket.on('pong', function (data) {
+		console.log('pong', data);
+	});
+
+	socket.on('disconnect', function () {
+		io.emit('user disconnected');
+	});
+
+
+	/* app actions */
+	socket.on("create", function(data, cb){
+		cb({
+			err: null,
+			data: {
+				token: tool.genToken(),
+			},
+		});
+	});
+
+	socket.on("login", function(nick, cb){
+		console.log("login", nick);
+		cb({
+			err: null
+		});
+	});
+
 });
 
-console.log("server is running on port", PORT);
+console.log("Server is running on port", PORT);

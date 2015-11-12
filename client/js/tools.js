@@ -1,12 +1,16 @@
-// app.tools.genRandomHash = function (n) {
-// 	var hash = "";
-// 	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-// 	for (var i = 0; i < n; i++) {
-// 		hash += chars[app.tools.rand(chars.length)];
-// 	}
-// 	return hash;
-// };
+var tool = {};
 
-// app.tools.rand = function (n) {
-// 	return Math.floor(Math.random()*n);
-// };
+tool.log = function(msg){
+	var statusbar = $("<div class='statusbar'></div>");
+	$("body").append(statusbar);
+	statusbar.hide();
+	statusbar.html(msg);
+	console.log(msg);
+	statusbar.show(200, function(){
+		setTimeout(function(){
+			statusbar.hide(200, function(){
+				// $("body").remove(statusbar); // bug, jquery haze chybu
+			})
+		}, 500);
+	});
+}
