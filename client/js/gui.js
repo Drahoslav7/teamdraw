@@ -6,6 +6,7 @@ $(function () {
 	var menu = $("#menu");
 	menu.visible = false;
 
+
 	menubutton.click(function () {
 		if (menu.visible) {
 			menu.animate({width: 0}, function(){

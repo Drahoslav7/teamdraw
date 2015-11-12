@@ -26,9 +26,9 @@
 			<div id="menubutton" class="btn btn-primary">Menu ▶</div>
 			<div id="menu">
 				<div id="button-wrapper">
-					<div id="save-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
-					<div id="new-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
-					<div id="help-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
+					<div id="save-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
+					<div id="new-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
+					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
 				</div>
 			</div>
 			<div id="sharebutton" class="btn btn-primary">Share</div>
@@ -36,14 +36,15 @@
 		<div id="toolbarholder">
 			<div id="toolbar">
 				<div id="hidetoolbar" class="btn btn-small">◤</div>
-				<div class="box">
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
-					<div class="tool btn"></div>
+				<div id="sidebar" class="btn-group-vertical">
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-off"></span>  Overview</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-user"></span>  Profile</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-lock"></span>  Access</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-envelope"></span>  Message</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-list"></span>  Schedule</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-signal"></span>  Statistics</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-comment"></span>  Chat</li>
+			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-earphone"></span>  Contacts</li>
 				</div>
 			</div>
 		</div>
@@ -92,7 +93,7 @@
 				<div class="modal-body form-horizontal">
 					<div class="form-group">
 						<label for="link" class="col-sm-4 control-label">
-							Url:
+							Share Link:
 						</label>
 						<div class="col-sm-4">
 							<input id="link" class="form-control" type="text">
