@@ -29,7 +29,7 @@ app.init = function(){
 	} else {
 		var token = location.hash.substr(1);
 		// app.connector.verifyToken(token, function(){ // TODO zkontrolovat na serveru
-		// 	app.setToken(token);
+			app.setToken(token);
 		// });
 	}
 };
@@ -81,7 +81,7 @@ $(function(){
 
 	$("#sharemodal").on("shown.bs.modal", function(){
 		app.log("share modal");
-		var link = location.origin + location.pathname + app.getToken();
+		var link = location.origin + location.pathname + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
