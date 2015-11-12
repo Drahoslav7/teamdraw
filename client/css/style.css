@@ -122,6 +122,16 @@ html, body {
 	color: #000;
 }
 
+.btn-minus {
+	background: #2087A5;
+	color: #000;
+	text-align: left;
+}
+
+.btn-sidebar:hover {
+	color: #000;
+}
+
 .btn-menubutton-open {
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
