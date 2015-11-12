@@ -9,7 +9,7 @@ tool.genToken = function (n) {
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	var token = "";
 	for (var i = 0; i < n; i++) {
-		token += chars[tool.rand(char.length)];
+		token += chars[tool.rand(chars.length)];
 	};
 	return token;
 }
