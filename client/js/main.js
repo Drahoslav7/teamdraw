@@ -18,6 +18,9 @@ $(function(){
 	} else {
 		app.join(function(err, fresh){
 			// TODO err
+			if(err){
+				$("#invalidtokenmodal").modal("show");
+			}
 			tool.err(err);
 			if(fresh){
 				$("#signmodal").modal("show");
@@ -90,6 +93,10 @@ $(function(){
 		$("#helpmodal .btn-primary").click(function(){
 			$("#helpmodal").modal("hide");
 		});
+	});
+
+	$("#invalidtokenmodal .btn-primary").click(function(){
+		location = location.pathname;
 	});
 
 
