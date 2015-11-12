@@ -15,6 +15,11 @@ var io = new (function Client(){
 
 	this.socket = socket;
 
+	this.tell = function(token, cb){
+		socket.emit("list", token, function(response){
+			cb(response);
+		});
+	};
 
 	this.login = function(nick, cb){
 		socket.emit("login", nick, function(response){
@@ -26,10 +31,12 @@ var io = new (function Client(){
 		socket.emit("create", data, function(response){
 			cb(response);
 		});
-	}
+	};
 
-	this.join = function(token){
-
+	this.join = function(data, cb){
+		socket.emit("join", data, function(response){
+			cb(response);
+		});
 	};
 
 });

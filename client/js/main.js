@@ -4,22 +4,32 @@ $(function(){
 
 	$("#signmodal").modal({
 		"backdrop" : "static",
-		"keyboard" : false
+		"keyboard" : false,
+		"show": false,
 	});
 
 	// init
 	if(location.hash === "" || location.hash === "#") {
 		app.create(function(err){
 			// TODO err
+			tool.err(err);
+			$("#signmodal").modal("show");
 		});
 	} else {
-		app.join(function(err){
+		app.join(function(err, fresh){
 			// TODO err
+			tool.err(err);
+			if(fresh){
+				$("#signmodal").modal("show");
+			} else {
+				app.login(app.getNick(), function(err){
+					// TODO err
+					tool.err(err);
+				});
+			}
 		});
 	}
 
-	$("#signmodal").modal("show"); // new instance
-	
 
 	/* buttons events */
 
@@ -45,10 +55,14 @@ $(function(){
 	$("#signmodal").on("shown.bs.modal", function(){
 		tool.log("sign modal");
 		$("#nick").focus();
+		if(localStorage['nick']){
+			$("#nick").val(localStorage['nick']);
+		}
 		$("#signmodal form").submit(function(event){
 			event.preventDefault();
 			var nick = $("#signmodal #nick").val();
 			app.login(nick, function(err){
+				tool.err(err);
 				if(err === null){
 					tool.log("nick ok");
 					$("#signmodal").modal("hide");
@@ -77,5 +91,12 @@ $(function(){
 			$("#helpmodal").modal("hide");
 		});
 	});
+
+
+	/* other events */
+
+	window.onbeforeunload = function(){
+		app.save();
+	} 
 
 });

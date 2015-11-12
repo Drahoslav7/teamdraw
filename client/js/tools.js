@@ -14,3 +14,8 @@ tool.log = function(msg){
 		}, 500);
 	});
 }
+
+tool.err = function(err){
+	if(err)
+		console.error("ERR", err);
+}
