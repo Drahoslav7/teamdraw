@@ -24,6 +24,7 @@ app.instance = {};
 
 
 app.init = function(){
+	$("#signmodal").modal({"backdrop" : "static", "keyboard" : 	false});
 	if(location.hash === "" || location.hash === "#") {
 		$("#signmodal").modal("show");
 	} else {
@@ -66,6 +67,7 @@ $(function(){
 
 	$("#signmodal").on("shown.bs.modal", function(){
 		app.log("sign modal");
+		$("#nick").focus();
 		$("#signmodal form").submit(function(event){
 			var nick = $("#signmodal #nick").val();
 			event.preventDefault();
@@ -74,6 +76,9 @@ $(function(){
 				$("#signmodal").modal("hide");
 				app.log("nick ok");
 			} else {
+				$("#nickgroup").addClass("has-error");
+				$("#nick").attr("placeholder","Nickname required");
+				//$("#signerr").removeClass("hidden");
 				app.log("no nick");
 			}
 		});

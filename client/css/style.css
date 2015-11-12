@@ -112,3 +112,7 @@ html, body {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
+
+.signmodal-msg-err {
+	color: #FF0000;
+}
