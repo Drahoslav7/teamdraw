@@ -1,6 +1,6 @@
 var app = new ((function(){
 	var token = "";
-	
+
 	return function(){
 		this.getToken = function() {
 			return token;
@@ -52,7 +52,7 @@ app.log = function(msg){
 $(function(){
 
 	app.init();
-	
+
 	/* buttons bindings */
 	$("#sharebutton").click(function(){
 		$("#sharemodal").modal("show");
@@ -66,8 +66,9 @@ $(function(){
 
 	$("#signmodal").on("shown.bs.modal", function(){
 		app.log("sign modal");
-		$("#signmodal .btn-primary").click(function(){
+		$("#signmodal form").submit(function(event){
 			var nick = $("#signmodal #nick").val();
+			event.preventDefault();
 			if(nick !== ""){
 				app.nickname = nick;
 				$("#signmodal").modal("hide");
@@ -83,6 +84,9 @@ $(function(){
 		var link = location.origin + location.pathname + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
+		$("#sharemodal .btn-primary").click(function(){
+			$("#sharemodal").modal("hide");
+		});
 	});
-	
+
 });
