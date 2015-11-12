@@ -35,11 +35,23 @@ app.init = function(){
 	}
 };
 
+app.startClient = function(){
+	var socket = io.connect('http://localhost:'+app.config.port);
+	socket.on('greeting', function (data) {
+		console.log('greeting', data);
+		socket.emit('msg', { mynameis: app.nickname });
+	});
+	socket.on('this', function (data) {
+		console.log('this', data);
+	})
+};
+
 app.log = function(msg){
 	var statusbar = $("<div class='statusbar'></div>");
 	$("body").append(statusbar);
 	statusbar.hide();
 	statusbar.html(msg);
+	console.log(msg);
 	statusbar.show(200, function(){
 		setTimeout(function(){
 			statusbar.hide(200, function(){
@@ -62,7 +74,7 @@ $(function(){
 		$("#helpmodal").modal("show");
 	});
 	$("#new-button").click(function(){
-		window.open(location.origin + location.pathname);
+		window.open(location.protocol + "//" + location.pathname);
 	});
 	$("#save-button").click(function(){
 		app.log("save clicked");
@@ -84,6 +96,8 @@ $(function(){
 				app.nickname = nick;
 				$("#signmodal").modal("hide");
 				app.log("nick ok");
+				app.startClient();
+
 			} else {
 				$("#nickgroup").addClass("has-error");
 				$("#nick").attr("placeholder","Nickname required");
@@ -95,7 +109,7 @@ $(function(){
 
 	$("#sharemodal").on("shown.bs.modal", function(){
 		app.log("share modal");
-		var link = location.origin + location.pathname + "#" + app.getToken();
+		var link = location.protocol + "//" + location.pathname + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
