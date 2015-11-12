@@ -58,6 +58,15 @@ $(function(){
 	$("#sharebutton").click(function(){
 		$("#sharemodal").modal("show");
 	});
+	$("#help-button").click(function(){
+		$("#helpmodal").modal("show");
+	});
+	$("#new-button").click(function(){
+		window.open(location.origin + location.pathname);
+	});
+	$("#save-button").click(function(){
+		app.log("save clicked");
+	});
 	$("#area").click(function(){
 		app.log("area clicked");
 	});
@@ -91,6 +100,13 @@ $(function(){
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
 			$("#sharemodal").modal("hide");
+		});
+	});
+
+	$("#helpmodal").on("shown.bs.modal", function(){
+		app.log("help modal");
+		$("#helpmodal .btn-primary").click(function(){
+			$("#helpmodal").modal("hide");
 		});
 	});
 

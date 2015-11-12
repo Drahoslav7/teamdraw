@@ -25,9 +25,11 @@
 		<div id="top">
 			<div id="menubutton" class="btn btn-primary">Menu ▶</div>
 			<div id="menu">
-				<div id="savebutton">Save</div>
-				<div id="necobutton">Save</div>
-				<div id="jinebutton">Save</div>
+				<div id="button-wrapper">
+					<div id="save-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
+					<div id="new-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
+					<div id="help-button" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
+				</div>
 			</div>
 			<div id="sharebutton" class="btn btn-primary">Share</div>
 		</div>
@@ -89,13 +91,25 @@
 				<div class="modal-body form-horizontal">
 					<div class="form-group">
 						<label for="link" class="col-sm-4 control-label">
-								Url:
+							Url:
 						</label>
 						<div class="col-sm-4">
 							<input id="link" class="form-control" type="text">
 						</div>
 						<button class="btn btn-primary">Close</button>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="helpmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				</div>
+				<div class="modal-body form-horizontal">
+					<button class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Understood</button>
 				</div>
 			</div>
 		</div>

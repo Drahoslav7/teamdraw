@@ -8,18 +8,16 @@ $(function () {
 
 	menubutton.click(function () {
 		if (menu.visible) {
-			sharebutton.removeClass("btn-sharebutton-open");
-			menu.animate({width: 0},function(){
+			menu.animate({width: 0}, function(){
 				menubutton.html("Menu ▶");
 				menubutton.removeClass("btn-menubutton-open");
 			});
 			menu.visible = false;
 		} else	{
-			var resWidth =  $("#top").width() - $("#menubutton").outerWidth() - $("#sharebutton").outerWidth();
+			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true);
 			menubutton.addClass("btn-menubutton-open");
 			menu.animate({width: resWidth}, function(){
 				menubutton.html("Menu ◀");
-				sharebutton.addClass("btn-sharebutton-open");
 			});
 			menu.visible = true;
 		}
