@@ -45,6 +45,15 @@ $(function(){
 	$("#save-button").click(function(){
 		tool.log("save clicked");
 	});
+
+	$("#debug-button").click(function(){
+		var userList = $("#user-list");
+
+		tool.log("test clicked");
+		$("#online-count").html(parseInt($("#online-count").html())+1);
+		userList.append("TEESTUSER" + "<br>");
+	});
+
 	$("#area").click(function(){
 		tool.log("area clicked");
 	});
@@ -97,6 +106,6 @@ $(function(){
 
 	window.onbeforeunload = function(){
 		app.save();
-	} 
+	}
 
 });
