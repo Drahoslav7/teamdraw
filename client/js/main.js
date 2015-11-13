@@ -33,6 +33,21 @@ $(function(){
 		});
 	}
 
+	/* app events */
+
+	app.on("userlist update", function(users){ 
+		// TODO, Davide, zpracuj to
+		console.log(users); // users = pole jmen
+		// app.getNick() vraci vlastni nick, kdybys ho chtel zvyraznit nebo neco
+	});
+
+	app.on("disconnected", function(){
+		// TODO, Davide, zobraz nejak uživateli, že není připojen k serveru
+	});
+	app.on("connected", function(){
+		// TODO, Davide, -||- je připojen k serveru
+	});
+
 
 	/* buttons events */
 
@@ -97,11 +112,9 @@ $(function(){
 		});
 	});
 
-	$("#helpmodal").on("shown.bs.modal", function(){
-		tool.log("help modal");
-		$("#helpmodal .btn-primary").click(function(){
-			$("#helpmodal").modal("hide");
-		});
+
+	$("#helpmodal .btn-primary").click(function(){
+		$("#helpmodal").modal("hide");
 	});
 
 	$("#invalidtokenmodal .btn-primary").click(function(){

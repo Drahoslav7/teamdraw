@@ -19,3 +19,10 @@ tool.err = function(err){
 	if(err)
 		console.error("ERR", err);
 }
+
+tool.logger = function(name){
+	return function(){
+		return console.log.bind(console, name+":").apply(console, arguments);
+	};
+}
+

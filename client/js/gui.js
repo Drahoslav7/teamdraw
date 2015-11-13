@@ -37,15 +37,15 @@ $(function () {
 			menu.animate({width: 0}, function() {
 				menubutton.html("Menu ▶");
 				menubutton.removeClass("btn-menubutton-open");
+				menu.visible = false;
 			});
-			menu.visible = false;
 		} else	{
 			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true) + $("#debug-button").outerWidth(true);
 			menubutton.addClass("btn-menubutton-open");
 			menu.animate({width: resWidth}, function(){
 				menubutton.html("Menu ◀");
+				menu.visible = true;
 			});
-			menu.visible = true;
 		}
 	});
 });

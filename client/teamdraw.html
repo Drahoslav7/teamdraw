@@ -12,10 +12,10 @@
 	<script src="js/socket.io.js"></script>
 
 	<!-- ours -->
+	<script src="js/tools.js"></script>
 	<script src="js/io.js"></script> <!-- modal -->
 	<script src="js/app.js"></script> <!-- controller -->
 	<script src="js/gui.js"></script> <!-- view -->
-	<script src="js/tools.js"></script>
 	<script src="js/main.js"></script>
 
 
@@ -131,8 +131,15 @@
 	<div id="invalidtokenmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
+				<div class="modal-header">
+					<h3><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></h3>
+				</div>
 				<div class="modal-body">
-					Instance with this url does not exists
+					<div class="alert alert-warning">
+						Instance with this url does not exists.<br>
+						It may be expired, or link is invalid.<br>
+						New instance will be created.
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Understood</button>

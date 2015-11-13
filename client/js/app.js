@@ -1,12 +1,16 @@
 //  APP
 var app = new (function App(){
 
+
+	var log = new tool.logger("app");
 	/////////////////////////////////
 	// private:
 	
 	var _token;
 	var _nick;
 	var _secret;
+
+	var _events = {};
 
 	var setToken = function(token){
 		location.hash = "#" + token;
@@ -17,11 +21,70 @@ var app = new (function App(){
 		localStorage['nick'] = nick;
 	};
 
+	var fire = function(eventName){
+		var args = [].slice.call(arguments);
+		args.shift();
+		if(eventName in _events && Array.isArray(_events[eventName])){
+			_events[eventName].forEach(function(cb){
+				cb.apply(this, args);
+			});
+		}
+	};
+
+	// conneciton:
+	function connectionOk(){
+		tool.log("connected");
+		fire("connected");
+	}
+	function connectionNotOk(){
+		tool.log("disconnected");
+		fire("disconnected");
+	}
+	io.on("connect", connectionOk)
+	io.on("reconnect", connectionOk)
+	io.on("connect_error", connectionNotOk);
+	io.on("reconnect_error", connectionNotOk);
+
+	//
+
+	io.on("userlist", function(resp){
+		fire("userlist update", resp.users);
+	});
+
+	/// debug:
+
+	io.on("user disconnected", function(){
+		log("some user disconnected");
+	});
+
+	io.on("info", function(resp){
+		fire("info", resp.data);
+	});
+
 
 	/////////////////////////////////
 	// public:
 	
+
+	/**
+	 * register new event
+	 * @param  {string}   eventName name of event
+	 * @param  {Function} cb        callback
+	 */
+	this.on = function(eventName, cb){
+		if(!(eventName in _events)){
+			_events[eventName] = [];
+		}
+		if(!("call" in cb)){
+			return console.error(cb, "is not callable function");
+		}
+		_events[eventName].push(cb);
+	};
+
 	this.save = function(){
+		if(!_token){
+			console.error("nothing to save");
+		}
 		localStorage[_token] = JSON.stringify({
 			token: _token,
 			nick: _nick,
@@ -67,6 +130,7 @@ var app = new (function App(){
 			}
 			cb(resp.err);
 		});
+		this.save();
 	};
 
 	this.create = function(cb){

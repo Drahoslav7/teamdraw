@@ -8,8 +8,8 @@ var instances = {};
 function Instance(token){
 	// private:
 	
-	var _users = [];
-	var _token = token;
+	var _token = token; // globally unicate identifier of instance
+	var _users = []; // collection of obejcts {secter: , nick: }
 
 	// public:
 
@@ -38,7 +38,13 @@ function Instance(token){
 	}
 
 	this.getUsers = function(){
-		return _users.slice();
+		var users = [];
+		_users.forEach(function(user){
+			if(user.nick){
+				users.push(user.nick);
+			}
+		});
+		return users; 
 	};
 }
 
@@ -50,13 +56,17 @@ io.on('connection', function (socket) {
 	var secret;
 	var instance;
 
-	/* pingpong */
-	io.emit('ping', "hello");
 
+	/* pingpong */
+	socket.emit('ping', "hello");
 	socket.on('pong', function (data) {
 		console.log('pong', data);
 	});
 
+	io.emit("info", { // to all
+		err: null,
+		data: "new connection",
+	})
 	socket.on('disconnect', function () {
 		io.emit('user disconnected');
 	});
@@ -132,11 +142,11 @@ io.on('connection', function (socket) {
 		cb({
 			err: err
 		});
-	});
 
-	socket.on("list", function(token, cb){
-		console.log(instances[token].getUsers());
-		cb(instances[token].getUsers());
+		socket.join(instance.getToken());
+		socket.to(instance.getToken()).emit("userlist", {
+			users: instance.getUsers()
+		});
 	});
 
 });

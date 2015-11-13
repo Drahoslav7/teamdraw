@@ -13,13 +13,7 @@ var io = new (function Client(){
 		socket.emit('pong', "hello back");
 	});
 
-	this.socket = socket;
-
-	this.tell = function(token, cb){
-		socket.emit("list", token, function(response){
-			cb(response);
-		});
-	};
+	this.on = socket.on.bind(socket);
 
 	this.login = function(nick, cb){
 		socket.emit("login", nick, function(response){
