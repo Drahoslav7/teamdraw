@@ -1,18 +1,20 @@
-$(function () {
+var gui = new (function () {
 
+	var menubutton;
+	var menu;
 
-	var menubutton = $("#menubutton");
-	//var sharebutton = $("#sharebutton");
-	var menu = $("#menu");
-	menu.visible = false;
+	var toolbarbutton;
+	var toolmenu;
 
-	var userlistbutton = $("#userbutton");
-	var usermenu = $("#usermenu");
-	var usertext = $("#usertext");
-	usermenu.visible = false;
+	var errormodal;
 
-	userlistbutton.click(function () {
-		if (usermenu.visible) {
+	var sharebutton;
+	var userlistbutton;
+	var usermenu;
+	var usertext;
+
+	this.userListResize = function (doNotToggle) {
+		if (usermenu.visible && !doNotToggle) {
 			usermenu.animate({height: 0}, function() {
 				usertext.html("");
 				userlistbutton.removeClass("btn-userlistbutton-open");
@@ -20,7 +22,7 @@ $(function () {
 				userlistbutton.animate({width: 100});
 			});
 			usermenu.visible = false;
-		} else {
+		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
 			var resHeight = $("#user-list").height();
 			$("#userbarholder").animate({marginRight: 108});
 			userlistbutton.addClass("btn-userlistbutton-open");
@@ -30,9 +32,26 @@ $(function () {
 			});
 			usermenu.visible = true;
 		}
-	});
+	};
 
-	menubutton.click(function () {
+	this.toolBarResize = function () {
+		if (toolmenu.visible) {
+			toolmenu.animate({height: 0}, function() {
+				//usertext.html("");
+				toolbarbutton.removeClass("btn-userlistbutton-open");
+			});
+			toolmenu.visible = false;
+		} else {
+			var resHeight = $("#tool-list").height();
+			toolbarbutton.addClass("btn-userlistbutton-open");
+			toolmenu.animate({height: resHeight}, function() {
+				//usertext.html(" User List");
+			});
+			toolmenu.visible = true;
+		}
+	};
+
+	this.menuResize = function () {
 		if (menu.visible) {
 			menu.animate({width: 0}, function() {
 				menubutton.html("Menu ▶");
@@ -40,12 +59,42 @@ $(function () {
 				menu.visible = false;
 			});
 		} else	{
-			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true) + $("#debug-button").outerWidth(true);
+			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true);
 			menubutton.addClass("btn-menubutton-open");
 			menu.animate({width: resWidth}, function(){
 				menubutton.html("Menu ◀");
 				menu.visible = true;
 			});
 		}
+	}
+
+	$(function () {
+
+		menubutton = $("#menubutton");
+		menu = $("#menu");
+		menu.visible = false;
+
+		toolbarbutton = $("#toolbarbutton");
+		toolmenu = $("#toolbarmenu");
+
+		errormodal = $("#errormodal");
+
+		sharebutton = $("#sharebutton");
+		userlistbutton = $("#userbutton");
+		usermenu = $("#usermenu");
+		usertext = $("#usertext");
+		usermenu.visible = false;
+
+		userlistbutton.click(function () {
+			gui.userListResize();
+		});
+
+		menubutton.click(function () {
+			gui.menuResize();
+		});
+
+		toolbarbutton.click(function () {
+			gui.toolBarResize();
+		});
 	});
 });

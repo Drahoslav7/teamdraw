@@ -48,7 +48,7 @@ html, body {
 
 
 #menu {
-	float: left;
+	float: left	;
 	overflow: hidden;
 	text-align: center;
 	padding: 6px 0px;
@@ -57,12 +57,6 @@ html, body {
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
   background: #337AB7;
-}
-
-#usermenu {
-	float:left;
-	overflow: hidden;
-	height: 0;
 }
 
 #toolbarholder {
@@ -77,6 +71,21 @@ html, body {
 	top: 0;
 	left: 0;
 }
+#toolbarmenu {
+	float:right;
+	overflow:hidden;
+	height: 0;
+}
+#toolbar-wrapper {
+	margin: auto;
+	height: 4000px;
+}
+#tool-list {
+	width: 100px;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	background: #5BC0DE;
+}
 
 #userbarholder {
 	clear: both;
@@ -84,14 +93,21 @@ html, body {
 	position: relative;
 	margin-right: 8px;
 }
-
 #userbar {
 	width: 100px;
 	position: absolute;
 	top: 0;
 	right: 0;
 }
-
+#usermenu {
+	float:left;
+	overflow: hidden;
+	height: 0;
+}
+#user-wrapper {
+	margin: auto;
+	height: 4000px;
+}
 #user-list {
 	width: 200px;
 	border-bottom-left-radius: 4px;
@@ -99,13 +115,6 @@ html, body {
 	background: #5BC0DE;
 }
 
-
-#toolbar .tool {
-	width: 32px;
-	height: 32px;
-	background: #bbb;
-	margin: 6px;
-}
 
 #button-wrapper {
 	margin: auto;
@@ -120,9 +129,9 @@ html, body {
 	color: #000;
 }
 
-#user-wrapper {
-	margin: auto;
-	height: 4000px;
+
+.mySelf {
+	font-weight: bold;
 }
 
 .box {

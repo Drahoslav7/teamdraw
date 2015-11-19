@@ -11,6 +11,10 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/socket.io.js"></script>
 
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+
+
 	<!-- ours -->
 	<script src="js/tools.js"></script>
 	<script src="js/io.js"></script> <!-- modal -->
@@ -34,30 +38,36 @@
 					<div id="save-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
 					<div id="new-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
 					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
-					<div id="debug-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Add User Test</div>
 				</div>
 			</div>
-			<div id="sharebutton" class="btn btn-primary">Share</div>
+			<div id="sharebutton" class="btn btn-primary">	Share</div>
 		</div>
+
 		<div id="toolbarholder">
 			<div id="toolbar">
-				<div id="sidebar" class="btn-group-vertical">
-					<button type="button" class="btn btn-primary btn-minus">◤ <b><sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup></b></button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-off"></span>  Overview</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-user"></span>  Profile</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-lock"></span>  Access</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-envelope"></span>  Message</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-list"></span>  Schedule</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-signal"></span>  Statistics</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-comment"></span>  Chat</button>
-			    <button type="button" class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-earphone"></span>  Contacts</button>
+				<div id="toolbarbutton" type="button" class="btn btn-primary btn-minus btn-block">
+					◤ <b><sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup></b>\
+				</div>
+				<div id="toolbarmenu">
+					<div id="toolbar-wrapper">
+						<div id="tool-list">
+							<div class="btn btn-info btn-info-c"><span class="fa fa-camera-retro"></span>  Overview</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-user"></span>  Profile</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-lock"></span>  Access</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-envelope"></span>  Message</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-list"></span>  Schedule</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-signal"></span>  Statistics</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-comment"></span>  Chat</div>
+					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-earphone"></span>  Contacts</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<div id="userbarholder">
 			<div id="userbar">
-				<div id="userbutton" type="button" class="btn btn-primary btn-minus btn-block"><span id="online-count" class="badge pull-right">1</span><span id="usertext" class="glyphicon glyphicon-user"></span></div>
+				<div id="userbutton" type="button" class="btn btn-primary btn-minus btn-block"><span id="online-count" class="badge pull-right">0</span><span id="usertext" class="glyphicon glyphicon-user"></span></div>
 				<div id="usermenu">
 					<div id="user-wrapper">
 						<div id="user-list"></div>
@@ -65,7 +75,6 @@
 				</div>
 			</div>
 		</div>
-
 
 	</div>
 
@@ -92,6 +101,7 @@
 		</div>
 	</div>
 
+
 	<div id="sharemodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -112,6 +122,7 @@
 		</div>
 	</div>
 
+
 	<div id="helpmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -128,14 +139,15 @@
 		</div>
 	</div>
 
-	<div id="invalidtokenmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+
+	<div id="errormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h3><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></h3>
 				</div>
 				<div class="modal-body">
-					<div class="alert alert-warning">
+					<div id="error-msg" class="alert alert-warning">
 						Instance with this url does not exists.<br>
 						It may be expired, or link is invalid.<br>
 						New instance will be created.
@@ -146,6 +158,7 @@
 				</div>
 			</div>
 		</div>
+
 	</div>
 
 </body>

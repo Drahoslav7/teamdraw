@@ -2,6 +2,8 @@
 
 $(function(){
 
+	var errormodal = $("#errormodal");
+
 	$("#signmodal").modal({
 		"backdrop" : "static",
 		"keyboard" : false,
@@ -19,7 +21,7 @@ $(function(){
 		app.join(function(err, fresh){
 			// TODO err
 			if(err){
-				$("#invalidtokenmodal").modal("show");
+				errormodal.modal("show");
 			}
 			tool.err(err);
 			if(fresh){
@@ -35,16 +37,29 @@ $(function(){
 
 	/* app events */
 
-	app.on("userlist update", function(users){ 
-		// TODO, Davide, zpracuj to
+	app.on("userlist update", function(users){
 		console.log(users); // users = pole jmen
-		// app.getNick() vraci vlastni nick, kdybys ho chtel zvyraznit nebo neco
+
+		var userList = $("#user-list");
+
+		tool.log("New User");
+
+		$("#online-count").html(users.length);
+		userList.empty();
+		users.forEach(function (item) {
+			userList.append("<div class='" + ((item===app.getNick())?"mySelf":"") + "'>" + item + "</div>");
+		});
+		gui.userListResize(true);
 	});
 
 	app.on("disconnected", function(){
+		$("#error-msg").html("BLABLABLA");
+		errormodal.modal("show");
 		// TODO, Davide, zobraz nejak uživateli, že není připojen k serveru
 	});
 	app.on("connected", function(){
+		$("#error-msg").html("BLEBLEBLE");
+		//errormodal.modal("show");
 		// TODO, Davide, -||- je připojen k serveru
 	});
 
@@ -62,14 +77,6 @@ $(function(){
 	});
 	$("#save-button").click(function(){
 		tool.log("save clicked");
-	});
-
-	$("#debug-button").click(function(){
-		var userList = $("#user-list");
-
-		tool.log("test clicked");
-		$("#online-count").html(parseInt($("#online-count").html())+1);
-		userList.append("TEESTUSER" + "<br>");
 	});
 
 	$("#area").click(function(){
@@ -96,7 +103,7 @@ $(function(){
 				} else {
 					$("#nickgroup").addClass("has-error");
 					$("#nick").attr("placeholder", err);
-					tool.log("no nick");
+					tool.log("Invalid Nick");
 				}
 			});
 		});
@@ -117,7 +124,7 @@ $(function(){
 		$("#helpmodal").modal("hide");
 	});
 
-	$("#invalidtokenmodal .btn-primary").click(function(){
+	$("#errormodal .btn-primary").click(function(){
 		location = location.pathname;
 	});
 
