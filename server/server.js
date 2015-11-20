@@ -144,7 +144,7 @@ io.on('connection', function (socket) {
 		});
 
 		socket.join(instance.getToken());
-		socket.to(instance.getToken()).emit("userlist", {
+		io.to(instance.getToken()).emit("userlist", {
 			users: instance.getUsers()
 		});
 	});
