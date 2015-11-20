@@ -1,13 +1,13 @@
 /* config */
 const server = {
-	host: "localhost",
+	hostname: location.hostname,
 	port: 7890,
 };
 
 // IO wrapper
 var io = new (function Client(){
 	var io = window.io;
-	var socket = io.connect("http://" + server.host + ":" + server.port);
+	var socket = io.connect("http://" + server.hostname + ":" + server.port);
 	socket.on('ping', function (data) {
 		console.log('ping', data);
 		socket.emit('pong', "hello back");
