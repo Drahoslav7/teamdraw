@@ -81,8 +81,8 @@ var gui = new (function () {
 
 		sharebutton = $("#sharebutton");
 		userlistbutton = $("#userbutton");
-		usermenu = $("#usermenu");
 		usertext = $("#usertext");
+		usermenu = $("#usermenu");
 		usermenu.visible = false;
 
 		userlistbutton.click(function () {

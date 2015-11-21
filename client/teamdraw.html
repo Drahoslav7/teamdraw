@@ -78,6 +78,10 @@
 
 	</div>
 
+	<div id="alert" class="alert alert-success collapse">
+		You've successfully connected to the session!
+	</div>
+
 
 	<div id="signmodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
@@ -155,6 +159,27 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Understood</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="neterrormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></h3>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-warning">
+						You have been disconnected from the session. Trying to reconnect.<br>
+						You can save also save your session as an image now.
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+					<button class="btn btn-info"><span class="fa fa-spinner fa-pulse"></span> Reconnecting</button>
 				</div>
 			</div>
 		</div>
