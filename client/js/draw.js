@@ -1,8 +1,12 @@
 
 var draw = new(function Draw(){
 
+	var log = new tool.logger("draw");
+
 	var _canvas;
 	var _ctx;
+
+	var _currentToolName = '';
 
 	var _color = 'black';
 	var _size = 2;
@@ -18,7 +22,6 @@ var draw = new(function Draw(){
 		paper.setup(_canvas[0]);
 
 		paper.view.onResize = function(event){
-			console.log(event);
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		}
 
@@ -45,12 +48,8 @@ var draw = new(function Draw(){
 		// pointer
 		var pointer = new paper.Tool();
 		_tools.pointer = pointer;
-		pointer.onMouseDown = function select(event){
-			if(paper.Key.isDown('shift')){
-				return;
-			}
-
-			if(!paper.Key.isDown('control')){
+		pointer.onMouseDown = pointer.onMouseDrag = function(event){
+			if(!event.modifiers.control && event.type !== 'mousedrag'){
 				// unselect
 				paper.project.selectedItems.forEach(function(item){
 					item.selected = false;
@@ -62,12 +61,6 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		}
-		pointer.onMouseDrag = function(event){
-			if(paper.Key.isDown('shift')){
-				paper.view.scrollBy([-event.delta.x, -event.delta.y]);
-			}
-			paper.view.draw();
-		};
 
 
 		// pencil
@@ -108,7 +101,14 @@ var draw = new(function Draw(){
 			paper.view.draw();
 		}
 
+		// shifter
 
+		var shifter = new paper.Tool();
+		_tools.shifter = shifter;
+		shifter.onMouseDrag = function(event){
+			paper.view.scrollBy([-event.delta.x, -event.delta.y]);
+			paper.view.draw();
+		};
 
 
 		draw.selectTool("pencil");
@@ -119,6 +119,8 @@ var draw = new(function Draw(){
 	this.selectTool = function(toolname){
 		if(toolname in _tools){
 			_tools[toolname].activate();
+			_currentToolName = toolname;
+			log('tool changed to', toolname);
 		} else {
 			console.error("unknown tool", toolname)
 		}
@@ -139,6 +141,9 @@ var draw = new(function Draw(){
 		paper.view.draw();
 	};
 
+	this.getCurrentToolName = function(){
+		return _currentToolName;
+	};
 
 
 	var _undoned = [];

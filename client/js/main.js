@@ -168,10 +168,33 @@ $(function(){
 			case 80: // p
 				draw.selectTool("pencil");
 				break;
-			case 83: //s (select)
+			case 83: // s (select)
 				draw.selectTool("pointer");
+				break;
+			case 77: // ms (move)
+				draw.selectTool("shifter");
+				break;
 		}
 	});
+
+	(function(){
+		var prevToolName = '';
+		var pressed = false;
+		$(window).keydown(function(event){
+			if(event.keyCode === 32 && !pressed){ // spacebar
+				pressed = true;
+				prevToolName = draw.getCurrentToolName();
+				draw.selectTool("shifter");
+			}
+		})
+		$(window).keyup(function(event){
+			if(event.keyCode === 32){ // spacebar
+				draw.selectTool(prevToolName);
+				pressed = false;
+			}
+		})
+
+	})();
 
 
 });
