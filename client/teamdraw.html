@@ -4,30 +4,31 @@
 	<title>TeamDraw</title>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
 	<link rel="stylesheet" href="css/style.css">
 
 	<!-- libs -->
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/socket.io.js"></script>
-
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-
-
+	<script src="js/paper-core.min.js"></script>
 
 	<!-- ours -->
 	<script src="js/tools.js"></script>
 	<script src="js/io.js"></script> <!-- modal -->
 	<script src="js/app.js"></script> <!-- controller -->
 	<script src="js/gui.js"></script> <!-- view -->
+	<script src="js/draw.js"></script>
 	<script src="js/main.js"></script>
 
 
 </head>
 <body>
 
-	<div id="area">
-
+	<div id="workarea">
+		<canvas id="canvas" resize="true">
+		</canvas>
 	</div>
 
 	<div id="bars">

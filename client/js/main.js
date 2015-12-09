@@ -88,7 +88,7 @@ $(function(){
 		$("#helpmodal").modal("show");
 	});
 	$("#new-button").click(function(){
-		window.open(location.protocol + "//" + location.pathname);
+		window.open(location.toString().split('#')[0]);
 	});
 	$("#save-button").click(function(){
 		tool.log("save clicked");
@@ -126,7 +126,7 @@ $(function(){
 
 	$("#sharemodal").on("shown.bs.modal", function(){
 		tool.log("share modal");
-		var link = location.protocol + "//" + location.pathname + "#" + app.getToken();
+		var link = location.toString().split('#')[0] + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
@@ -149,5 +149,29 @@ $(function(){
 	window.onbeforeunload = function(){
 		app.save();
 	}
+
+
+
+	// TODO napojit na buttony:
+	// draw.selectTool("pointer");
+	// draw.selectTool("pencil");
+	// draw.selectTool("eraser");
+	draw.setColor("red");
+	draw.setSize(3);
+
+	// key bindings
+	$(window).keydown(function(event){
+		switch(event.keyCode){
+			case 69: // e
+				draw.selectTool("eraser");
+				break;
+			case 80: // p
+				draw.selectTool("pencil");
+				break;
+			case 83: //s (select)
+				draw.selectTool("pointer");
+		}
+	});
+
 
 });

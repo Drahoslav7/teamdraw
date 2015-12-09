@@ -10,10 +10,16 @@ html, body {
 	margin-left: 8px;
 }
 
-#area {
+#workarea {
 	width: 100%;
 	height: 100%;
 	background: #eee;
+}
+
+#canvas {
+	height: 100%;
+	width: 100%;
+	display: block;
 }
 
 #bars {
