@@ -88,7 +88,7 @@ $(function(){
 		$("#helpmodal").modal("show");
 	});
 	$("#new-button").click(function(){
-		window.open(location.protocol + "//" + location.pathname);
+		window.open(location.toString().split('#')[0]);
 	});
 	$("#save-button").click(function(){
 		tool.log("save clicked");
@@ -126,7 +126,7 @@ $(function(){
 
 	$("#sharemodal").on("shown.bs.modal", function(){
 		tool.log("share modal");
-		var link = location.protocol + "//" + location.pathname + "#" + app.getToken();
+		var link = location.toString().split('#')[0] + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
