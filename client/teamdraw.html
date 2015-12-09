@@ -41,42 +41,31 @@
 					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
 				</div>
 			</div>
-			<div id="sharebutton" class="btn btn-primary">	Share</div>
+			<div id="sharebutton" class="btn btn-primary"><i class="fa fa-share"></i> Share</div>
 		</div>
-
-		<div id="toolbarholder">
-			<div id="toolbar">
-				<div id="toolbarbutton" type="button" class="btn btn-primary btn-minus btn-block">
-					◤ <b><sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup> <sub>.</sub> <sup>.</sup></b>\
-				</div>
-				<div id="toolbarmenu">
-					<div id="toolbar-wrapper">
-						<div id="tool-list">
-							<div class="btn btn-info btn-info-c"><span class="fa fa-camera-retro"></span>  Overview</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-user"></span>  Profile</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-lock"></span>  Access</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-envelope"></span>  Message</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-list"></span>  Schedule</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-signal"></span>  Statistics</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-comment"></span>  Chat</div>
-					    <div class="btn btn-info btn-info-c"><span class="glyphicon glyphicon-earphone"></span>  Contacts</div>
-						</div>
-					</div>
-				</div>
+		
+		<div id="toolbar">
+			<div id="toolbarbutton" type="button" class="btn btn-primary toolbarbutton-open"> ◤</div>
+			<div class="btn-group-vertical toolmenu-open" id="toolmenu">
+				<div id="tool-pointer" class="btn btn-info btn-info-c btn-block"><i class="fa fa-mouse-pointer"></i></div>
+				<div id="tool-pencil" class="btn btn-info btn-info-c btn-block"><i class="fa fa-pencil"></i></div>
+				<div id="tool-object" class="btn btn-info btn-info-c btn-block"><i class="fa fa-square-o"></i></div>
+				<div id="tool-text" class="btn btn-info btn-info-c btn-block btn-sep"><i class="fa fa-font"></i></div>
+				<div id="tool-boldness" class="btn btn-info btn-info-c btn-block btn-sep"><i class="fa fa-circle fa-lg"></i></div>
+				<div id="tool-outer-color" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle-o"></i></div>
+				<div id="tool-inner-color" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle"></i></div>
 			</div>
 		</div>
 
-		<div id="userbarholder">
-			<div id="userbar">
-				<div id="userbutton" type="button" class="btn btn-primary btn-minus btn-block"><span id="online-count" class="badge pull-right">0</span><span id="usertext" class="glyphicon glyphicon-user"></span></div>
-				<div id="usermenu">
-					<div id="user-wrapper">
-						<div id="user-list"></div>
-					</div>
-				</div>
+		<div id="userbar">
+			<div id="userbarbutton" type="button" class="btn btn-primary userbarbutton-open">
+				<i id="online-count" class="badge pull-right">0</i>
+				<i id="usertext" class="fa fa-user pull-left"></i>
+			</div>
+			<div id="usermenu">
+				
 			</div>
 		</div>
-
 	</div>
 
 	<div id="alert" class="alert alert-success collapse">
