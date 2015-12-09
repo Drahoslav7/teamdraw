@@ -49,7 +49,7 @@ $(function(){
 	app.on("userlist update", function(users){
 		console.log(users); // users = pole jmen
 
-		var userList = $("#user-list");
+		var userList = $("#usermenu");
 
 		tool.log("New User");
 

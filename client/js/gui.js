@@ -5,48 +5,50 @@ var gui = new (function () {
 
 	var toolbarbutton;
 	var toolmenu;
+	
+	var userbarbutton;
+	var usermenu;
 
 	var errormodal;
 
 	var sharebutton;
-	var userlistbutton;
-	var usermenu;
-	var usertext;
 
 	this.userListResize = function (doNotToggle) {
+
 		if (usermenu.visible && !doNotToggle) {
-			usermenu.animate({height: 0}, function() {
-				usertext.html("");
-				userlistbutton.removeClass("btn-userlistbutton-open");
-				$("#userbarholder").animate({marginRight: 8});
-				userlistbutton.animate({width: 100});
+			var resHeight = userbarbutton.outerHeight();
+			$("#userbar").animate({width: '100px', height: resHeight }, function () {
+				userbarbutton.removeClass("userbarbutton-open");
 			});
+			userbarbutton.usertext.html("");
 			usermenu.visible = false;
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
-			var resHeight = $("#user-list").height();
-			$("#userbarholder").animate({marginRight: 108});
-			userlistbutton.addClass("btn-userlistbutton-open");
-			userlistbutton.animate({width: 200}, function() {
-				usertext.html(" User List");
-				usermenu.animate({height: resHeight});
+			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
+			$("#userbar").animate({ width: '200px', height: resHeight  }, function () {
+				userbarbutton.usertext.html(" User List");
 			});
+			userbarbutton.addClass("userbarbutton-open");
 			usermenu.visible = true;
 		}
 	};
 
 	this.toolBarResize = function () {
 		if (toolmenu.visible) {
-			toolmenu.animate({height: 0}, function() {
-				//usertext.html("");
-				toolbarbutton.removeClass("btn-userlistbutton-open");
+			var resHeight = toolbarbutton.outerHeight();
+			$("#toolbar").animate({ width: '100px', height: resHeight }, function () {
+				toolbarbutton.removeClass("toolbarbutton-open");
 			});
+			
+			toolbarbutton.html("Tools");
+			
 			toolmenu.visible = false;
 		} else {
-			var resHeight = $("#tool-list").height();
-			toolbarbutton.addClass("btn-userlistbutton-open");
-			toolmenu.animate({height: resHeight}, function() {
-				//usertext.html(" User List");
-			});
+			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
+			$("#toolbar").animate({ width: '50px', height: resHeight });
+			
+			toolbarbutton.addClass("toolbarbutton-open");
+			toolbarbutton.html("◤")
+			
 			toolmenu.visible = true;
 		}
 	};
@@ -75,17 +77,21 @@ var gui = new (function () {
 		menu.visible = false;
 
 		toolbarbutton = $("#toolbarbutton");
-		toolmenu = $("#toolbarmenu");
+		toolmenu = $("#toolmenu");
+		toolmenu.visible = true;
+		
+		userbarbutton = $("#userbarbutton");
+		userbarbutton.usertext = $("#usertext");
+		userbarbutton.onlinecount = $("#online-count");
+		usermenu = $("#usermenu");
+		usermenu.visible = true;
 
 		errormodal = $("#errormodal");
 
 		sharebutton = $("#sharebutton");
-		userlistbutton = $("#userbutton");
-		usertext = $("#usertext");
-		usermenu = $("#usermenu");
-		usermenu.visible = false;
+		
 
-		userlistbutton.click(function () {
+		userbarbutton.click(function () {
 			gui.userListResize();
 		});
 

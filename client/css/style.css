@@ -39,7 +39,6 @@ html, body {
 
 #menubutton, #sharebutton {
 	width: 100px;
-	/*height: 40px;*/
 	padding: 10px 1px;
 	text-align: center;
 }
@@ -63,63 +62,64 @@ html, body {
 	width: 0;
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
-  background: #337AB7;
+	background: #337AB7;
 }
 
-#toolbarholder {
-	clear: both;
-	float: left;
-	position: relative;
-	margin: 8px;
-}
 #toolbar {
-	width: 100px;
-	position: absolute;
-	top: 0;
-	left: 0;
+	clear: left;
+	float: left;
+	width: 50px;
+	height: 500px;
+	margin-top: 8px;
+	position: relative;
+	overflow: hidden;
+	margin-left: 8px;
 }
-#toolbarmenu {
-	float:right;
-	overflow:hidden;
-	height: 0;
-}
-#toolbar-wrapper {
-	margin: auto;
-	height: 4000px;
-}
-#tool-list {
-	width: 100px;
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-	background: #5BC0DE;
+#toolbarbutton {
+	width: inherit;
 }
 
-#userbarholder {
-	clear: both;
+#toolmenu {
+	width: inherit;
+}
+
+#toolmenu.btn-group-vertical > .btn:first-child:not(:last-child) {
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+.toolbarbutton-open {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+#userbar {
+	clear: right;
 	float: right;
+	width: 100px;
+	height: 500px;
+	margin-top: 8px;
 	position: relative;
+	overflow: hidden;
 	margin-right: 8px;
 }
-#userbar {
-	width: 100px;
-	position: absolute;
-	top: 0;
-	right: 0;
+#userbarbutton {
+	width: inherit;
 }
+
 #usermenu {
-	float:left;
-	overflow: hidden;
-	height: 0;
-}
-#user-wrapper {
-	margin: auto;
-	height: 4000px;
-}
-#user-list {
-	width: 200px;
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
+	width: inherit;
 	background: #5BC0DE;
+}
+
+#usermenu.btn-group-vertical > .btn:first-child:not(:last-child) {
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+.userbarbutton-open {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 
@@ -149,22 +149,15 @@ html, body {
 	border: 0;
 }
 
+.btn-sep {
+	border-bottom: 4px solid #337AB7;
+}
+
 .btn-info-c {
 	color: #000;
-	text-align: left;
 }
 
 .btn-info-c:hover {
-	color: #000;
-}
-
-.btn-minus {
-	background: #2087A5;
-	color: #000;
-	text-align: left;
-}
-
-.btn-sidebar:hover {
 	color: #000;
 }
 
