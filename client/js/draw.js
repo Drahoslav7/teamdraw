@@ -71,6 +71,7 @@ var draw = new(function Draw(){
 		pencil.onMouseDown = function(event){
 			path = new paper.Path();
 			path.strokeCap = 'round';
+			path.strokeJoin = 'round';
 			_objects.push(path);
 			path.strokeColor = _color;
 			path.strokeWidth = _size;
@@ -101,17 +102,19 @@ var draw = new(function Draw(){
 			paper.view.draw();
 		}
 
-		// shifter
+		// move
 
-		var shifter = new paper.Tool();
-		_tools.shifter = shifter;
-		shifter.onMouseDrag = function(event){
+		var move = new paper.Tool();
+		_tools.move = move;
+		move.onMouseDrag = function(event){
 			paper.view.scrollBy([-event.delta.x, -event.delta.y]);
 			paper.view.draw();
 		};
 
 
-		draw.selectTool("pencil");
+		setTimeout(function(){
+			draw.selectTool("pencil");
+		},0);
 	}); // init end
 
 
@@ -120,6 +123,7 @@ var draw = new(function Draw(){
 		if(toolname in _tools){
 			_tools[toolname].activate();
 			_currentToolName = toolname;
+			gui.changeCursor(toolname);
 			log('tool changed to', toolname);
 		} else {
 			console.error("unknown tool", toolname)

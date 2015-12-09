@@ -172,7 +172,7 @@ $(function(){
 				draw.selectTool("pointer");
 				break;
 			case 77: // ms (move)
-				draw.selectTool("shifter");
+				draw.selectTool("move");
 				break;
 		}
 	});
@@ -184,7 +184,7 @@ $(function(){
 			if(event.keyCode === 32 && !pressed){ // spacebar
 				pressed = true;
 				prevToolName = draw.getCurrentToolName();
-				draw.selectTool("shifter");
+				draw.selectTool("move");
 			}
 		})
 		$(window).keyup(function(event){

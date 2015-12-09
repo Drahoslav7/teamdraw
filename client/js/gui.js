@@ -70,6 +70,29 @@ var gui = new (function () {
 		}
 	}
 
+	this.changeCursor = function(toolname){
+		var icon = '';
+		var options = {};
+		switch(toolname){
+			case 'pencil':
+				icon = 'pencil';
+				options.flip = 'vertical';
+				break;
+			case 'eraser':
+				icon = 'eraser';
+				options.flip = 'vertical';
+				// options.hotsot = 'bottom left';
+				break;
+			case 'move':
+				icon = 'arrows';
+				break;
+			default:
+				$('#workarea').css('cursor','');
+				return;
+		}
+		$('#workarea').awesomeCursor(icon, options);
+	};
+
 	$(function () {
 
 		menubutton = $("#menubutton");
@@ -102,5 +125,6 @@ var gui = new (function () {
 		toolbarbutton.click(function () {
 			gui.toolBarResize();
 		});
+
 	});
 });
