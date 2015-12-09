@@ -33,4 +33,11 @@ var io = new (function Client(){
 		});
 	};
 
+	this.send = function(item){
+		var jitem  = item.exportJSON({toString:false});
+		socket.emit("action", jitem, function(response){
+			// draw.persist(item);
+		});
+	}
+
 });

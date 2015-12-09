@@ -8,6 +8,8 @@ var instances = {};
 function Instance(token){
 	// private:
 	
+	var _actions = []; // this has to be syncing along clients
+
 	var _token = token; // globally unicate identifier of instance
 	var _users = []; // collection of obejcts {secter: , nick: }
 
@@ -46,6 +48,16 @@ function Instance(token){
 		});
 		return users; 
 	};
+
+	this.pushAction = function(action){
+		_actions.push(action);
+		io.to(_token).emit("update", {
+			data: {
+				action: action,
+				n: _actions.length,
+			}
+		});
+	}
 }
 
 
@@ -148,6 +160,11 @@ io.on('connection', function (socket) {
 			users: instance.getUsers()
 		});
 	});
+
+	socket.on("action", function(item, cb){
+		instance.pushAction(item);
+		cb({err: null});
+	})
 
 });
 

@@ -47,8 +47,8 @@ var app = new (function App(){
 
 	//
 
-	io.on("userlist", function(resp){
-		fire("userlist update", resp.users);
+	io.on("userlist", function(msg){
+		fire("userlist update", msg.users);
 	});
 
 	/// debug:
@@ -57,8 +57,12 @@ var app = new (function App(){
 		log("some user disconnected");
 	});
 
-	io.on("info", function(resp){
-		fire("info", resp.data);
+	io.on("info", function(msg){
+		fire("info", msg.data);
+	});
+
+	io.on("update", function(msg){
+		fire("update", msg.data);
 	});
 
 
@@ -168,5 +172,6 @@ var app = new (function App(){
 			});
 		}
 	};
+
 
 });

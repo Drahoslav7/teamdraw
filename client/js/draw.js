@@ -80,6 +80,9 @@ var draw = new(function Draw(){
 		pencil.onMouseDrag = function(event){
 			path.add(event.point);
 		};
+		pencil.onMouseUp = function(event){
+			io.send(path);
+		};
 
 
 		// eraser
@@ -103,7 +106,6 @@ var draw = new(function Draw(){
 		}
 
 		// move
-
 		var move = new paper.Tool();
 		_tools.move = move;
 		move.onMouseDrag = function(event){
@@ -115,6 +117,17 @@ var draw = new(function Draw(){
 		setTimeout(function(){
 			draw.selectTool("pencil");
 		},0);
+
+
+
+		app.on("update", function(data){
+			log("update", data.n)
+			var item = new paper.Path();
+			item.importJSON(data.action);
+			paper.view.draw();
+		});
+
+
 	}); // init end
 
 
