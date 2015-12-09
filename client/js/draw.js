@@ -40,10 +40,14 @@ var draw = new(function Draw(){
 			};
 		}
 
+
 		// pointer
 		var pointer = new paper.Tool();
 		_tools.pointer = pointer;
 		pointer.onMouseDown = function select(event){
+			if(paper.Key.isDown('shift')){
+				return;
+			}
 
 			if(!paper.Key.isDown('control')){
 				// unselect
@@ -64,6 +68,7 @@ var draw = new(function Draw(){
 			paper.view.draw();
 		};
 
+
 		// pencil
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
@@ -71,6 +76,7 @@ var draw = new(function Draw(){
 		pencil.maxDistance = 5;
 		pencil.onMouseDown = function(event){
 			path = new paper.Path();
+			path.strokeCap = 'round';
 			_objects.push(path);
 			path.strokeColor = _color;
 			path.strokeWidth = _size;
@@ -80,8 +86,7 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 
-		//eraser
-		//
+		// eraser
 		var eraser = new paper.Tool();
 		_tools.eraser = eraser;
 		eraser.onMouseDown = function(event){

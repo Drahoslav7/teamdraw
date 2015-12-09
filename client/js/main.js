@@ -4,7 +4,16 @@ $(function(){
 
 	var errormodal = $("#errormodal");
 
+	var neterrormodal = $("#neterrormodal");
+	var neterrormodal_visible = false;
+
 	$("#signmodal").modal({
+		"backdrop" : "static",
+		"keyboard" : false,
+		"show": false,
+	});
+
+	neterrormodal.modal({
 		"backdrop" : "static",
 		"keyboard" : false,
 		"show": false,
@@ -53,13 +62,19 @@ $(function(){
 	});
 
 	app.on("disconnected", function(){
-		$("#error-msg").html("BLABLABLA");
-		errormodal.modal("show");
+		neterrormodal.modal("show");
+		neterrormodal_visible = true;
 		// TODO, Davide, zobraz nejak uživateli, že není připojen k serveru
 	});
 	app.on("connected", function(){
-		$("#error-msg").html("BLEBLEBLE");
-		//errormodal.modal("show");
+		if (neterrormodal_visible) {
+			neterrormodal.modal("hide");
+			neterrormodal_visible = false;
+		}
+		$("#alert").fadeIn("fast");
+		setTimeout(function () {
+			$("#alert").fadeOut("slow");
+		}, 2000);
 		// TODO, Davide, -||- je připojen k serveru
 	});
 
