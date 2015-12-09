@@ -135,4 +135,7 @@ $(function(){
 		app.save();
 	}
 
+
+	draw.selectTool("pencil");
+
 });
