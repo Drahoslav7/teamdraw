@@ -16,6 +16,12 @@ html, body {
 	background: #eee;
 }
 
+#canvas {
+	height: 100%;
+	width: 100%;
+	display: block;
+}
+
 #bars {
 	position: absolute;
 	top: 0;

@@ -13,16 +13,17 @@ var draw = new(function Draw(){
 
 	// init
 	$(function(){
+
 		_canvas = $("#canvas");
-		resizeCanvas();
 		paper.setup(_canvas[0]);
 
-
+		paper.view.onResize = function(event){
+			console.log(event);
+			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
+		}
 
 		/** tools behavior **/
 		var path;
-
-
 
 		function getSelectOption(event) {
 			return {
@@ -86,15 +87,17 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 
+
 		// eraser
 		var eraser = new paper.Tool();
 		_tools.eraser = eraser;
-		eraser.onMouseDown = function(event){
+		eraser.onMouseDown = eraser.onMouseDrag = function(event){
 			paper.project.getItems(getSelectOption(event)).forEach(function(item){
 				item.remove();
 			});
 			paper.view.draw();
 		};
+
 		eraser.onMouseMove = function(event){
 			paper.project.selectedItems.forEach(function(item){
 				item.selected = false;
@@ -156,13 +159,5 @@ var draw = new(function Draw(){
 			paper.view.draw();
 		}
 	};
-
-
-	function resizeCanvas (){
-		_canvas.height($("#workarea").height()); 
-		_canvas.width($("#workarea").width()); 
-	}
-
-
 
 });
