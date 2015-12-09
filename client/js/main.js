@@ -136,6 +136,27 @@ $(function(){
 	}
 
 
-	draw.selectTool("pencil");
+
+	// TODO napojit na buttony:
+	// draw.selectTool("pointer");
+	// draw.selectTool("pencil");
+	// draw.selectTool("eraser");
+	draw.setColor("red");
+	draw.setSize(3);
+
+	// key bindings
+	$(window).keydown(function(event){
+		switch(event.keyCode){
+			case 69: // e
+				draw.selectTool("eraser");
+				break;
+			case 80: // p
+				draw.selectTool("pencil");
+				break;
+			case 83: //s (select)
+				draw.selectTool("pointer");
+		}
+	});
+
 
 });
