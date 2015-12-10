@@ -12,6 +12,8 @@ var app = new (function App(){
 
 	var _events = {};
 
+	var _actions = []; // all actions catching up from server
+
 	var setToken = function(token){
 		location.hash = "#" + token;
 		_token = token;
@@ -175,5 +177,13 @@ var app = new (function App(){
 		}
 	};
 
+	this.postAction = function(type, json){
+		var action = {
+			type: type,
+			data: json
+		}
+		_actions.push(action);
+		io.postAction(action);
+	}
 
 });

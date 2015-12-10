@@ -8,7 +8,7 @@ var instances = {};
 function Instance(token){
 	// private:
 	
-	var _actions = []; // this has to be syncing along clients
+	var _actions = []; // this has to be syncing across clients
 
 	var _token = token; // globally unicate identifier of instance
 	var _users = []; // collection of obejcts {secter: , nick: }
@@ -163,7 +163,6 @@ io.on('connection', function (socket) {
 
 	socket.on("action", function(item, cb){
 		instance.pushAction(item);
-		cb({err: null});
 	})
 
 });

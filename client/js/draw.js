@@ -81,7 +81,8 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
-			io.send(path);
+			var jsonpath = path.exportJSON({toString:false});
+			app.postAction("path", jsonpath);
 		};
 
 
@@ -114,16 +115,14 @@ var draw = new(function Draw(){
 		};
 
 
-		setTimeout(function(){
-			draw.selectTool("pencil");
-		},0);
-
-
+		/////////// end of tools behavior  definitions
 
 		app.on("update", function(data){
-			log("update", data.n)
-			var item = new paper.Path();
-			item.importJSON(data.action);
+			log("update", data.n, data);
+			if(data.action.type === "path"){
+				var item = new paper.Path();
+				item.importJSON(data.action.data);
+			}
 			paper.view.draw();
 		});
 
