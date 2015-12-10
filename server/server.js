@@ -129,10 +129,10 @@ io.on('connection', function (socket) {
 		} else {
 			secret = tool.genToken(20); // user verifier
 		}
-		instance.join(secret);
+		var err = instance.join(secret);
 
 		cb({
-			err: null,
+			err: err,
 			secret: secret,
 		});
 	});

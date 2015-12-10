@@ -64,8 +64,8 @@ $(function(){
 	app.on("disconnected", function(){
 		neterrormodal.modal("show");
 		neterrormodal_visible = true;
-		// TODO, Davide, zobraz nejak uživateli, že není připojen k serveru
 	});
+
 	app.on("connected", function(){
 		if (neterrormodal_visible) {
 			neterrormodal.modal("hide");
@@ -75,8 +75,8 @@ $(function(){
 		setTimeout(function () {
 			$("#alert").fadeOut("slow");
 		}, 2000);
-		// TODO, Davide, -||- je připojen k serveru
 	});
+
 
 
 	/* buttons events */
@@ -154,6 +154,7 @@ $(function(){
 		draw.selectTool($(this).attr("data-tool"));
 	});
 
+	app.on("logged on", function(){
 
 	draw.setColor("red");
 	draw.setSize(3);
@@ -175,25 +176,46 @@ $(function(){
 				break;
 		}
 	});
-
-	(function(){
-		var prevToolName = '';
-		var pressed = false;
+		// key bindings
 		$(window).keydown(function(event){
-			if(event.keyCode === 32 && !pressed){ // spacebar
-				pressed = true;
-				prevToolName = draw.getCurrentToolName();
-				draw.selectTool("move");
+			switch(event.keyCode){
+				case 69: // e
+					draw.selectTool("eraser");
+					break;
+				case 80: // p
+					draw.selectTool("pencil");
+					break;
+				case 83: // s (select)
+					draw.selectTool("pointer");
+					break;
+				case 77: // ms (move)
+					draw.selectTool("move");
+					break;
 			}
-		})
-		$(window).keyup(function(event){
-			if(event.keyCode === 32){ // spacebar
-				draw.selectTool(prevToolName);
-				pressed = false;
-			}
-		})
+		});
 
-	})();
+		// select move tool when spacebar down
+		(function(){
+			var prevToolName = '';
+			var pressed = false;
+			$(window).keydown(function(event){
+				if(event.keyCode === 32 && !pressed){ // spacebar
+					pressed = true;
+					prevToolName = draw.getCurrentToolName();
+					draw.selectTool("move");
+				}
+			})
+			$(window).keyup(function(event){
+				if(event.keyCode === 32){ // spacebar
+					draw.selectTool(prevToolName);
+					pressed = false;
+				}
+			})
+
+		})();
+
+	});// on logged on
+
 
 
 });
