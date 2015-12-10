@@ -12,6 +12,8 @@ var app = new (function App(){
 
 	var _events = {};
 
+	var _actions = []; // all actions catching up from server
+
 	var setToken = function(token){
 		location.hash = "#" + token;
 		_token = token;
@@ -62,6 +64,7 @@ var app = new (function App(){
 	});
 
 	io.on("update", function(msg){
+		_actions.push(msg.data); // TODO check n
 		fire("update", msg.data);
 	});
 
@@ -175,5 +178,18 @@ var app = new (function App(){
 		}
 	};
 
+	this.postAction = function(type, json){
+		var action = {
+			type: type,
+			data: json
+		}
+		_actions.push(action);
+		io.postAction(action);
+	}
+
+	this.sync = function(){
+		var lastActionId = _actions.length;
+		io.sync(lastActionId);
+	};
 
 });

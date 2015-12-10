@@ -8,7 +8,7 @@ var instances = {};
 function Instance(token){
 	// private:
 	
-	var _actions = []; // this has to be syncing along clients
+	var _actions = []; // this has to be syncing across clients
 
 	var _token = token; // globally unicate identifier of instance
 	var _users = []; // collection of obejcts {secter: , nick: }
@@ -51,13 +51,16 @@ function Instance(token){
 
 	this.pushAction = function(action){
 		_actions.push(action);
-		io.to(_token).emit("update", {
-			data: {
-				action: action,
-				n: _actions.length,
-			}
+		action.n = _actions.length;
+		return action;
+	};
+
+	this.getActionsSince = function(n){
+		return _actions.filter(function(action){
+			return action.n > n;
 		});
-	}
+	};
+
 }
 
 
@@ -162,9 +165,20 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on("action", function(item, cb){
-		instance.pushAction(item);
-		cb({err: null});
-	})
+		var savedAction = instance.pushAction(item);
+		io.to(instance.getToken()).emit("update", {
+			data: savedAction
+		});
+
+	});
+
+	socket.on("sync", function(lastActionId){
+		instance.getActionsSince(lastActionId).forEach(function(action){
+			socket.emit("update", {
+				data: action
+			});
+		});
+	});
 
 });
 

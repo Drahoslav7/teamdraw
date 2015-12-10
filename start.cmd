@@ -1,2 +1,2 @@
 "client/teamdraw.html"
-node server/server.js
+nodemon server/server.js

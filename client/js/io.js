@@ -15,6 +15,8 @@ var io = new (function Client(){
 
 	this.on = socket.on.bind(socket);
 
+	// with response
+
 	this.login = function(nick, cb){
 		socket.emit("login", nick, function(response){
 			cb(response);
@@ -33,11 +35,15 @@ var io = new (function Client(){
 		});
 	};
 
-	this.send = function(item){
-		var jitem  = item.exportJSON({toString:false});
-		socket.emit("action", jitem, function(response){
-			// draw.persist(item);
-		});
+	// without response
+
+	this.postAction = function(action){
+		socket.emit("action", action);
 	}
+
+	this.sync = function(lastActionId){
+		socket.emit("sync", lastActionId);
+	}
+
 
 });

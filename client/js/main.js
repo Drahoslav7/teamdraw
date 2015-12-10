@@ -146,36 +146,25 @@ $(function(){
 
 	/* other events */
 
-	window.onbeforeunload = function(){
-		app.save();
-	}
-
-	$(".btn-tool").click(function() {
-		draw.selectTool($(this).attr("data-tool"));
-	});
-
 	app.on("logged on", function(){
 
-	draw.setColor("red");
-	draw.setSize(3);
+		app.sync();
 
-	// key bindings
-	$(window).keydown(function(event){
-		switch(event.keyCode){
-			case 69: // e
-				draw.selectTool("eraser");
-				break;
-			case 80: // p
-				draw.selectTool("pencil");
-				break;
-			case 83: // s (select)
-				draw.selectTool("pointer");
-				break;
-			case 77: // ms (move)
-				draw.selectTool("move");
-				break;
+		draw.selectTool("pencil");
+
+		draw.setColor("red");
+		draw.setSize(3);
+
+
+		window.onbeforeunload = function(){
+			app.save();
 		}
-	});
+
+		$(".btn-tool").click(function() {
+			draw.selectTool($(this).attr("data-tool"));
+		});
+		
+
 		// key bindings
 		$(window).keydown(function(event){
 			switch(event.keyCode){
