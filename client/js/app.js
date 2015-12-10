@@ -131,6 +131,7 @@ var app = new (function App(){
 		io.login(nick, function(resp){
 			if(resp.err === null){
 				setNick(nick);
+				fire("logged on");
 			}
 			cb(resp.err);
 		});
