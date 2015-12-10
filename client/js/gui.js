@@ -125,6 +125,25 @@ var gui = new (function () {
 		toolbarbutton.click(function () {
 			gui.toolBarResize();
 		});
+		
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
 
+		$(".btn-color-pallete").spectrum({
+			showButtons: false,
+			color: 'black',
+			clickoutFiresChange: true,
+			containerClassName: 'spectrum-custom',
+			change: function(color) {
+					draw.setColor(color.toHexString());
+			},
+			move: function(color) {
+					draw.setColor(color.toHexString());
+			},
+			hide: function(color) {
+					draw.setColor(color.toHexString());
+			}
+		});
 	});
 });

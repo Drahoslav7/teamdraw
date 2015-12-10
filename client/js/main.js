@@ -150,12 +150,11 @@ $(function(){
 		app.save();
 	}
 
+	$(".btn-tool").click(function() {
+		draw.selectTool($(this).attr("data-tool"));
+	});
 
 
-	// TODO napojit na buttony:
-	// draw.selectTool("pointer");
-	// draw.selectTool("pencil");
-	// draw.selectTool("eraser");
 	draw.setColor("red");
 	draw.setSize(3);
 

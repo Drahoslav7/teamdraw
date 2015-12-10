@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel='stylesheet' href='css/spectrum.css' />
 
 	<link rel="stylesheet" href="css/style.css">
 
@@ -14,6 +15,7 @@
 	<script src="js/paper-core.min.js"></script>
 	<script src="js/jquery.awesome-cursor.min.js"></script>
 	<script src="js/socket.io.js"></script>
+	<script src='js/spectrum.js'></script>
 
 	<!-- ours -->
 	<script src="js/tools.js"></script>
@@ -44,17 +46,17 @@
 			</div>
 			<div id="sharebutton" class="btn btn-primary"><i class="fa fa-share"></i> Share</div>
 		</div>
-		
 		<div id="toolbar">
 			<div id="toolbarbutton" type="button" class="btn btn-primary toolbarbutton-open"> ◤</div>
 			<div class="btn-group-vertical toolmenu-open" id="toolmenu">
-				<div id="tool-pointer" class="btn btn-info btn-info-c btn-block"><i class="fa fa-mouse-pointer"></i></div>
-				<div id="tool-pencil" class="btn btn-info btn-info-c btn-block"><i class="fa fa-pencil"></i></div>
-				<div id="tool-object" class="btn btn-info btn-info-c btn-block"><i class="fa fa-square-o"></i></div>
-				<div id="tool-text" class="btn btn-info btn-info-c btn-block btn-sep"><i class="fa fa-font"></i></div>
-				<div id="tool-boldness" class="btn btn-info btn-info-c btn-block btn-sep"><i class="fa fa-circle fa-lg"></i></div>
-				<div id="tool-outer-color" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle-o"></i></div>
-				<div id="tool-inner-color" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle"></i></div>
+				<button data-tool="pointer" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-mouse-pointer"></i></button>
+				<button data-tool="move" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-arrows"></i></button>
+				<button data-tool="pencil" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-pencil"></i></button>
+				<button data-tool="eraser" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-eraser"></i></button>
+				<button data-tool="object" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
+				<button data-tool="text" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-font"></i></button>
+				<button data-tool="boldness" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-circle fa-lg"></i></button>
+				<button data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle-o"></i></button>
 			</div>
 		</div>
 

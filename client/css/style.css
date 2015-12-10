@@ -60,7 +60,7 @@ html, body {
 
 
 #menu {
-	float: left	;
+	float: left;
 	overflow: hidden;
 	text-align: center;
 	padding: 6px 0px;
@@ -78,7 +78,7 @@ html, body {
 	height: 500px;
 	margin-top: 8px;
 	position: relative;
-	overflow: hidden;
+	overflow:hidden;
 	margin-left: 8px;
 }
 #toolbarbutton {
@@ -97,6 +97,12 @@ html, body {
 .toolbarbutton-open {
 	border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px;
+}
+
+.spectrum-custom {
+	background-color: #5BC0DE;
+	border-radius: 4px;
+	border-color: #337AB7
 }
 
 #userbar {
@@ -121,6 +127,7 @@ html, body {
 #usermenu.btn-group-vertical > .btn:first-child:not(:last-child) {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
+	overflow: visible;
 }
 
 .userbarbutton-open {
