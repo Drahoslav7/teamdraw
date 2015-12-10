@@ -155,10 +155,10 @@ var app = new (function App(){
 		var token = location.hash.substr(1);
 		console.log("token when joininig", token);
 		if(token in localStorage){
-			this.load(token);
+			this.load(token); 
 			io.join({
 				token: token,
-				secret: _secret,
+				secret: _secret, // loaded
 			}, function(resp){
 				_secret = resp.secret;
 				cb(resp.err, false);
@@ -168,6 +168,7 @@ var app = new (function App(){
 				token: token,
 			}, function(resp){
 				_secret = resp.secret;
+				_token = token;
 				cb(resp.err, true);
 			});
 		}

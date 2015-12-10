@@ -160,7 +160,7 @@ $(function(){
 	draw.setSize(3);
 
 	// key bindings
-	$(window).keydown(function(event){
+	$("#workarea").keydown(function(event){
 		switch(event.keyCode){
 			case 69: // e
 				draw.selectTool("eraser");
