@@ -5,6 +5,7 @@ var gui = new (function () {
 
 	var toolbarbutton;
 	var toolmenu;
+	var ghostcolorpicker;
 	
 	var userbarbutton;
 	var usermenu;
@@ -102,6 +103,7 @@ var gui = new (function () {
 		toolbarbutton = $("#toolbarbutton");
 		toolmenu = $("#toolmenu");
 		toolmenu.visible = true;
+		ghostcolorpicker = $("#ghost-colorpicker");
 		
 		userbarbutton = $("#userbarbutton");
 		userbarbutton.usertext = $("#usertext");
@@ -130,10 +132,11 @@ var gui = new (function () {
 			$('[data-toggle="tooltip"]').tooltip()
 		})
 
-		$(".btn-color-pallete").spectrum({
+		ghostcolorpicker.spectrum({
 			showButtons: false,
 			color: 'black',
 			clickoutFiresChange: true,
+			appendTo: "#ghost-colorpicker",
 			containerClassName: 'spectrum-custom',
 			change: function(color) {
 					draw.setColor(color.toHexString());
@@ -144,6 +147,14 @@ var gui = new (function () {
 			hide: function(color) {
 					draw.setColor(color.toHexString());
 			}
+		});
+		
+		$("#tool-outer-color").click(function () {
+			var posX = $("#tool-outer-color").position();
+			var posY = $("#tool-outer-color").outerWidth(true);
+			console.log(posX);
+			$("#ghost-colorpicker").css({top: posX.top -50, left: posY+20});
+			setTimeout(function() {$("#ghost-colorpicker").spectrum("show")}, 20);
 		});
 	});
 });

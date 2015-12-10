@@ -149,6 +149,12 @@ html, body {
 	color: #000;
 }
 
+#ghost-colorpicker {
+	float: left;
+	position: absolute;
+	left: 20px;
+	top: 300px;
+}
 
 .mySelf {
 	font-weight: bold;
@@ -186,4 +192,8 @@ html, body {
 
 .modal-header h3 {
 	margin: 0;
+}
+
+.sp-top-inner {
+	margin-top: 5px;
 }

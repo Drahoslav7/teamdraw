@@ -56,14 +56,17 @@
 				<button data-tool="object" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
 				<button data-tool="text" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-font"></i></button>
 				<button data-tool="boldness" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-circle fa-lg"></i></button>
-				<button data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle-o"></i></button>
+				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle-o"></i></button>
 			</div>
 		</div>
+		
+		<div id="ghost-colorpicker"></div>
 
 		<div id="userbar">
 			<div id="userbarbutton" type="button" class="btn btn-primary userbarbutton-open">
 				<i id="online-count" class="badge pull-right">0</i>
-				<i id="usertext" class="fa fa-user pull-left"></i>
+				<i class="fa fa-user fa-fw pull-left"></i>
+				<div class="pull-left" id="usertext"></div>
 			</div>
 			<div id="usermenu">
 				
