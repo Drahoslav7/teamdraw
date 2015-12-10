@@ -30,6 +30,9 @@ var draw = new(function Draw(){
 
 		function getSelectOption(event) {
 			return {
+				n: function(n){
+					return n !== undefined;
+				},
 				segments: function(segments){
 					if(!segments){
 						return false;
@@ -109,7 +112,7 @@ var draw = new(function Draw(){
 		};
 
 
-		/////////// end of tools behavior  definitions
+		/////////// end of tools behavior definitions
 
 		app.on("update", function(action){
 			// log("update", action.n, action);
@@ -119,16 +122,18 @@ var draw = new(function Draw(){
 				item.n = action.n; // for deleting purposes
 			}
 			if(action.type === "erase"){
-				paper.project.getItem({
+				var item = paper.project.getItem({
 					n: action.data
-				}).remove();
+				})
+				if(!item){
+					console.error("nothing with n=%d to erase", action.n);
+				} else {
+					item.remove();
+				}
 			}
 			paper.view.draw();
 		});
 
-		app.on("export", function(){
-			paper.view.exportSVG();
-		});
 
 
 	}); // init end
@@ -154,35 +159,44 @@ var draw = new(function Draw(){
 		_size = size;
 	}
 
-	this.delete = function(){
-		paper.project.selectedItems.forEach(function(item){
-			item.remove();
-		});
-		paper.view.draw();
-	};
+	// this.deleteSelected = function(){
+	// 	paper.project.selectedItems.forEach(function(item){
+	// 		item.remove();
+	// 	});
+	// 	paper.view.draw();
+	// };
 
 	this.getCurrentToolName = function(){
 		return _currentToolName;
 	};
 
 
-	var _undoned = [];
-	this.undo = function(){
-		var item = _objects.pop();
-		if(item){
-			item.visible = false;
-			paper.view.draw();
-			_undoned.push(item);
-		}
-	}
+	// var _undoned = [];
+	// this.undo = function(){
+	// 	var item = _objects.pop();
+	// 	if(item){
+	// 		item.visible = false;
+	// 		paper.view.draw();
+	// 		_undoned.push(item);
+	// 	}
+	// }
 
-	this.redo = function(){
-		var item = _undoned.pop();
-		if(item){
-			_objects.push(item)
-			item.visible = true;
-			paper.view.draw();
-		}
-	};
+	// this.redo = function(){
+	// 	var item = _undoned.pop();
+	// 	if(item){
+	// 		_objects.push(item)
+	// 		item.visible = true;
+	// 		paper.view.draw();
+	// 	}
+	// };
+
+	this.getUrl = function(){
+		var svg = paper.project.exportSVG({asString:true});
+		//add xml declaration
+		svg = '<?xml version="1.0" standalone="no"?>\r\n' + svg;
+		//convert svg source to URI data scheme.
+		var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+		return url;
+	}
 
 });
