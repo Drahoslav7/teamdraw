@@ -148,6 +148,8 @@ $(function(){
 
 	app.on("logged on", function(){
 
+		app.sync();
+
 		draw.selectTool("pencil");
 
 		draw.setColor("red");

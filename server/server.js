@@ -51,13 +51,16 @@ function Instance(token){
 
 	this.pushAction = function(action){
 		_actions.push(action);
-		io.to(_token).emit("update", {
-			data: {
-				action: action,
-				n: _actions.length,
-			}
+		action.n = _actions.length;
+		return action;
+	};
+
+	this.getActionsSince = function(n){
+		return _actions.filter(function(action){
+			return action.n > n;
 		});
-	}
+	};
+
 }
 
 
@@ -162,8 +165,20 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on("action", function(item, cb){
-		instance.pushAction(item);
-	})
+		var savedAction = instance.pushAction(item);
+		io.to(instance.getToken()).emit("update", {
+			data: savedAction
+		});
+
+	});
+
+	socket.on("sync", function(lastActionId){
+		instance.getActionsSince(lastActionId).forEach(function(action){
+			socket.emit("update", {
+				data: action
+			});
+		});
+	});
 
 });
 

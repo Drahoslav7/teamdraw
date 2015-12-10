@@ -117,11 +117,11 @@ var draw = new(function Draw(){
 
 		/////////// end of tools behavior  definitions
 
-		app.on("update", function(data){
-			log("update", data.n, data);
-			if(data.action.type === "path"){
+		app.on("update", function(action){
+			log("update", action.n, action.type);
+			if(action.type === "path"){
 				var item = new paper.Path();
-				item.importJSON(data.action.data);
+				item.importJSON(action.data);
 			}
 			paper.view.draw();
 		});

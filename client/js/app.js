@@ -64,6 +64,7 @@ var app = new (function App(){
 	});
 
 	io.on("update", function(msg){
+		_actions.push(msg.data); // TODO check n
 		fire("update", msg.data);
 	});
 
@@ -185,5 +186,10 @@ var app = new (function App(){
 		_actions.push(action);
 		io.postAction(action);
 	}
+
+	this.sync = function(){
+		var lastActionId = _actions.length;
+		io.sync(lastActionId);
+	};
 
 });
