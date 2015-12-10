@@ -83,6 +83,9 @@ var draw = new(function Draw(){
 		pencil.onMouseUp = function(event){
 			var jsonpath = path.exportJSON({toString:false});
 			app.postAction("path", jsonpath);
+			setTimeout(function(){
+				path.remove(); // will be replaced with update from server
+			}, 0);
 		};
 
 
@@ -91,20 +94,11 @@ var draw = new(function Draw(){
 		_tools.eraser = eraser;
 		eraser.onMouseDown = eraser.onMouseDrag = function(event){
 			paper.project.getItems(getSelectOption(event)).forEach(function(item){
-				item.remove();
+				item.visible = false;
+				app.postAction("erase", item.n);
 			});
 			paper.view.draw();
 		};
-
-		eraser.onMouseMove = function(event){
-			paper.project.selectedItems.forEach(function(item){
-				item.selected = false;
-			});
-			paper.project.getItems(getSelectOption(event)).forEach(function(item){
-				item.selected = true;
-			});
-			paper.view.draw();
-		}
 
 		// move
 		var move = new paper.Tool();
@@ -118,12 +112,22 @@ var draw = new(function Draw(){
 		/////////// end of tools behavior  definitions
 
 		app.on("update", function(action){
-			log("update", action.n, action.type);
+			// log("update", action.n, action);
 			if(action.type === "path"){
 				var item = new paper.Path();
 				item.importJSON(action.data);
+				item.n = action.n; // for deleting purposes
+			}
+			if(action.type === "erase"){
+				paper.project.getItem({
+					n: action.data
+				}).remove();
 			}
 			paper.view.draw();
+		});
+
+		app.on("export", function(){
+			paper.view.exportSVG();
 		});
 
 

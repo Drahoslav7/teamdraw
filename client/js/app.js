@@ -178,10 +178,10 @@ var app = new (function App(){
 		}
 	};
 
-	this.postAction = function(type, json){
+	this.postAction = function(type, data){
 		var action = {
 			type: type,
-			data: json
+			data: data
 		}
 		_actions.push(action);
 		io.postAction(action);
@@ -190,6 +190,10 @@ var app = new (function App(){
 	this.sync = function(){
 		var lastActionId = _actions.length;
 		io.sync(lastActionId);
+	};
+
+	this.export = function(){
+		fire("export");
 	};
 
 });
