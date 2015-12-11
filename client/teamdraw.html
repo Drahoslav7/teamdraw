@@ -36,7 +36,7 @@
 
 	<div id="bars">
 		<div id="top">
-			<div id="menubutton" class="btn btn-primary">Menu ▶</div>
+			<div id="menubutton" class="btn btn-primary ">Menu ▶</div>
 			<div id="menu">
 				<div id="button-wrapper">
 					<div id="save-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
@@ -44,7 +44,7 @@
 					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
 				</div>
 			</div>
-			<div id="sharebutton" class="btn btn-primary"><i class="fa fa-share"></i> Share</div>
+			<div id="sharebutton" class="btn btn-primary button-warning-c"><i class="fa fa-share"></i> Share</div>
 		</div>
 		<div id="toolbar">
 			<div id="toolbarbutton" type="button" class="btn btn-primary toolbarbutton-open"> ◤</div>
@@ -55,12 +55,17 @@
 				<button data-tool="eraser" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-eraser"></i></button>
 				<button data-tool="object" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
 				<button data-tool="text" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-font"></i></button>
-				<button data-tool="boldness" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-circle fa-lg"></i></button>
-				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle-o"></i></button>
+				<button id="tool-boldness" data-tool="boldness" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle fa-lg"></i></button>
+				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle fa-lg"></i></button>
 			</div>
 		</div>
 		
 		<div id="ghost-colorpicker"></div>
+		<div id="ghost-boldnesspicker" class="btn-group btn-group-justified">
+			<div data-size="1" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle"></i></div>
+			<div data-size="2" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle fa-2x"></i></div>
+			<div data-size="3" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle fa-3x"></i></div>
+		</div>
 
 		<div id="userbar">
 			<div id="userbarbutton" type="button" class="btn btn-primary userbarbutton-open">

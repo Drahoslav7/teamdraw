@@ -55,9 +55,15 @@ html, body {
 
 #sharebutton {
 	float: right;
-
 }
 
+.button-warning-c {
+	background-color: #F0AD4E;
+}
+
+.button-warning-c:hover {
+	background-color: #F0AD4E;
+}
 
 #menu {
 	float: left;
@@ -156,6 +162,15 @@ html, body {
 	top: 300px;
 }
 
+#ghost-boldnesspicker {
+	float: left;
+	position: absolute;
+	overflow: hidden;
+	left: 20px;
+	top: 500px;
+	width: 0px;
+}
+
 .mySelf {
 	font-weight: bold;
 }
@@ -192,8 +207,4 @@ html, body {
 
 .modal-header h3 {
 	margin: 0;
-}
-
-.sp-top-inner {
-	margin-top: 5px;
 }
