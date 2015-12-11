@@ -90,7 +90,8 @@ var draw = new(function Draw(){
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
 				path.remove(); // will be replaced with update from server
-			}, 0);
+				paper.view.draw();
+			}, 200);
 		};
 
 		// rectangle
@@ -108,6 +109,10 @@ var draw = new(function Draw(){
 			path.strokeColor = _color;
 			path.strokeWidth = _size;
 			app.postAction("path", path.exportJSON({toString:false}));
+			setTimeout(function(){
+				path.remove(); // will be replaced with update from server
+				paper.view.draw();
+			}, 200);
 		};
 
 
@@ -128,6 +133,7 @@ var draw = new(function Draw(){
 			paper.project.getItems(getSelectOption(event)).forEach(function(item){
 				item.selected = true;
 			});
+			paper.view.draw();
 		}
 
 
