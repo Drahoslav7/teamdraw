@@ -162,8 +162,8 @@ $(function(){
 
 		draw.selectTool("pencil");
 
-		draw.setColor("red");
-		draw.setSize(3);
+		draw.setColor("#333");
+		draw.setSize(2);
 
 
 		window.onbeforeunload = function(){

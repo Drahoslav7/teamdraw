@@ -8,7 +8,7 @@ var draw = new(function Draw(){
 
 	var _currentToolName = '';
 
-	var _color = 'black';
+	var _color = '#333';
 	var _size = 2;
 
 	var _tools = {};
