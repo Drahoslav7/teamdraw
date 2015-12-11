@@ -57,11 +57,11 @@ html, body {
 	float: right;
 }
 
-.button-warning-c {
+.btn-warning-c {
 	background-color: #F0AD4E;
 }
 
-.button-warning-c:hover {
+.btn-warning-c:hover {
 	background-color: #F0AD4E;
 }
 

@@ -83,7 +83,7 @@ $(function(){
 
 	$("#sharebutton").click(function(){
 		$("#sharemodal").modal("show");
-		$("#sharebutton").removeClass("sharebutton-warning");
+		$("#sharebutton").removeClass("btn-warning-c");
 	});
 	$("#help-button").click(function(){
 		$("#helpmodal").modal("show");
