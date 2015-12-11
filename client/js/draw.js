@@ -87,9 +87,10 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
+			var cachepath = path;
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
-				path.remove(); // will be replaced with update from server
+				cachepath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
 		};
@@ -102,7 +103,7 @@ var draw = new(function Draw(){
 			start = event.point;
 		};
 		rectangle.onMouseUp = function(event){
-			path = new paper.Path.Rectangle(start, event.point);
+			var path = new paper.Path.Rectangle(start, event.point);
 			path.strokeCap = 'round';
 			path.strokeJoin = 'round';
 			_objects.push(path);

@@ -64,7 +64,12 @@ var app = new (function App(){
 	});
 
 	io.on("update", function(msg){
-		_actions.push(msg.data); // TODO check n
+		// TODO check continuity:
+		// if(msg.data.n !== _actions.length + 1){
+		// 	app.sync();
+		// 	return;
+		// }
+		_actions.push(msg.data);
 		fire("update", msg.data);
 	});
 
