@@ -39,7 +39,7 @@
 			<div id="menubutton" class="btn btn-primary ">Menu ▶</div>
 			<div id="menu">
 				<div id="button-wrapper">
-					<div id="save-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
+					<div id="save-button" class="btn btn-info btn-sm save-image-button"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
 					<div id="new-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
 					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
 				</div>
@@ -53,7 +53,7 @@
 				<button data-tool="move" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-arrows"></i></button>
 				<button data-tool="pencil" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-pencil"></i></button>
 				<button data-tool="eraser" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-eraser"></i></button>
-				<button data-tool="object" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
+				<button data-tool="rectangle" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
 				<button data-tool="text" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-font"></i></button>
 				<button id="tool-boldness" data-tool="boldness" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle fa-lg"></i></button>
 				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle fa-lg"></i></button>
@@ -179,12 +179,28 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+					<button class="btn btn-primary save-image-button"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
 					<button class="btn btn-info"><span class="fa fa-spinner fa-pulse"></span> Reconnecting</button>
 				</div>
 			</div>
 		</div>
+	</div>
 
+	<div id="savemodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3><span class="fa fa-picture" aria-hidden="true"></span> Save</h3>
+				</div>
+				<div class="modal-body text-justify">
+					Picture will be exported to image and opened in new window, then you can save it by pressing <b>control + S</b>.	
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary export-img-button" data-image-type="svg" down-load="teamdraw.svg"></span> Export as SVG</a>
+					<!-- <a class="btn btn-primary export-img-button" data-image-type="png" down-load="expenses.png"></span> Export as PNG</a> -->
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

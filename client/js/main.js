@@ -91,8 +91,10 @@ $(function(){
 	$("#new-button").click(function(){
 		window.open(location.toString().split('#')[0]);
 	});
-	$("#save-button").click(function(){
-		tool.log("save clicked");
+	$(".save-image-button").click(function(){
+		var url = draw.getUrl("svg"); // TODO png
+		$('.export-img-button').attr('href', url);
+		$("#savemodal").modal("show");
 	});
 
 	$("#area").click(function(){
@@ -142,6 +144,14 @@ $(function(){
 
 	$("#errormodal .btn-primary").click(function(){
 		location = location.pathname;
+	});
+
+	$('.export-img-button').click(function(event){
+		event.preventDefault();
+		var type = $(this).attr('data-img-type');
+		console.log("exporting as",type);
+		window.open($(this).attr('href'), '_blank');
+		$("#savemodal").modal("hide");
 	});
 
 
