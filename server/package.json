@@ -1,0 +1,8 @@
+{
+  "name": "teamdraw-server",
+  "description": "teamdraw server",
+  "author": "Drahoslav Bednar, David Balvin",
+  "dependencies": {
+    "socket.io": ">= 1.0.0"
+  }
+}
