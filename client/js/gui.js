@@ -85,6 +85,16 @@ var gui = new (function () {
 			ghostboldnesspicker.visible = false;
 		};
 	};
+	
+	this.toggleGhostColorSpectrum = function () {
+		if (ghostcolorpicker.visible) {
+			ghostcolorpicker.spectrum("hide");
+			ghostcolorpicker.visible = false;
+		} else {
+			ghostcolorpicker.spectrum("show");
+			ghostcolorpicker.visible = true;
+		}
+	};
 
 	this.changeCursor = function(toolname){
 		var icon = '';
@@ -122,6 +132,7 @@ var gui = new (function () {
 		toolmenu = $("#toolmenu");
 		toolmenu.visible = true;
 		ghostcolorpicker = $("#ghost-colorpicker");
+		ghostcolorpicker.visible = false;
 		ghostboldnesspicker = $("#ghost-boldnesspicker");
 		ghostboldnesspicker.visible = false;
 		
@@ -159,13 +170,13 @@ var gui = new (function () {
 			appendTo: "#ghost-colorpicker",
 			containerClassName: 'spectrum-custom',
 			change: function(color) {
-					draw.setColor(color.toHexString());
+				draw.setColor(color.toHexString());
 			},
 			move: function(color) {
-					draw.setColor(color.toHexString());
+				draw.setColor(color.toHexString());
 			},
 			hide: function(color) {
-					draw.setColor(color.toHexString());
+				draw.setColor(color.toHexString());
 			}
 		});
 		
@@ -173,7 +184,7 @@ var gui = new (function () {
 			var posX = $("#tool-outer-color").position();
 			var posY = $("#tool-outer-color").outerWidth(true);
 			ghostcolorpicker.css({top: posX.top -50, left: posY+20});
-			setTimeout(function() {ghostcolorpicker.spectrum("show")}, 20);
+			setTimeout(function() {gui.toggleGhostColorSpectrum()}, 0);
 		});
 		
 		
