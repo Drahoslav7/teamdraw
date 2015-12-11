@@ -29,21 +29,25 @@ var draw = new(function Draw(){
 		var path;
 
 		function getSelectOption(event) {
+			var r = 3; // radius
 			return {
 				n: function(n){
 					return n !== undefined;
 				},
-				segments: function(segments){
-					if(!segments){
-						return false;
-					}
-					return segments.some(function(segment){
-						var r = 5; // radius
-						var v = segment.point;
-						var p = event.point;
-						return (p.x-r <= v.x  && v.x <= p.x+r && p.y-r <= v.y && v.y <= p.y+r);
-					});
-				},
+				// segments: function(segments){
+				// 	if(!segments){
+				// 		return false;
+				// 	}
+				// 	return segments.some(function(segment){
+				// 		var v = segment.point;
+				// 		return v.isClose(event.point, r);
+				// 	});
+				// },
+				overlapping: new paper.Rectangle(event.point.add([r,r]), event.point.subtract([r,r])),
+				// getNearestPoint: function(f){
+				// 	return typeof f === "function" && f(event.point);
+				// }			
+				
 			};
 		}
 
@@ -58,7 +62,6 @@ var draw = new(function Draw(){
 					item.selected = false;
 				});
 			}
-
 			paper.project.getItems(getSelectOption(event)).forEach(function(item){
 				item.selected = true;
 			});
@@ -70,7 +73,7 @@ var draw = new(function Draw(){
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
 		pencil.minDistance = 5;
-		pencil.maxDistance = 5;
+		// pencil.maxDistance = 5;
 		pencil.onMouseDown = function(event){
 			path = new paper.Path();
 			path.strokeCap = 'round';
@@ -79,16 +82,32 @@ var draw = new(function Draw(){
 			path.strokeColor = _color;
 			path.strokeWidth = _size;
 			path.add(event.point);
-		}
+		};
 		pencil.onMouseDrag = function(event){
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
-			var jsonpath = path.exportJSON({toString:false});
-			app.postAction("path", jsonpath);
+			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
 				path.remove(); // will be replaced with update from server
 			}, 0);
+		};
+
+		// rectangle
+		var rectangle = new paper.Tool();
+		_tools.rectangle = rectangle;
+		var start;
+		rectangle.onMouseDown = function(event){
+			start = event.point;
+		};
+		rectangle.onMouseUp = function(event){
+			path = new paper.Path.Rectangle(start, event.point);
+			path.strokeCap = 'round';
+			path.strokeJoin = 'round';
+			_objects.push(path);
+			path.strokeColor = _color;
+			path.strokeWidth = _size;
+			app.postAction("path", path.exportJSON({toString:false}));
 		};
 
 
@@ -102,10 +121,20 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		};
+		eraser.onMouseMove = function(event){ // hover
+			paper.project.selectedItems.forEach(function(item){
+				item.selected = false;
+			});
+			paper.project.getItems(getSelectOption(event)).forEach(function(item){
+				item.selected = true;
+			});
+		}
+
 
 		// move
 		var move = new paper.Tool();
 		_tools.move = move;
+
 		move.onMouseDrag = function(event){
 			paper.view.scrollBy([-event.delta.x, -event.delta.y]);
 			paper.view.draw();
@@ -193,7 +222,7 @@ var draw = new(function Draw(){
 	this.getUrl = function(){
 		var svg = paper.project.exportSVG({asString:true});
 		//add xml declaration
-		svg = '<?xml version="1.0" standalone="no"?>\r\n' + svg;
+		svg = '<?xml version="1.0" standalone="yes"?>\r\n' + svg;
 		//convert svg source to URI data scheme.
 		var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
 		return url;

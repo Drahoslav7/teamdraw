@@ -87,6 +87,9 @@ var gui = new (function () {
 			case 'move':
 				icon = 'arrows';
 				break;
+			case 'rectangle':
+				icon = 'square-o';
+				break;
 			default:
 				$('#workarea').css('cursor','');
 				return;
