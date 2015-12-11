@@ -6,6 +6,7 @@ var gui = new (function () {
 	var toolbarbutton;
 	var toolmenu;
 	var ghostcolorpicker;
+	var ghostboldnesspicker;
 	
 	var userbarbutton;
 	var usermenu;
@@ -70,6 +71,20 @@ var gui = new (function () {
 			});
 		}
 	}
+	
+	this.showBoldnessTool = function() {
+		if (!ghostboldnesspicker.visible) {
+			ghostboldnesspicker.animate({width: '150px'});
+			ghostboldnesspicker.visible = true;
+		};
+	};
+	
+	this.hideBoldnessTool = function() {
+		if (ghostboldnesspicker.visible) {
+			ghostboldnesspicker.animate({width: 0});
+			ghostboldnesspicker.visible = false;
+		};
+	};
 
 	this.changeCursor = function(toolname){
 		var icon = '';
@@ -107,6 +122,8 @@ var gui = new (function () {
 		toolmenu = $("#toolmenu");
 		toolmenu.visible = true;
 		ghostcolorpicker = $("#ghost-colorpicker");
+		ghostboldnesspicker = $("#ghost-boldnesspicker");
+		ghostboldnesspicker.visible = false;
 		
 		userbarbutton = $("#userbarbutton");
 		userbarbutton.usertext = $("#usertext");
@@ -155,9 +172,10 @@ var gui = new (function () {
 		$("#tool-outer-color").click(function () {
 			var posX = $("#tool-outer-color").position();
 			var posY = $("#tool-outer-color").outerWidth(true);
-			console.log(posX);
-			$("#ghost-colorpicker").css({top: posX.top -50, left: posY+20});
-			setTimeout(function() {$("#ghost-colorpicker").spectrum("show")}, 20);
+			ghostcolorpicker.css({top: posX.top -50, left: posY+20});
+			setTimeout(function() {ghostcolorpicker.spectrum("show")}, 20);
 		});
+		
+		
 	});
 });

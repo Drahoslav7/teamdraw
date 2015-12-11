@@ -181,6 +181,7 @@ var draw = new(function Draw(){
 	}
 
 	this.setColor = function(color){
+		$("#tool-outer-color").css({color: color});
 		_color = color;
 	}
 

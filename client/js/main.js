@@ -83,6 +83,7 @@ $(function(){
 
 	$("#sharebutton").click(function(){
 		$("#sharemodal").modal("show");
+		$("#sharebutton").removeClass("btn-warning-c");
 	});
 	$("#help-button").click(function(){
 		$("#helpmodal").modal("show");
@@ -154,6 +155,23 @@ $(function(){
 	});
 
 
+	$(".btn-tool").click(function() {
+		draw.selectTool($(this).attr("data-tool"));
+	});
+		
+	$("#tool-boldness").click(function() {
+		var posX = $("#tool-boldness").offset().top - ($("#ghost-boldnesspicker").outerHeight() - $("#tool-boldness").outerHeight())/2;
+		var posY = $("#tool-boldness").outerWidth(true);
+		$("#ghost-boldnesspicker").css({top: posX , left: posY+20});
+		gui.showBoldnessTool();
+	});	
+	
+	$(".tool-boldness-btn").click(function() {
+		var boldness = $(this).attr("data-size");
+		draw.setSize(3*boldness);
+		gui.hideBoldnessTool();
+	});	
+
 	/* other events */
 
 	app.on("logged on", function(){
@@ -168,12 +186,7 @@ $(function(){
 
 		window.onbeforeunload = function(){
 			app.save();
-		}
-
-		$(".btn-tool").click(function() {
-			draw.selectTool($(this).attr("data-tool"));
-		});
-		
+		};
 
 		// key bindings
 		$(window).keydown(function(event){
