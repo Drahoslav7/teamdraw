@@ -141,9 +141,16 @@ var draw = new(function Draw(){
 		// move
 		var move = new paper.Tool();
 		_tools.move = move;
-
-		move.onMouseDrag = function(event){
-			paper.view.scrollBy([-event.delta.x, -event.delta.y]);
+		move.onMouseDown = function (event) {
+			move.pos = {
+				deltaX: 0,
+				deltaY: 0,
+			};
+		};
+		move.onMouseDrag = function (event){
+			move.pos.deltaX += event.delta.x;
+			move.pos.deltaY += event.delta.y;
+			paper.view.scrollBy([-move.pos.deltaX, -move.pos.deltaY]);
 			paper.view.draw();
 		};
 
