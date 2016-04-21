@@ -72,7 +72,7 @@ var draw = new(function Draw(){
 		// pencil
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
-		pencil.minDistance = 5;
+		// pencil.minDistance = 5;
 		// pencil.maxDistance = 5;
 		pencil.onMouseDown = function(event){
 			path = new paper.Path();
@@ -106,9 +106,9 @@ var draw = new(function Draw(){
 			var path = new paper.Path.Rectangle(start, event.point);
 			path.strokeCap = 'round';
 			path.strokeJoin = 'round';
-			_objects.push(path);
 			path.strokeColor = _color;
 			path.strokeWidth = _size;
+			_objects.push(path);
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
 				path.remove(); // will be replaced with update from server
@@ -156,6 +156,16 @@ var draw = new(function Draw(){
 				var item = new paper.Path();
 				item.importJSON(action.data);
 				item.n = action.n; // for deleting purposes
+				if(item.segments.length === 1) {
+					var point = item.segments[0].point;
+					var circle = new paper.Path.Circle(point, item.strokeWidth/4);
+					circle.strokeCap = item.strokeCap;
+					circle.strokeJoin = item.strokeJoin;
+					circle.strokeColor = item.strokeColor;
+					circle.strokeWidth = item.strokeWidth/2;
+					item.remove();
+					item = circle;
+				}
 			}
 			if(action.type === "erase"){
 				var item = paper.project.getItem({
