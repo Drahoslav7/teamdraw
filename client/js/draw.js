@@ -28,27 +28,18 @@ var draw = new(function Draw(){
 		/** tools behavior **/
 		var path;
 
-		function getSelectOption(event) {
+		function getItemsNearPoint (point) {
 			var r = 3; // radius
-			return {
+			var circle = new paper.Path.Circle(point, r);
+			circle
+			return paper.project.getItems({
 				n: function(n){
 					return n !== undefined;
-				},
-				// segments: function(segments){
-				// 	if(!segments){
-				// 		return false;
-				// 	}
-				// 	return segments.some(function(segment){
-				// 		var v = segment.point;
-				// 		return v.isClose(event.point, r);
-				// 	});
-				// },
-				overlapping: new paper.Rectangle(event.point.add([r,r]), event.point.subtract([r,r])),
-				// getNearestPoint: function(f){
-				// 	return typeof f === "function" && f(event.point);
-				// }			
-				
-			};
+				}
+			}).filter(function(item) {
+				console.log(item);
+				return circle.intersects(item);
+			});
 		}
 
 
@@ -62,7 +53,7 @@ var draw = new(function Draw(){
 					item.selected = false;
 				});
 			}
-			paper.project.getItems(getSelectOption(event)).forEach(function(item){
+			getItemsNearPoint(event.point).forEach(function(item){
 				item.selected = true;
 			});
 			paper.view.draw();
@@ -129,9 +120,11 @@ var draw = new(function Draw(){
 		var eraser = new paper.Tool();
 		_tools.eraser = eraser;
 		eraser.onMouseDown = eraser.onMouseDrag = function(event){
-			paper.project.getItems(getSelectOption(event)).forEach(function(item){
-				item.visible = false;
-				app.postAction("erase", item.n);
+			getItemsNearPoint(event.point).forEach(function(item){
+				if (item.visible) { // prevent from multiple delete action on one item
+					item.visible = false;
+					app.postAction("erase", item.n);
+				}
 			});
 			paper.view.draw();
 		};
@@ -139,7 +132,7 @@ var draw = new(function Draw(){
 			paper.project.selectedItems.forEach(function(item){
 				item.selected = false;
 			});
-			paper.project.getItems(getSelectOption(event)).forEach(function(item){
+			getItemsNearPoint(event.point).forEach(function(item){
 				item.selected = true;
 			});
 			paper.view.draw();
