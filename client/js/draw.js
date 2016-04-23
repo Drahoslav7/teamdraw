@@ -87,6 +87,14 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
+			if(path.segments.length === 1) { // is dot
+				var point = path.segments[0].point;
+				var circle = new paper.Path.Circle(point, path.strokeWidth/4);
+				circle.strokeColor = path.strokeColor;
+				circle.strokeWidth = path.strokeWidth/2;
+				path.remove();
+				path = circle;
+			}
 			var cachepath = path;
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
@@ -163,16 +171,6 @@ var draw = new(function Draw(){
 				var item = new paper.Path();
 				item.importJSON(action.data);
 				item.n = action.n; // for deleting purposes
-				if(item.segments.length === 1) {
-					var point = item.segments[0].point;
-					var circle = new paper.Path.Circle(point, item.strokeWidth/4);
-					circle.strokeCap = item.strokeCap;
-					circle.strokeJoin = item.strokeJoin;
-					circle.strokeColor = item.strokeColor;
-					circle.strokeWidth = item.strokeWidth/2;
-					item.remove();
-					item = circle;
-				}
 			}
 			if(action.type === "erase"){
 				var item = paper.project.getItem({
