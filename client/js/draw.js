@@ -35,7 +35,6 @@ var draw = new(function Draw(){
 					return n !== undefined;
 				}
 			}).filter(function(item) {
-				console.log(item);
 				return item.getNearestPoint(point).isClose(point, r);
 			});
 		}
