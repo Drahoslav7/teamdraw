@@ -30,15 +30,13 @@ var draw = new(function Draw(){
 
 		function getItemsNearPoint (point) {
 			var r = 3; // radius
-			var circle = new paper.Path.Circle(point, r);
-			circle
 			return paper.project.getItems({
 				n: function(n){
 					return n !== undefined;
 				}
 			}).filter(function(item) {
 				console.log(item);
-				return circle.intersects(item);
+				return item.getNearestPoint(point).isClose(point, r);
 			});
 		}
 
