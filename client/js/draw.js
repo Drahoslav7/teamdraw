@@ -143,6 +143,33 @@ var draw = new(function Draw(){
 		};
 	})();
 
+
+	// eyedropper
+	(function(){
+		var path;
+		var eyedropper = new paper.Tool();
+		_tools.eyedropper = eyedropper;
+		
+		eyedropper.onMouseDown = function(event){
+			var items = getItemsNearPoint(event.point);
+			items.some(function(item){
+				draw.setColor(item.strokeColor.toCSS());
+				return true;
+			});
+		};
+
+		eyedropper.onMouseMove = function(event){ // hover
+			paper.project.selectedItems.forEach(function(item){
+				item.selected = false;
+			});
+			getItemsNearPoint(event.point).some(function(item){
+				return item.selected = true;
+			});
+			paper.view.draw();
+		};
+
+	})();
+
 	// eraser
 	(function(){
 		var path;

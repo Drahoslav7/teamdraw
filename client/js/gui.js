@@ -105,7 +105,10 @@ var gui = new (function () {
 			case 'eraser':
 				icon = 'eraser';
 				options.flip = 'vertical';
-				// options.hotspot = 'bottom left';
+				break;
+			case 'eyedropper':
+				icon = 'eyedropper';
+				options.flip = 'vertical';
 				break;
 			case 'rectangle':
 				icon = 'square-o';

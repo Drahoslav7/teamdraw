@@ -203,6 +203,9 @@ $(function(){
 				case 77: // m
 					draw.selectTool("move");
 					break;
+				case 67: // c
+					draw.selectTool("eyedropper");
+					break;
 				case 46: // del
 					draw.deleteSelected();
 					break;
