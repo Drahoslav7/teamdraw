@@ -32,6 +32,21 @@ var draw = new(function Draw(){
 		}
 	}
 
+	function filterByN(f_n) {
+		return {
+			n: function(i_n){
+				if(typeof f_n === "number"){
+					return f_n === i_n;
+				}
+				if(f_n instanceof Array){
+					return f_n.some(function(f_n){
+						return f_n === i_n;
+					});
+				}
+			}
+		}
+	}
+
 	function getItemsNearPoint (point) {
 		var r = 3; // radius
 		return paper.project.getItems({
@@ -172,17 +187,23 @@ var draw = new(function Draw(){
 		if(action.type === "path"){
 			var item = new paper.Path();
 			item.importJSON(action.data);
-			item.n = action.n; // for deleting purposes
+			item.n = action.n; // for deleting and manipulation purposes
 		}
 		if(action.type === "erase"){
-			var item = paper.project.getItem({
-				n: action.data
-			})
+			var n = action.data;
+			var item = paper.project.getItem(filterByN(n));
 			if(!item){
 				console.error("nothing with n=%d to erase", action.n);
 			} else {
 				item.remove();
 			}
+		}
+		if(action.type === "translate"){
+			var ns = action.data.ns;
+			var delta = new paper.Point(action.data.delta);
+			paper.project.getItems(filterByN(ns)).forEach(function(item){
+				item.translate(delta);
+			});
 		}
 		paper.view.draw();
 	});
@@ -233,10 +254,14 @@ var draw = new(function Draw(){
 				x += step; break;
 		}
 		var delta = new paper.Point(x,y);
+		var itemNumbers = [];
 		paper.project.selectedItems.forEach(function(item){
-			item.translate(delta);
+			itemNumbers.push(item.n);
 		});
-		paper.view.draw();
+		app.postAction('translate', {
+			ns: itemNumbers,
+			delta: {x:x, y:y}
+		});
 	};
 
 	this.getCurrentToolName = function(){
