@@ -1,2 +1,3 @@
 "client/teamdraw.html"
-nodemon server/server.js
+cd server
+nodemon server.js
