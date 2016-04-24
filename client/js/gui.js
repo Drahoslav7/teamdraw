@@ -5,6 +5,8 @@ var gui = new (function () {
 
 	var toolbarbutton;
 	var toolmenu;
+
+	var colorpicker;
 	var ghostcolorpicker;
 	var ghostboldnesspicker;
 	
@@ -86,16 +88,6 @@ var gui = new (function () {
 		};
 	};
 	
-	this.toggleGhostColorSpectrum = function () {
-		if (ghostcolorpicker.visible) {
-			ghostcolorpicker.spectrum("hide");
-			ghostcolorpicker.visible = false;
-		} else {
-			ghostcolorpicker.spectrum("show");
-			ghostcolorpicker.visible = true;
-		}
-	};
-
 	this.changeCursor = function(toolname){
 		var icon = '';
 		var options = {};
@@ -124,11 +116,17 @@ var gui = new (function () {
 		}
 		$('#workarea').awesomeCursor(icon, options);
 	};
+
 	this.highlightTool = function(toolname){
 		$('.btn-tool').removeClass('selected');
 		$('.btn-tool').filter(function(i, el){
 			return $(el).attr('data-tool') === toolname;
 		}).addClass('selected');
+	};
+
+	this.setColorOfPicker = function(color){
+		$("#tool-color").css({color: color});
+		colorpicker.spectrum("set", color);
 	};
 
 	$(function () {
@@ -140,8 +138,6 @@ var gui = new (function () {
 		toolbarbutton = $("#toolbarbutton");
 		toolmenu = $("#toolmenu");
 		toolmenu.visible = true;
-		ghostcolorpicker = $("#ghost-colorpicker");
-		ghostcolorpicker.visible = false;
 		ghostboldnesspicker = $("#ghost-boldnesspicker");
 		ghostboldnesspicker.visible = false;
 		
@@ -172,30 +168,45 @@ var gui = new (function () {
 			$('[data-toggle="tooltip"]').tooltip()
 		})
 
-		ghostcolorpicker.spectrum({
+		/**
+		 * color picker
+		 */
+
+		ghostcolorpicker = $("#ghost-colorpicker");
+		var posY = $("#tool-color").position().top;
+		var posX = $("#tool-color").outerWidth(true);
+		ghostcolorpicker.css({top: posY -50 +2, left: posX + 20});
+		ghostcolorpicker.hide();
+		
+		colorpicker = $('<input>');
+		colorpicker.appendTo(ghostcolorpicker);
+		colorpicker.spectrum({
 			showButtons: false,
-			color: 'black',
-			clickoutFiresChange: true,
-			appendTo: "#ghost-colorpicker",
+			flat: true,
 			containerClassName: 'spectrum-custom',
-			change: function(color) {
-				draw.setColor(color.toHexString());
-			},
 			move: function(color) {
-				draw.setColor(color.toHexString());
-			},
-			hide: function(color) {
 				draw.setColor(color.toHexString());
 			}
 		});
 		
-		$("#tool-outer-color").click(function () {
-			var posX = $("#tool-outer-color").position();
-			var posY = $("#tool-outer-color").outerWidth(true);
-			ghostcolorpicker.css({top: posX.top -50, left: posY+20});
-			setTimeout(function() {gui.toggleGhostColorSpectrum()}, 0);
+		$("#tool-color").on('mousedown', function toggle() {
+			var aroundpicker = $(':not(#ghost-colorpicker *)');
+			if(!ghostcolorpicker.is(':visible')) {
+				$("#tool-color").off('mousedown', toggle);
+				ghostcolorpicker.show(50, function(){
+					colorpicker.spectrum("show"); // bugfix, spectrum won't properly update otherwise
+					aroundpicker.on("mousedown", hide);
+				});
+			}
+			function hide(e){
+				e.stopPropagation();
+				aroundpicker.off("mousedown", hide);
+				ghostcolorpicker.hide(50, function(){
+					colorpicker.spectrum("hide");
+					$("#tool-color").on('mousedown', toggle);
+				});
+			}
 		});
-		
-		
+
 	});
 });

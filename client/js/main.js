@@ -153,7 +153,7 @@ $(function(){
 
 	/* toolbar */
 
-	$(".btn-tool").click(function() {
+	$(".btn-tool[data-tool]").click(function() {
 		draw.selectTool($(this).attr("data-tool"));
 	});
 		
@@ -166,7 +166,7 @@ $(function(){
 	
 	$(".tool-boldness-btn").click(function() {
 		var boldness = $(this).attr("data-size");
-		draw.setSize(3*boldness);
+		draw.setSize(1<<boldness);
 		gui.hideBoldnessTool();
 	});	
 

@@ -108,7 +108,11 @@ html, body {
 .spectrum-custom {
 	background-color: #5BC0DE;
 	border-radius: 4px;
-	border-color: #337AB7
+	border: none;
+}
+
+.sp-picker-container {
+	border: none;
 }
 
 #userbar {
@@ -197,6 +201,7 @@ html, body {
 .btn:focus { /* suppress default bootstrap behavior */
 	color: inherit;
 	background: #5bc0de;
+	outline: none;
 }
 
 .btn-tool:hover, .btn-tool.selected {
