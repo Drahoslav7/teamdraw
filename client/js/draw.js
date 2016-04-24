@@ -40,10 +40,10 @@ var draw = new(function Draw(){
 		}
 
 
-		// pointer
-		var pointer = new paper.Tool();
-		_tools.pointer = pointer;
-		pointer.onMouseDown = pointer.onMouseDrag = function(event){
+		// selector
+		var selector = new paper.Tool();
+		_tools.selector = selector;
+		selector.onMouseDown = selector.onMouseDrag = function(event){
 			if(!event.modifiers.control && event.type !== 'mousedrag'){
 				// unselect
 				paper.project.selectedItems.forEach(function(item){
@@ -60,7 +60,7 @@ var draw = new(function Draw(){
 		// pencil
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
-		// pencil.minDistance = 5;
+		pencil.minDistance = 1;
 		// pencil.maxDistance = 5;
 		pencil.onMouseDown = function(event){
 			path = new paper.Path();
@@ -186,6 +186,7 @@ var draw = new(function Draw(){
 			_tools[toolname].activate();
 			_currentToolName = toolname;
 			gui.changeCursor(toolname);
+			gui.highlightTool(toolname);
 			log('tool changed to', toolname);
 		} else {
 			console.error("unknown tool", toolname)

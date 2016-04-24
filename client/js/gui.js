@@ -27,7 +27,7 @@ var gui = new (function () {
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
 			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
 			$("#userbar").animate({ width: '200px', height: resHeight  }, function () {
-				userbarbutton.usertext.html(" User List");
+				userbarbutton.usertext.html(" User list");
 			});
 			userbarbutton.addClass("userbarbutton-open");
 			usermenu.visible = true;
@@ -100,6 +100,12 @@ var gui = new (function () {
 		var icon = '';
 		var options = {};
 		switch(toolname){
+			case 'selector':
+				icon = 'mouse-pointer';
+				break;
+			case 'move':
+				icon = 'arrows';
+				break;
 			case 'pencil':
 				icon = 'pencil';
 				options.flip = 'vertical';
@@ -107,10 +113,7 @@ var gui = new (function () {
 			case 'eraser':
 				icon = 'eraser';
 				options.flip = 'vertical';
-				// options.hotsot = 'bottom left';
-				break;
-			case 'move':
-				icon = 'arrows';
+				// options.hotspot = 'bottom left';
 				break;
 			case 'rectangle':
 				icon = 'square-o';
@@ -120,6 +123,12 @@ var gui = new (function () {
 				return;
 		}
 		$('#workarea').awesomeCursor(icon, options);
+	};
+	this.highlightTool = function(toolname){
+		$('.btn-tool').removeClass('selected');
+		$('.btn-tool').filter(function(i, el){
+			return $(el).attr('data-tool') === toolname;
+		}).addClass('selected');
 	};
 
 	$(function () {

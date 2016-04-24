@@ -20,6 +20,7 @@ $(function(){
 	});
 
 	// init
+
 	if(location.hash === "" || location.hash === "#") {
 		app.create(function(err){
 			// TODO err
@@ -91,16 +92,11 @@ $(function(){
 	$("#new-button").click(function(){
 		window.open(location.toString().split('#')[0]);
 	});
-	$(".save-image-button").click(function(){
+	$("#save-button").click(function(){
 		var url = draw.getUrl("svg"); // TODO png
 		$('.export-img-button').attr('href', url);
 		$("#savemodal").modal("show");
 	});
-
-	$("#area").click(function(){
-		tool.log("area clicked");
-	});
-
 
 	/* modals on show events */
 
@@ -155,6 +151,8 @@ $(function(){
 	});
 
 
+	/* toolbar */
+
 	$(".btn-tool").click(function() {
 		draw.selectTool($(this).attr("data-tool"));
 	});
@@ -175,6 +173,8 @@ $(function(){
 	/* other events */
 
 	app.on("logged on", function(){
+
+		$("#sharebutton").addClass("btn-warning-c");
 
 		app.sync();
 
@@ -197,10 +197,10 @@ $(function(){
 				case 80: // p
 					draw.selectTool("pencil");
 					break;
-				case 83: // s (select)
-					draw.selectTool("pointer");
+				case 83: // s
+					draw.selectTool("selector");
 					break;
-				case 77: // ms (move)
+				case 77: // m
 					draw.selectTool("move");
 					break;
 			}
