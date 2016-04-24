@@ -218,6 +218,27 @@ var draw = new(function Draw(){
 		paper.view.draw();
 	};
 
+	this.moveSelected = function(dirrection, fast) {
+		var x = 0;
+		var y = 0;
+		var step = fast ? 10 : 1;
+		switch(dirrection){
+			case 'up':
+				y -= step; break;
+			case 'down':
+				y += step; break;
+			case 'left':
+				x -= step; break;
+			case 'right':
+				x += step; break;
+		}
+		var delta = new paper.Point(x,y);
+		paper.project.selectedItems.forEach(function(item){
+			item.translate(delta);
+		});
+		paper.view.draw();
+	};
+
 	this.getCurrentToolName = function(){
 		return _currentToolName;
 	};

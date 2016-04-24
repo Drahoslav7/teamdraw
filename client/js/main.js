@@ -190,7 +190,6 @@ $(function(){
 
 		// key bindings
 		$(window).keydown(function(event){
-			console.log(event);
 			switch(event.keyCode){
 				case 69: // e
 					draw.selectTool("eraser");
@@ -206,6 +205,18 @@ $(function(){
 					break;
 				case 46: // del
 					draw.deleteSelected();
+					break;
+				case 37:
+					draw.moveSelected('left', event.ctrlKey);
+					break;
+				case 38:
+					draw.moveSelected('up', event.ctrlKey);
+					break;
+				case 39:
+					draw.moveSelected('right', event.ctrlKey);
+					break;
+				case 40:
+					draw.moveSelected('down', event.ctrlKey);
 					break;
 			}
 		});
