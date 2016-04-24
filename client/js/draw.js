@@ -8,8 +8,8 @@ var draw = new(function Draw(){
 
 	var _currentToolName = '';
 
-	var _color = '#333';
-	var _size = 2;
+	var _color;
+	var _size;
 
 	var _tools = {};
 
@@ -23,6 +23,9 @@ var draw = new(function Draw(){
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		};
+
+		draw.setColor('#333');
+		draw.setSize(2);
 	});
 
 	function erase(item) {
@@ -48,7 +51,7 @@ var draw = new(function Draw(){
 	}
 
 	function getItemsNearPoint (point) {
-		var r = 3; // radius
+		var r = 4; // radius
 		return paper.project.getItems({
 			n: function(n){
 				return n !== undefined;
@@ -140,6 +143,33 @@ var draw = new(function Draw(){
 		};
 	})();
 
+
+	// eyedropper
+	(function(){
+		var path;
+		var eyedropper = new paper.Tool();
+		_tools.eyedropper = eyedropper;
+		
+		eyedropper.onMouseDown = function(event){
+			var items = getItemsNearPoint(event.point);
+			items.some(function(item){
+				draw.setColor(item.strokeColor.toCSS());
+				return true;
+			});
+		};
+
+		eyedropper.onMouseMove = function(event){ // hover
+			paper.project.selectedItems.forEach(function(item){
+				item.selected = false;
+			});
+			getItemsNearPoint(event.point).some(function(item){
+				return item.selected = true;
+			});
+			paper.view.draw();
+		};
+
+	})();
+
 	// eraser
 	(function(){
 		var path;
@@ -224,8 +254,8 @@ var draw = new(function Draw(){
 	}
 
 	this.setColor = function(color){
-		$("#tool-outer-color").css({color: color});
 		_color = color;
+		gui.setColorOfPicker(color);
 	}
 
 	this.setSize = function(size){
