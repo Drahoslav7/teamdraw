@@ -15,32 +15,39 @@ var draw = new(function Draw(){
 
 	var _objects = [];
 
-	// init
+	/* init */
 	$(function(){
-
 		_canvas = $("#canvas");
 		paper.setup(_canvas[0]);
 
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
-		}
+		};
+	});
 
-		/** tools behavior **/
+	function erase(item) {
+		if (item.visible) { // prevent from multiple delete action on one item
+			item.visible = false;
+			app.postAction("erase", item.n);
+		}
+	}
+
+	function getItemsNearPoint (point) {
+		var r = 3; // radius
+		return paper.project.getItems({
+			n: function(n){
+				return n !== undefined;
+			}
+		}).filter(function(item) {
+			return item.getNearestPoint(point).isClose(point, r);
+		});
+	};
+
+	/** tools behavior definitions **/
+
+	// selector
+	(function(){
 		var path;
-
-		function getItemsNearPoint (point) {
-			var r = 3; // radius
-			return paper.project.getItems({
-				n: function(n){
-					return n !== undefined;
-				}
-			}).filter(function(item) {
-				return item.getNearestPoint(point).isClose(point, r);
-			});
-		}
-
-
-		// selector
 		var selector = new paper.Tool();
 		_tools.selector = selector;
 		selector.onMouseDown = selector.onMouseDrag = function(event){
@@ -55,9 +62,11 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		}
+	})();
 
-
-		// pencil
+	// pencil
+	(function(){
+		var path;
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
 		pencil.minDistance = 1;
@@ -89,9 +98,12 @@ var draw = new(function Draw(){
 				cachepath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
-		};
+		};		
+	})();
 
-		// rectangle
+	// rectangle
+	(function(){
+		var path;
 		var rectangle = new paper.Tool();
 		_tools.rectangle = rectangle;
 		var start;
@@ -111,17 +123,16 @@ var draw = new(function Draw(){
 				paper.view.draw();
 			}, 200);
 		};
+	})();
 
-
-		// eraser
+	// eraser
+	(function(){
+		var path;
 		var eraser = new paper.Tool();
 		_tools.eraser = eraser;
 		eraser.onMouseDown = eraser.onMouseDrag = function(event){
 			getItemsNearPoint(event.point).forEach(function(item){
-				if (item.visible) { // prevent from multiple delete action on one item
-					item.visible = false;
-					app.postAction("erase", item.n);
-				}
+				erase(item);
 			});
 			paper.view.draw();
 		};
@@ -134,9 +145,10 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		}
+	})();
 
-
-		// move
+	// move
+	(function(){
 		var move = new paper.Tool();
 		_tools.move = move;
 		move.onMouseDown = function (event) {
@@ -151,34 +163,31 @@ var draw = new(function Draw(){
 			paper.view.scrollBy([-move.pos.deltaX, -move.pos.deltaY]);
 			paper.view.draw();
 		};
+	})();
 
 
-		/////////// end of tools behavior definitions
+	//// end of tools behavior definitions
 
-		app.on("update", function(action){
-			// log("update", action.n, action);
-			if(action.type === "path"){
-				var item = new paper.Path();
-				item.importJSON(action.data);
-				item.n = action.n; // for deleting purposes
+	app.on("update", function(action){
+		if(action.type === "path"){
+			var item = new paper.Path();
+			item.importJSON(action.data);
+			item.n = action.n; // for deleting purposes
+		}
+		if(action.type === "erase"){
+			var item = paper.project.getItem({
+				n: action.data
+			})
+			if(!item){
+				console.error("nothing with n=%d to erase", action.n);
+			} else {
+				item.remove();
 			}
-			if(action.type === "erase"){
-				var item = paper.project.getItem({
-					n: action.data
-				})
-				if(!item){
-					console.error("nothing with n=%d to erase", action.n);
-				} else {
-					item.remove();
-				}
-			}
-			paper.view.draw();
-		});
+		}
+		paper.view.draw();
+	});
 
-
-
-	}); // init end
-
+	// init end
 
 
 	this.selectTool = function(toolname){
@@ -202,12 +211,12 @@ var draw = new(function Draw(){
 		_size = size;
 	}
 
-	// this.deleteSelected = function(){
-	// 	paper.project.selectedItems.forEach(function(item){
-	// 		item.remove();
-	// 	});
-	// 	paper.view.draw();
-	// };
+	this.deleteSelected = function(){
+		paper.project.selectedItems.forEach(function(item){
+			erase(item);
+		});
+		paper.view.draw();
+	};
 
 	this.getCurrentToolName = function(){
 		return _currentToolName;
