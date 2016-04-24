@@ -44,19 +44,35 @@
 					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
 				</div>
 			</div>
-			<div id="sharebutton" class="btn btn-primary btn-warning-c"><i class="fa fa-share"></i> Share</div>
+			<div id="sharebutton" class="btn btn-primary"><i class="fa fa-share"></i> Share</div>
 		</div>
 		<div id="toolbar">
 			<div id="toolbarbutton" type="button" class="btn btn-primary toolbarbutton-open"> ◤</div>
 			<div class="btn-group-vertical toolmenu-open" id="toolmenu">
-				<button data-tool="pointer" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-mouse-pointer"></i></button>
-				<button data-tool="move" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-arrows"></i></button>
-				<button data-tool="pencil" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-pencil"></i></button>
-				<button data-tool="eraser" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-eraser"></i></button>
-				<button data-tool="rectangle" class="btn btn-info btn-info-c btn-block btn-tool"><i class="fa fa-square-o"></i></button>
-				<button data-tool="text" class="btn btn-info btn-info-c btn-block btn-tool btn-sep"><i class="fa fa-font"></i></button>
-				<button id="tool-boldness" data-tool="boldness" class="btn btn-info btn-info-c btn-block"><i class="fa fa-circle fa-lg"></i></button>
-				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-info-c btn-block btn-color-pallete"><i class="fa fa-circle fa-lg"></i></button>
+				<button data-tool="selector" class="btn btn-block btn-tool">
+					<i class="fa fa-mouse-pointer"></i>
+				</button>
+				<button data-tool="move" class="btn btn-tool btn-sep">
+					<i class="fa fa-arrows"></i>
+				</button>
+				<button data-tool="pencil" class="btn btn-tool">
+					<i class="fa fa-pencil"></i>
+				</button>
+				<button data-tool="eraser" class="btn btn-tool btn-sep">
+					<i class="fa fa-eraser"></i>
+				</button>
+				<button data-tool="rectangle" class="btn btn-tool">
+					<i class="fa fa-square-o"></i>
+				</button>
+				<button data-tool="text" class="btn btn-tool btn-sep">
+					<i class="fa fa-font"></i>
+				</button>
+				<button id="tool-boldness" data-tool="boldness" class="btn btn-tool">
+					<i class="fa fa-circle fa-lg"></i>
+				</button>
+				<button id="tool-outer-color" data-tool="outer-color" class="btn btn-info btn-color-pallete">
+					<i class="fa fa-circle fa-lg"></i>
+				</button>
 			</div>
 		</div>
 		
@@ -69,9 +85,9 @@
 
 		<div id="userbar">
 			<div id="userbarbutton" type="button" class="btn btn-primary userbarbutton-open">
-				<i id="online-count" class="badge pull-right">0</i>
 				<i class="fa fa-user fa-fw pull-left"></i>
 				<div class="pull-left" id="usertext"></div>
+				<i id="online-count" class="badge pull-right">0</i>
 			</div>
 			<div id="usermenu">
 				
@@ -83,6 +99,8 @@
 		You've successfully connected to the session!
 	</div>
 
+
+	<!--  MODALS -->
 
 	<div id="signmodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog">
@@ -163,8 +181,8 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
+
 
 	<div id="neterrormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
 		<div class="modal-dialog">
@@ -185,6 +203,7 @@
 			</div>
 		</div>
 	</div>
+
 
 	<div id="savemodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
 		<div class="modal-dialog">
