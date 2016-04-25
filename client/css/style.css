@@ -197,6 +197,9 @@ html, body {
 	color: #000;
 	background: #5bc0de;
 }
+.btn-tool .fa-minus {
+	zoom: 0.5;
+}
 
 .btn:focus { /* suppress default bootstrap behavior */
 	color: inherit;

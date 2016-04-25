@@ -110,9 +110,6 @@ var gui = new (function () {
 				icon = 'eyedropper';
 				options.flip = 'vertical';
 				break;
-			case 'rectangle':
-				icon = 'square-o';
-				break;
 			default:
 				$('#workarea').css('cursor','');
 				return;
