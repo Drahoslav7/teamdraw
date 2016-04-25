@@ -70,10 +70,7 @@ var draw = new(function Draw(){
 		var path;
 		selector.onMouseDown = selector.onMouseDrag = function(event){
 			if(!event.modifiers.control && event.type !== 'mousedrag'){
-				// unselect
-				paper.project.selectedItems.forEach(function(item){
-					item.selected = false;
-				});
+				paper.project.deselectAll();
 			}
 			getItemsNearPoint(event.point).forEach(function(item){
 				item.selected = true;
@@ -199,9 +196,7 @@ var draw = new(function Draw(){
 		};
 
 		eyedropper.onMouseMove = function(event){ // hover
-			paper.project.selectedItems.forEach(function(item){
-				item.selected = false;
-			});
+			paper.project.deselectAll();
 			getItemsNearPoint(event.point).some(function(item){
 				return item.selected = true;
 			});
@@ -223,9 +218,7 @@ var draw = new(function Draw(){
 			paper.view.draw();
 		};
 		eraser.onMouseMove = function(event){ // hover
-			paper.project.selectedItems.forEach(function(item){
-				item.selected = false;
-			});
+			paper.project.deselectAll();
 			getItemsNearPoint(event.point).forEach(function(item){
 				item.selected = true;
 			});
