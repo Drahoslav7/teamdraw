@@ -2,7 +2,7 @@
 var app = new (function App(){
 
 
-	var log = new tool.logger("app");
+	var console = new Logger("app");
 	/////////////////////////////////
 	// private:
 	
@@ -35,11 +35,11 @@ var app = new (function App(){
 
 	// conneciton:
 	function connectionOk(){
-		tool.log("connected");
+		console.log("connected");
 		fire("connected");
 	}
 	function connectionNotOk(){
-		tool.log("disconnected");
+		console.log("disconnected");
 		fire("disconnected");
 	}
 	io.on("connect", connectionOk)
@@ -56,7 +56,7 @@ var app = new (function App(){
 	/// debug:
 
 	io.on("user disconnected", function(){
-		log("some user disconnected");
+		console.log("some user disconnected");
 	});
 
 	io.on("info", function(msg){

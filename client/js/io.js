@@ -6,6 +6,9 @@ const server = {
 
 // IO wrapper
 var io = new (function Client(){
+
+	var console = new Logger('io');
+	
 	var io = window.io;
 	var socket = io.connect("http://" + server.hostname + ":" + server.port);
 	socket.on('ping', function (data) {

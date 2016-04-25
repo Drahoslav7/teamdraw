@@ -1,7 +1,7 @@
 
 var draw = new(function Draw(){
 
-	var log = new tool.logger("draw");
+	var console = new Logger("draw");
 
 	var _canvas;
 	var _ctx;
@@ -281,7 +281,7 @@ var draw = new(function Draw(){
 			_currentToolName = toolname;
 			gui.changeCursor(toolname);
 			gui.highlightTool(toolname);
-			log('tool changed to', toolname);
+			console.log('tool changed to', toolname);
 		} else {
 			console.error("unknown tool", toolname)
 		}

@@ -2,6 +2,8 @@
 
 $(function(){
 
+	var console = new Logger("main");
+
 	var errormodal = $("#errormodal");
 
 	var neterrormodal = $("#neterrormodal");
@@ -24,7 +26,7 @@ $(function(){
 	if(location.hash === "" || location.hash === "#") {
 		app.create(function(err){
 			// TODO err
-			tool.err(err);
+			console.error(err);
 			$("#signmodal").modal("show");
 		});
 	} else {
@@ -33,13 +35,13 @@ $(function(){
 			if(err){
 				errormodal.modal("show");
 			}
-			tool.err(err);
+			console.error(err);
 			if(fresh){
 				$("#signmodal").modal("show");
 			} else {
 				app.login(app.getNick(), function(err){
 					// TODO err
-					tool.err(err);
+					console.error(err);
 				});
 			}
 		});
@@ -52,7 +54,7 @@ $(function(){
 
 		var userList = $("#usermenu");
 
-		tool.log("New User");
+		console.log("New User");
 
 		$("#online-count").html(users.length);
 		userList.empty();
@@ -101,7 +103,7 @@ $(function(){
 	/* modals on show events */
 
 	$("#signmodal").on("shown.bs.modal", function(){
-		tool.log("sign modal");
+		console.log("sign modal");
 		$("#nick").focus();
 		if(localStorage['nick']){
 			$("#nick").val(localStorage['nick']);
@@ -110,21 +112,21 @@ $(function(){
 			event.preventDefault();
 			var nick = $("#signmodal #nick").val();
 			app.login(nick, function(err){
-				tool.err(err);
+				console.error(err);
 				if(err === null){
-					tool.log("nick ok");
+					console.log("nick ok");
 					$("#signmodal").modal("hide");
 				} else {
 					$("#nickgroup").addClass("has-error");
 					$("#nick").attr("placeholder", err);
-					tool.log("Invalid Nick");
+					console.log("Invalid Nick");
 				}
 			});
 		});
 	});
 
 	$("#sharemodal").on("shown.bs.modal", function(){
-		tool.log("share modal");
+		console.log("share modal");
 		var link = location.toString().split('#')[0] + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
