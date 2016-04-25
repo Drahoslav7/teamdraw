@@ -65,9 +65,9 @@ var draw = new(function Draw(){
 
 	// selector
 	(function(){
-		var path;
 		var selector = new paper.Tool();
 		_tools.selector = selector;
+		var path;
 		selector.onMouseDown = selector.onMouseDrag = function(event){
 			if(!event.modifiers.control && event.type !== 'mousedrag'){
 				// unselect
@@ -84,11 +84,11 @@ var draw = new(function Draw(){
 
 	// pencil
 	(function(){
-		var path;
 		var pencil = new paper.Tool();
 		_tools.pencil = pencil;
 		pencil.minDistance = 1;
 		// pencil.maxDistance = 5;
+		var path;
 		pencil.onMouseDown = function(event){
 			path = new paper.Path({
 				strokeCap: 'round',
@@ -96,7 +96,6 @@ var draw = new(function Draw(){
 				strokeColor: _color,
 				strokeWidth: _size,
 			});
-			_objects.push(path);
 			path.add(event.point);
 		};
 		pencil.onMouseDrag = function(event){
@@ -122,9 +121,9 @@ var draw = new(function Draw(){
 
 	// line
 	(function(){
-		var path;
 		var line = new paper.Tool();
 		_tools.line = line;
+		var path;
 		line.onMouseDown = function(event){
 			path = new paper.Path({
 				strokeCap: 'round',
@@ -134,7 +133,6 @@ var draw = new(function Draw(){
 			});
 			path.add(event.point);
 			path.add(event.point);
-			_objects.push(path);
 		};
 		line.onMouseDrag = function(event){
 			path.removeSegment(1);
@@ -152,20 +150,31 @@ var draw = new(function Draw(){
 
 	// rectangle
 	(function(){
-		var path;
 		var rectangle = new paper.Tool();
 		_tools.rectangle = rectangle;
-		var start;
+		var path;
+		var from;
 		rectangle.onMouseDown = function(event){
-			start = event.point;
+			from = event.point;
+			path = new paper.Path.Rectangle({
+				from: from,
+				to: from,
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
 		};
+		rectangle.onMouseDrag = function(event){
+			var to = event.point;
+			path.removeSegments(1); // all except first
+			path.addSegments([
+				{x: to.x, y: from.y},
+				to,
+				{x: from.x, y: to.y},
+			]);
+		}
 		rectangle.onMouseUp = function(event){
-			var path = new paper.Path.Rectangle(start, event.point);
-			path.strokeCap = 'round';
-			path.strokeJoin = 'round';
-			path.strokeColor = _color;
-			path.strokeWidth = _size;
-			_objects.push(path);
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
 				path.remove(); // will be replaced with update from server
@@ -177,10 +186,10 @@ var draw = new(function Draw(){
 
 	// eyedropper
 	(function(){
-		var path;
 		var eyedropper = new paper.Tool();
 		_tools.eyedropper = eyedropper;
-		
+		var path;
+
 		eyedropper.onMouseDown = function(event){
 			var items = getItemsNearPoint(event.point);
 			items.some(function(item){
@@ -203,9 +212,10 @@ var draw = new(function Draw(){
 
 	// eraser
 	(function(){
-		var path;
 		var eraser = new paper.Tool();
 		_tools.eraser = eraser;
+		var path;
+
 		eraser.onMouseDown = eraser.onMouseDrag = function(event){
 			getItemsNearPoint(event.point).forEach(function(item){
 				erase(item);
