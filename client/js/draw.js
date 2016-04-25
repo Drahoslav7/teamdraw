@@ -90,12 +90,13 @@ var draw = new(function Draw(){
 		pencil.minDistance = 1;
 		// pencil.maxDistance = 5;
 		pencil.onMouseDown = function(event){
-			path = new paper.Path();
-			path.strokeCap = 'round';
-			path.strokeJoin = 'round';
+			path = new paper.Path({
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
 			_objects.push(path);
-			path.strokeColor = _color;
-			path.strokeWidth = _size;
 			path.add(event.point);
 		};
 		pencil.onMouseDrag = function(event){
@@ -110,6 +111,36 @@ var draw = new(function Draw(){
 				path.remove();
 				path = circle;
 			}
+			var cachepath = path;
+			app.postAction("path", path.exportJSON({toString:false}));
+			setTimeout(function(){
+				cachepath.remove(); // will be replaced with update from server
+				paper.view.draw();
+			}, 200);
+		};
+	})();
+
+	// line
+	(function(){
+		var path;
+		var line = new paper.Tool();
+		_tools.line = line;
+		line.onMouseDown = function(event){
+			path = new paper.Path({
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
+			path.add(event.point);
+			path.add(event.point);
+			_objects.push(path);
+		};
+		line.onMouseDrag = function(event){
+			path.removeSegment(1);
+			path.add(event.point);
+		};
+		line.onMouseUp = function(event){
 			var cachepath = path;
 			app.postAction("path", path.exportJSON({toString:false}));
 			setTimeout(function(){
