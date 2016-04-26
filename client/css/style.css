@@ -198,7 +198,7 @@ html, body {
 	background: #5bc0de;
 }
 .btn-tool .fa-minus {
-	zoom: 0.5;
+	transform: rotate(-45deg) scale(1.25,0.5);
 }
 
 .btn:focus { /* suppress default bootstrap behavior */
