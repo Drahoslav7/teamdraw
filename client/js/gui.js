@@ -28,10 +28,9 @@ var gui = new (function () {
 			usermenu.visible = false;
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
 			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
-			$("#userbar").animate({ width: '200px', height: resHeight  }, function () {
+			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
 				userbarbutton.usertext.html(" User list");
-			});
-			userbarbutton.addClass("userbarbutton-open");
+			});		userbarbutton.addClass("userbarbutton-open");
 			usermenu.visible = true;
 		}
 	};
