@@ -19,7 +19,7 @@ var draw = new(function Draw(){
 	$(function(){
 		_canvas = $("#canvas");
 		paper.setup(_canvas[0]);
-
+		paper.view.scrollBy([-paper.view.center.x, -paper.view.center.y]); // center fisrt
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		};
@@ -277,6 +277,17 @@ var draw = new(function Draw(){
 
 	// init end
 
+
+	this.zoom = function(direction) {
+		if (direction === "in" && paper.view.getZoom() < 4) {
+			paper.view.scale(Math.sqrt(2));
+			paper.view._zoom *= Math.sqrt(2); // fix, should be set by scale
+		}
+		if (direction === "out" && paper.view.getZoom() > 1/4) {
+			paper.view.scale(1/Math.sqrt(2));
+			paper.view._zoom /= Math.sqrt(2); // fix, should be set by scale
+		}
+	};
 
 	this.selectTool = function(toolname){
 		if(toolname in _tools){
