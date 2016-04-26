@@ -230,16 +230,20 @@ var draw = new(function Draw(){
 	(function(){
 		var move = new paper.Tool();
 		_tools.move = move;
+		var pos = {
+			deltaX: 0,
+			deltaY: 0,
+		};
 		move.onMouseDown = function (event) {
-			move.pos = {
+			pos = {
 				deltaX: 0,
 				deltaY: 0,
 			};
 		};
 		move.onMouseDrag = function (event){
-			move.pos.deltaX += event.delta.x;
-			move.pos.deltaY += event.delta.y;
-			paper.view.scrollBy([-move.pos.deltaX, -move.pos.deltaY]);
+			pos.deltaX += event.delta.x;
+			pos.deltaY += event.delta.y;
+			paper.view.scrollBy([-pos.deltaX, -pos.deltaY]);
 			paper.view.draw();
 		};
 	})();
@@ -278,13 +282,17 @@ var draw = new(function Draw(){
 	// init end
 
 
-	this.zoom = function(direction) {
-		if (direction === "in" && paper.view.getZoom() < 4) {
-			paper.view.scale(Math.sqrt(2));
+	this.zoom = function(direction, clientCenter) {
+		var center = paper.view.getEventPoint({
+			clientX: clientCenter.x,
+			clientY: clientCenter.y,
+		});
+		if (direction > 0 && paper.view.getZoom() < 4) {
+			paper.view.scale(Math.sqrt(2), center);
 			paper.view._zoom *= Math.sqrt(2); // fix, should be set by scale
 		}
-		if (direction === "out" && paper.view.getZoom() > 1/4) {
-			paper.view.scale(1/Math.sqrt(2));
+		if (direction < 0 && paper.view.getZoom() > 1/4) {
+			paper.view.scale(1/Math.sqrt(2), center);
 			paper.view._zoom /= Math.sqrt(2); // fix, should be set by scale
 		}
 	};

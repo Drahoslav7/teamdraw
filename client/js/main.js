@@ -226,6 +226,11 @@ $(function(){
 			}
 		});
 
+		// wheel scroll
+		$(window).on('mousewheel', function(e){
+			draw.zoom(e.deltaY, {x: e.clientX, y: e.clientY});
+		});
+
 		// select move tool when spacebar down
 		(function(){
 			var prevToolName = '';
