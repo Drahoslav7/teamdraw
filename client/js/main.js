@@ -212,16 +212,16 @@ $(function(){
 					draw.deleteSelected();
 					break;
 				case 37:
-					draw.moveSelected('left', event.ctrlKey);
+					draw.moveSelected('left');
 					break;
 				case 38:
-					draw.moveSelected('up', event.ctrlKey);
+					draw.moveSelected('up');
 					break;
 				case 39:
-					draw.moveSelected('right', event.ctrlKey);
+					draw.moveSelected('right');
 					break;
 				case 40:
-					draw.moveSelected('down', event.ctrlKey);
+					draw.moveSelected('down');
 					break;
 			}
 		});

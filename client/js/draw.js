@@ -303,10 +303,16 @@ var draw = new(function Draw(){
 		paper.view.draw();
 	};
 
-	this.moveSelected = function(dirrection, fast) {
+	this.moveSelected = function(dirrection) { // todo make universal
 		var x = 0;
 		var y = 0;
-		var step = fast ? 10 : 1;
+		var step = 5;
+		if(paper.Key.isDown('control')) { // fast
+			step *= 5;
+		}
+		if(paper.Key.isDown('shift')) { // slow
+			step /= 5;
+		}
 		switch(dirrection){
 			case 'up':
 				y -= step; break;
