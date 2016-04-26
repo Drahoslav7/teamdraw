@@ -250,7 +250,10 @@ var draw = new(function Draw(){
 	app.on("update", function(action){
 		if(action.type === "path"){
 			var item = new paper.Path();
+			var parent = item.getParent();
+			item.remove();
 			item.importJSON(action.data);
+			item.setParent(parent);
 			item.n = action.n; // for deleting and manipulation purposes
 		}
 		if(action.type === "erase"){
