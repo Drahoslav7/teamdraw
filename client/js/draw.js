@@ -15,6 +15,8 @@ var draw = new(function Draw(){
 
 	var _objects = [];
 
+	var _textItem;
+
 	/* init */
 	$(function(){
 		_canvas = $("#canvas");
@@ -26,6 +28,14 @@ var draw = new(function Draw(){
 
 		draw.setColor('#333');
 		draw.setSize(2);
+
+		_textItem = new paper.PointText({
+			content: '', // TODO DELETE
+			// fillColor: 'black',
+			// fontFamily: 'Courier New',
+			// fontWeight: 'bold',
+			fontSize: 20
+		});
 	});
 
 	function erase(item) {
@@ -57,7 +67,12 @@ var draw = new(function Draw(){
 				return n !== undefined;
 			}
 		}).filter(function(item) {
-			return item.getNearestPoint(point).isClose(point, r);
+			if(item instanceof paper.Path){
+				return item.getNearestPoint(point).isClose(point, r);
+			}
+			if(item instanceof paper.PointText){
+				return item.bounds.contains(point);
+			}
 		});
 	};
 
@@ -108,7 +123,7 @@ var draw = new(function Draw(){
 				path = circle;
 			}
 			var cachepath = path;
-			app.postAction("path", path.exportJSON({toString:false}));
+			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
 				cachepath.remove(); // will be replaced with update from server
 				paper.view.draw();
@@ -137,7 +152,7 @@ var draw = new(function Draw(){
 		};
 		line.onMouseUp = function(event){
 			var cachepath = path;
-			app.postAction("path", path.exportJSON({toString:false}));
+			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
 				cachepath.remove(); // will be replaced with update from server
 				paper.view.draw();
@@ -172,11 +187,38 @@ var draw = new(function Draw(){
 			]);
 		}
 		rectangle.onMouseUp = function(event){
-			app.postAction("path", path.exportJSON({toString:false}));
+			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
 				path.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
+		};
+	})();
+
+
+	// text
+	(function(){
+		var text = new paper.Tool();
+		_tools.text = text;
+
+		text.onKeyDown = function(event){
+			if (event.key === 'backspace') {
+				_textItem.content = _textItem.content.substring(0, _textItem.content.length-1);
+			}
+			event.stop(); // prevent default (backspace etc)
+			_textItem.content += event.character;
+		};
+
+		text.onMouseMove = function(event){
+			_textItem.point = event.point;
+		};
+
+		text.onMouseUp = function(event){
+			app.postAction("item", _textItem.exportJSON({asString:false}));
+			setTimeout(function(){
+				_textItem.content = '';
+				paper.view.draw();
+			}, 100);
 		};
 	})();
 
@@ -252,8 +294,13 @@ var draw = new(function Draw(){
 	//// end of tools behavior definitions
 
 	app.on("update", function(action){
-		if(action.type === "path"){
-			var item = new paper.Path();
+		if(action.type === "item"){
+			var className = action.data[0];
+			if (!(className in paper)) {
+				console.error("unknown item type", className);
+				return;
+			}
+			var item = new paper[className];
 			var parent = item.getParent();
 			item.remove();
 			item.importJSON(action.data);
@@ -299,6 +346,11 @@ var draw = new(function Draw(){
 
 	this.selectTool = function(toolname){
 		if(toolname in _tools){
+			if(toolname === 'text') {
+				_textItem.visible = true;
+			} else {
+				_textItem.visible = false;
+			}
 			_tools[toolname].activate();
 			_currentToolName = toolname;
 			gui.changeCursor(toolname);

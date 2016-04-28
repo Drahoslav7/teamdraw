@@ -192,37 +192,49 @@ $(function(){
 
 		// key bindings
 		$(window).keydown(function(event){
-			switch(event.keyCode){
-				case 69: // e
-					draw.selectTool("eraser");
-					break;
-				case 80: // p
-					draw.selectTool("pencil");
-					break;
-				case 83: // s
-					draw.selectTool("selector");
-					break;
-				case 77: // m
-					draw.selectTool("move");
-					break;
-				case 67: // c
-					draw.selectTool("eyedropper");
-					break;
-				case 46: // del
-					draw.deleteSelected();
-					break;
-				case 37:
-					draw.moveSelected('left');
-					break;
-				case 38:
-					draw.moveSelected('up');
-					break;
-				case 39:
-					draw.moveSelected('right');
-					break;
-				case 40:
-					draw.moveSelected('down');
-					break;
+			if(draw.getCurrentToolName() !== 'text') {
+				switch(event.keyCode){
+					case 69: // e
+						draw.selectTool("eraser");
+						break;
+					case 80: // p
+						draw.selectTool("pencil");
+						break;
+					case 83: // s
+						draw.selectTool("selector");
+						break;
+					case 77: // m
+						draw.selectTool("move");
+						break;
+					case 67: // c
+						draw.selectTool("eyedropper");
+						break;
+					case 84: // t
+						draw.selectTool("text");
+						event.preventDefault();
+						break;
+
+					case 46: // del
+						draw.deleteSelected();
+						break;
+
+					case 37:
+						draw.moveSelected('left');
+						break;
+					case 38:
+						draw.moveSelected('up');
+						break;
+					case 39:
+						draw.moveSelected('right');
+						break;
+					case 40:
+						draw.moveSelected('down');
+						break;
+				}
+			} else {
+				if(event.keyCode === 27) { // ESC
+					draw.selectTool('selector');
+				}
 			}
 		});
 
@@ -243,7 +255,7 @@ $(function(){
 				}
 			})
 			$(window).keyup(function(event){
-				if(event.keyCode === 32){ // spacebar
+				if(event.keyCode === 32 && pressed){ // spacebar
 					draw.selectTool(prevToolName);
 					pressed = false;
 				}
