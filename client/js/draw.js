@@ -26,16 +26,13 @@ var draw = new(function Draw(){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		};
 
-		draw.setColor('#333');
-		draw.setSize(2);
-
 		_textItem = new paper.PointText({
-			content: '', // TODO DELETE
-			// fillColor: 'black',
 			// fontFamily: 'Courier New',
-			// fontWeight: 'bold',
 			fontSize: 20
 		});
+
+		draw.setColor('#333');
+		draw.setSize(2);
 	});
 
 	function erase(item) {
@@ -363,11 +360,13 @@ var draw = new(function Draw(){
 
 	this.setColor = function(color){
 		_color = color;
+		_textItem.fillColor = color;
 		gui.setColorOfPicker(color);
 	}
 
 	this.setSize = function(size){
 		_size = size;
+		_textItem.fontSize = size * 6 + 4;
 	}
 
 	this.deleteSelected = function(){
