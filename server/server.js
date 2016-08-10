@@ -1,6 +1,24 @@
 const PORT = 7890;
 
-var io = require('socket.io')(PORT); 
+/*
+ * Origin of client must match one of the following.
+ * Note that 'file://' results to 'Origin: null',
+ * which is not allowed by Access-Control-Allow-Origin,
+ * thus http(s):// must be used to serve client, not file://.
+ */
+const ALLOWED_ORIGINS = [
+	"*//localhost:*",
+	"*//127.0.0.1:*",
+	"*//teamdraw.yo2.cz:*",
+].join(" ");
+
+/*
+ * The 'origins' option is used in order to be able
+ * combine https client and http server, or vice versa. (CORS)
+ */
+var io = require("socket.io")(PORT, {
+	origins: ALLOWED_ORIGINS
+});
 var tool = require("./tools");
 
 var instances = {};
@@ -183,5 +201,3 @@ io.on('connection', function (socket) {
 });
 
 console.log("Server is running on port", PORT);
-
-// test
