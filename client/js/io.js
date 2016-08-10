@@ -10,7 +10,7 @@ var io = new (function Client(){
 	var console = new Logger('io');
 	
 	var io = window.io;
-	var socket = io.connect("http://" + server.hostname + ":" + server.port);
+	var socket = io.connect(location.protocol + "//" + server.hostname + ":" + server.port);
 	socket.on('ping', function (data) {
 		console.log('ping', data);
 		socket.emit('pong', "hello back");

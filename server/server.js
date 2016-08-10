@@ -1,4 +1,9 @@
-const PORT = 7890;
+const PORT = process.env.PORT || 7890;
+
+// if each SSL_* variable is defined, https will be used
+const SSL_KEY = process.env.SSL_KEY;
+const SSL_CERT = process.env.SSL_CERT;
+const SSL_CA = process.env.SSL_CA;
 
 /*
  * Origin of client must match one of the following.
@@ -6,17 +11,24 @@ const PORT = 7890;
  * which is not allowed by Access-Control-Allow-Origin,
  * thus http(s):// must be used to serve client, not file://.
  */
-const ALLOWED_ORIGINS = [
-	"*//localhost:*",
-	"*//127.0.0.1:*",
-	"*//teamdraw.yo2.cz:*",
-].join(" ");
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS || "*//localhost:* *//127.0.0.1:*";
 
-/*
- * The 'origins' option is used in order to be able
- * combine https client and http server, or vice versa. (CORS)
- */
-var io = require("socket.io")(PORT, {
+// TODO: make constants above configurable by program arguments
+
+var server;
+if (!SSL_KEY || !SSL_CA || !SSL_CERT) { // http
+	server = require('http').createServer().listen(PORT);
+} else { // https
+	var fs = require('fs');
+	server = require('https').createServer({
+		key: fs.readFileSync(SSL_KEY),
+		cert: fs.readFileSync(SSL_CERT),
+		ca: fs.readFileSync(SSL_CA),
+	}).listen(PORT);
+}
+
+var io = require("socket.io").listen(server, {
+
 	origins: ALLOWED_ORIGINS
 });
 var tool = require("./tools");
