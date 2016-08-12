@@ -25,12 +25,10 @@ var gui = new (function () {
 			$("#userbar").animate({width: '50px', height: resHeight }, function () {
 				userbarbutton.removeClass("userbar-button-open");
 			});
-			userbarbutton.usertext.html("");
 			usermenu.visible = false;
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
 			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
 			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
-				userbarbutton.usertext.html(" User list");
 			});		userbarbutton.addClass("userbar-button-open");
 			usermenu.visible = true;
 		}
@@ -78,6 +76,8 @@ var gui = new (function () {
 		if (!ghostboldnesspicker.visible) {
 			ghostboldnesspicker.animate({width: '150px'});
 			ghostboldnesspicker.visible = true;
+		} else {
+			this.hideBoldnessTool();
 		};
 	};
 	
@@ -150,7 +150,6 @@ var gui = new (function () {
 		ghostboldnesspicker.visible = false;
 		
 		userbarbutton = $("#userbar-button");
-		userbarbutton.usertext = $("#usertext");
 		userbarbutton.onlinecount = $("#online-count");
 		usermenu = $("#usermenu");
 		usermenu.visible = true;
@@ -183,7 +182,7 @@ var gui = new (function () {
 		ghostcolorpicker = $("#ghost-colorpicker");
 		var posY = $("#tool-color").position().top;
 		var posX = $("#tool-color").outerWidth(true);
-		ghostcolorpicker.css({top: posY -50 +2, left: posX + 20});
+		ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
 		ghostcolorpicker.hide();
 		
 		colorpicker = $('<input>');
