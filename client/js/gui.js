@@ -58,7 +58,6 @@ var gui = new (function () {
 	this.menuResize = function () {
 		if (menu.visible) {
 			menu.animate({width: 0}, function() {
-				// menubutton.html("▶");
 				menubutton.removeClass("btn-menubutton-open");
 				menu.visible = false;
 			});
@@ -66,7 +65,6 @@ var gui = new (function () {
 			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true);
 			menubutton.addClass("btn-menubutton-open");
 			menu.animate({width: resWidth}, function(){
-				// menubutton.html("◀");
 				menu.visible = true;
 			});
 		}
@@ -171,9 +169,26 @@ var gui = new (function () {
 			gui.toolBarResize();
 		});
 		
-		$(function () {
-			$('[data-toggle="tooltip"]').tooltip()
-		})
+		$('[data-toggle="tooltip"]').tooltip()
+
+		/**
+		 * boldnes picker
+		 */
+		(function(){
+			var posX = $("#tool-boldness").offset().top - ($("#ghost-boldnesspicker").outerHeight() - $("#tool-boldness").outerHeight())/2;
+			var posY = $("#tool-boldness").outerWidth(true);
+			$("#ghost-boldnesspicker").css({top: posX , left: posY+20});
+
+			$("#tool-boldness").click(function() {
+				gui.showBoldnessTool();
+			});
+
+			$(".tool-boldness-btn").click(function() {
+				var boldness = $(this).attr("data-size");
+				draw.setSize(1<<boldness);
+				gui.hideBoldnessTool();
+			});
+		});
 
 		/**
 		 * color picker
@@ -184,7 +199,7 @@ var gui = new (function () {
 		var posX = $("#tool-color").outerWidth(true);
 		ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
 		ghostcolorpicker.hide();
-		
+
 		colorpicker = $('<input>');
 		colorpicker.appendTo(ghostcolorpicker);
 		colorpicker.spectrum({

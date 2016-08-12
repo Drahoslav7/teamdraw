@@ -161,18 +161,6 @@ $(function(){
 		draw.selectTool($(this).attr("data-tool"));
 	});
 		
-	$("#tool-boldness").click(function() {
-		var posX = $("#tool-boldness").offset().top - ($("#ghost-boldnesspicker").outerHeight() - $("#tool-boldness").outerHeight())/2;
-		var posY = $("#tool-boldness").outerWidth(true);
-		$("#ghost-boldnesspicker").css({top: posX , left: posY+20});
-		gui.showBoldnessTool();
-	});	
-	
-	$(".tool-boldness-btn").click(function() {
-		var boldness = $(this).attr("data-size");
-		draw.setSize(1<<boldness);
-		gui.hideBoldnessTool();
-	});	
 
 	/* other events */
 
