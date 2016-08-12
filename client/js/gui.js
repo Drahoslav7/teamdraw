@@ -22,7 +22,7 @@ var gui = new (function () {
 
 		if (usermenu.visible && !doNotToggle) {
 			var resHeight = userbarbutton.outerHeight();
-			$("#userbar").animate({width: '100px', height: resHeight }, function () {
+			$("#userbar").animate({width: '50px', height: resHeight }, function () {
 				userbarbutton.removeClass("userbar-button-open");
 			});
 			userbarbutton.usertext.html("");
@@ -39,19 +39,19 @@ var gui = new (function () {
 	this.toolBarResize = function () {
 		if (toolmenu.visible) {
 			var resHeight = toolbarbutton.outerHeight();
-			$("#toolbar").animate({ width: '100px', height: resHeight }, function () {
+			$("#toolbar").animate({height: resHeight}, function() {
 				toolbarbutton.removeClass("toolbar-button-open");
 			});
-			
-			toolbarbutton.html("Tools");
+			toolbarbutton.html("◢");
 			
 			toolmenu.visible = false;
 		} else {
 			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
-			$("#toolbar").animate({ width: '50px', height: resHeight });
+			$("#toolbar").animate({height: resHeight}, function() {
+			});
+			toolbarbutton.html("◤")
 			
 			toolbarbutton.addClass("toolbar-button-open");
-			toolbarbutton.html("◤")
 			
 			toolmenu.visible = true;
 		}
@@ -60,7 +60,7 @@ var gui = new (function () {
 	this.menuResize = function () {
 		if (menu.visible) {
 			menu.animate({width: 0}, function() {
-				menubutton.html("Menu ▶");
+				// menubutton.html("▶");
 				menubutton.removeClass("btn-menubutton-open");
 				menu.visible = false;
 			});
@@ -68,7 +68,7 @@ var gui = new (function () {
 			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true);
 			menubutton.addClass("btn-menubutton-open");
 			menu.animate({width: resWidth}, function(){
-				menubutton.html("Menu ◀");
+				// menubutton.html("◀");
 				menu.visible = true;
 			});
 		}

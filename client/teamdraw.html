@@ -41,7 +41,7 @@
 
 	<div id="bars">
 		<div id="top">
-			<div id="menu-button" class="btn btn-primary ">Menu ▶</div>
+			<div id="menu-button" class="btn btn-primary mdi mdi-menu mdi-24px" title="menu"></div>
 			<div id="menu">
 				<div id="button-wrapper">
 					<div id="save-button" class="btn btn-info btn-sm">
@@ -55,10 +55,10 @@
 					</div>
 				</div>
 			</div>
-			<div id="share-button" class="btn btn-primary"><i class="mdi mdi-share"></i> Share</div>
+			<div id="share-button" class="btn btn-primary" title="share"><i class="mdi mdi-share mdi-24px"></i></div>
 		</div>
 		<div id="toolbar">
-			<div id="toolbar-button" type="button" class="btn btn-primary toolbar-button-open"> ◤</div>
+			<div id="toolbar-button" type="button" class="btn btn-primary toolbar-button-open" title="tools">◤</div>
 			<div class="btn-group-vertical toolmenu-open" id="toolmenu">
 				<button data-tool="selector" class="btn btn-tool">
 					<i class="mdi mdi-24px mdi-cursor-default"></i>
@@ -102,9 +102,8 @@
 
 		<div id="userbar">
 			<div id="userbar-button" type="button" class="btn btn-primary userbar-button-open">
-				<i class="mdi mdi-user pull-left"></i>
 				<div class="pull-left" id="usertext"></div>
-				<i id="online-count" class="badge pull-right">0</i>
+				<i id="online-count" class="badge pull-right mdi mdi-account">0</i>
 			</div>
 			<div id="usermenu">
 				
@@ -149,13 +148,15 @@
 				</div>
 				<div class="modal-body form-horizontal">
 					<div class="form-group">
-						<label for="link" class="col-sm-4 control-label">
+						<label for="link" class="col-sm-3 control-label">
 							Share Link:
 						</label>
-						<div class="col-sm-4">
+						<div class="col-sm-6">
 							<input id="link" class="form-control" type="text">
 						</div>
-						<button class="btn btn-primary">Close</button>
+						<div class="col-sm-3">
+							<button class="btn btn-primary">Close</button>
+						</div>
 					</div>
 				</div>
 			</div>
