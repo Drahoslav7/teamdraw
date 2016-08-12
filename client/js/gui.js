@@ -17,6 +17,7 @@ var gui = new (function () {
 
 	var sharebutton;
 
+
 	this.userListResize = function (doNotToggle) {
 
 		if (usermenu.visible && !doNotToggle) {
@@ -92,10 +93,10 @@ var gui = new (function () {
 		var options = {};
 		switch(toolname){
 			case 'selector':
-				icon = 'mouse-pointer';
+				icon = 'cursor-default';
 				break;
 			case 'move':
-				icon = 'arrows';
+				icon = 'cursor-move';
 				break;
 			case 'pencil':
 				icon = 'pencil';
@@ -128,7 +129,13 @@ var gui = new (function () {
 		colorpicker.spectrum("set", color);
 	};
 
+
 	$(function () {
+
+		$.fn.awesomeCursor.defaults.font = {
+			family: 'Material Design Icons',
+			cssClass: 'mdi mdi-%s'
+		};
 
 		menubutton = $("#menu-button");
 		menu = $("#menu");

@@ -41,59 +41,65 @@
 			<div id="menu-button" class="btn btn-primary ">Menu ▶</div>
 			<div id="menu">
 				<div id="button-wrapper">
-					<div id="save-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Save</div>
-					<div id="new-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> New</div>
-					<div id="help-button" class="btn btn-info btn-sm"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</div>
+					<div id="save-button" class="btn btn-info btn-sm">
+						<i class="mdi mdi-content-save mdi-18px" aria-hidden="true"></i><span> Save</span>
+					</div>
+					<div id="new-button" class="btn btn-info btn-sm">
+						<i class="mdi mdi-file mdi-18px" aria-hidden="true"></i><span> New</span>
+					</div>
+					<div id="help-button" class="btn btn-info btn-sm">
+						<i class="mdi mdi-help-circle mdi-18px" aria-hidden="true"></i><span> Help</span>
+					</div>
 				</div>
 			</div>
-			<div id="share-button" class="btn btn-primary"><i class="fa fa-share"></i> Share</div>
+			<div id="share-button" class="btn btn-primary"><i class="mdi mdi-share"></i> Share</div>
 		</div>
 		<div id="toolbar">
 			<div id="toolbar-button" type="button" class="btn btn-primary toolbar-button-open"> ◤</div>
 			<div class="btn-group-vertical toolmenu-open" id="toolmenu">
 				<button data-tool="selector" class="btn btn-tool">
-					<i class="fa fa-mouse-pointer"></i>
+					<i class="mdi mdi-24px mdi-cursor-default"></i>
 				</button>
 				<button data-tool="move" class="btn btn-tool btn-sep">
-					<i class="fa fa-arrows"></i>
+					<i class="mdi mdi-24px mdi-arrow-all"></i>
 				</button>
 				<button data-tool="pencil" class="btn btn-tool">
-					<i class="fa fa-pencil"></i>
+					<i class="mdi mdi-24px mdi-pencil"></i>
 				</button>
 				<button data-tool="eraser" class="btn btn-tool">
-					<i class="fa fa-eraser"></i>
+					<i class="mdi mdi-24px mdi-eraser"></i>
 				</button>
 				<button data-tool="eyedropper" class="btn btn-tool btn-sep">
-					<i class="fa fa-eyedropper"></i>
+					<i class="mdi mdi-24px mdi-eyedropper"></i>
 				</button>
 				<button data-tool="line" class="btn btn-tool">
-					<i class="fa fa-minus"></i>
+					<i class="mdi mdi-24px mdi-minus mdi-rotate-45"></i>
 				</button>
 				<button data-tool="rectangle" class="btn btn-tool">
-					<i class="fa fa-square-o"></i>
+					<i class="mdi mdi-24px mdi-crop-square"></i>
 				</button>
 				<button data-tool="text" class="btn btn-tool btn-sep">
-					<i class="fa fa-font"></i>
+					<i class="mdi mdi-24px mdi-format-title"></i>
 				</button>
 				<button id="tool-boldness" class="btn btn-tool">
-					<i class="fa fa-circle fa-lg"></i>
+					<i class="mdi mdi-24px mdi-format-line-weight mdi-rotate-90 "></i>
 				</button>
 				<button id="tool-color" class="btn btn-tool">
-					<i class="fa fa-circle fa-lg"></i>
+					<i class="mdi mdi-24px mdi-palette"></i>
 				</button>
 			</div>
 		</div>
 		
 		<div id="ghost-colorpicker"></div>
 		<div id="ghost-boldnesspicker" class="btn-group btn-group-justified">
-			<div data-size="1" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle"></i></div>
-			<div data-size="2" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle fa-2x"></i></div>
-			<div data-size="3" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="fa fa-circle fa-3x"></i></div>
+			<div data-size="1" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="mdi mdi-checkbox-blank-circle"></i></div>
+			<div data-size="2" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="mdi mdi-checkbox-blank-circle mdi-18px"></i></div>
+			<div data-size="3" class="btn btn-info btn-sm btn-info-c tool-boldness-btn"><i class="mdi mdi-checkbox-blank-circle mdi-24px"></i></div>
 		</div>
 
 		<div id="userbar">
 			<div id="userbar-button" type="button" class="btn btn-primary userbar-button-open">
-				<i class="fa fa-user fa-fw pull-left"></i>
+				<i class="mdi mdi-user pull-left"></i>
 				<div class="pull-left" id="usertext"></div>
 				<i id="online-count" class="badge pull-right">0</i>
 			</div>
@@ -158,13 +164,13 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</h3>
+					<h3><span class="mdi mdi-question-sign" aria-hidden="true"></span> Help</h3>
 				</div>
 				<div class="modal-body text-justify">
 					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Understood</button>
+					<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
 				</div>
 			</div>
 		</div>
@@ -175,7 +181,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></h3>
+					<h3><span class="mdi mdi-warning-sign" aria-hidden="true"></span></h3>
 				</div>
 				<div class="modal-body">
 					<div id="error-msg" class="alert alert-warning">
@@ -185,7 +191,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Understood</button>
+					<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
 				</div>
 			</div>
 		</div>
@@ -196,7 +202,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span></h3>
+					<h3><span class="mdi mdi-warning-sign" aria-hidden="true"></span></h3>
 				</div>
 				<div class="modal-body">
 					<div class="alert alert-warning">
@@ -205,7 +211,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button id="save-button-neterror" class="btn btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+					<button id="save-button-neterror" class="btn btn-primary"><span class="mdi mdi-content-save"></span> Save</button>
 					<button class="btn btn-info"><span class="fa fa-spinner fa-pulse"></span> Reconnecting</button>
 				</div>
 			</div>
@@ -217,7 +223,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3><span class="fa fa-picture" aria-hidden="true"></span> Save</h3>
+					<h3><span class="mdi mdi-picture" aria-hidden="true"></span> Save</h3>
 				</div>
 				<div class="modal-body text-justify">
 					Picture will be exported to image and opened in new window, then you can save it by pressing <b>control + S</b>.	
