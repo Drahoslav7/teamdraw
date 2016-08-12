@@ -35,8 +35,9 @@ var gui = new (function () {
 	};
 
 	this.toolBarResize = function () {
+		var resHeight;
 		if (toolmenu.visible) {
-			var resHeight = toolbarbutton.outerHeight();
+			resHeight = toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight}, function() {
 				toolbarbutton.removeClass("toolbar-button-open");
 			});
@@ -169,7 +170,7 @@ var gui = new (function () {
 			gui.toolBarResize();
 		});
 		
-		$('[data-toggle="tooltip"]').tooltip()
+		$('[data-toggle="tooltip"]').tooltip();
 
 		/**
 		 * boldnes picker
@@ -183,12 +184,12 @@ var gui = new (function () {
 				gui.showBoldnessTool();
 			});
 
-			$(".tool-boldness-btn").click(function() {
+			$(".btn-boldness-tool").click(function() {
 				var boldness = $(this).attr("data-size");
 				draw.setSize(1<<boldness);
 				gui.hideBoldnessTool();
 			});
-		});
+		})();
 
 		/**
 		 * color picker
