@@ -20,17 +20,17 @@ var gui = new (function () {
 	this.userListResize = function (doNotToggle) {
 
 		if (usermenu.visible && !doNotToggle) {
-			var resHeight = userbar-button.outerHeight();
+			var resHeight = userbarbutton.outerHeight();
 			$("#userbar").animate({width: '100px', height: resHeight }, function () {
-				userbar-button.removeClass("userbar-button-open");
+				userbarbutton.removeClass("userbar-button-open");
 			});
-			userbar-button.usertext.html("");
+			userbarbutton.usertext.html("");
 			usermenu.visible = false;
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
-			resHeight = usermenu.outerHeight() + userbar-button.outerHeight();
+			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
 			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
-				userbar-button.usertext.html(" User list");
-			});		userbar-button.addClass("userbar-button-open");
+				userbarbutton.usertext.html(" User list");
+			});		userbarbutton.addClass("userbar-button-open");
 			usermenu.visible = true;
 		}
 	};
@@ -46,7 +46,7 @@ var gui = new (function () {
 			
 			toolmenu.visible = false;
 		} else {
-			resHeight = toolmenu.outerHeight() + toolbar-button.outerHeight();
+			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
 			$("#toolbar").animate({ width: '50px', height: resHeight });
 			
 			toolbarbutton.addClass("toolbar-button-open");
