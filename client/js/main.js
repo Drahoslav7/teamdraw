@@ -7,9 +7,14 @@ $(function(){
 	var errormodal = $("#errormodal");
 
 	var neterrormodal = $("#neterrormodal");
-	var neterrormodal_visible = false;
 
 	$("#signmodal").modal({
+		"backdrop" : "static",
+		"keyboard" : false,
+		"show": false,
+	});
+
+	errormodal.modal({
 		"backdrop" : "static",
 		"keyboard" : false,
 		"show": false,
@@ -66,14 +71,11 @@ $(function(){
 
 	app.on("disconnected", function(){
 		neterrormodal.modal("show");
-		neterrormodal_visible = true;
 	});
 
 	app.on("connected", function(){
-		if (neterrormodal_visible) {
-			neterrormodal.modal("hide");
-			neterrormodal_visible = false;
-		}
+		neterrormodal.modal("hide");
+
 		$("#alert").fadeIn("fast");
 		setTimeout(function () {
 			$("#alert").fadeOut("slow");
