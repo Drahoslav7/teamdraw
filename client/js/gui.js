@@ -20,17 +20,17 @@ var gui = new (function () {
 	this.userListResize = function (doNotToggle) {
 
 		if (usermenu.visible && !doNotToggle) {
-			var resHeight = userbarbutton.outerHeight();
+			var resHeight = userbar-button.outerHeight();
 			$("#userbar").animate({width: '100px', height: resHeight }, function () {
-				userbarbutton.removeClass("userbarbutton-open");
+				userbar-button.removeClass("userbar-button-open");
 			});
-			userbarbutton.usertext.html("");
+			userbar-button.usertext.html("");
 			usermenu.visible = false;
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
-			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
+			resHeight = usermenu.outerHeight() + userbar-button.outerHeight();
 			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
-				userbarbutton.usertext.html(" User list");
-			});		userbarbutton.addClass("userbarbutton-open");
+				userbar-button.usertext.html(" User list");
+			});		userbar-button.addClass("userbar-button-open");
 			usermenu.visible = true;
 		}
 	};
@@ -39,17 +39,17 @@ var gui = new (function () {
 		if (toolmenu.visible) {
 			var resHeight = toolbarbutton.outerHeight();
 			$("#toolbar").animate({ width: '100px', height: resHeight }, function () {
-				toolbarbutton.removeClass("toolbarbutton-open");
+				toolbarbutton.removeClass("toolbar-button-open");
 			});
 			
 			toolbarbutton.html("Tools");
 			
 			toolmenu.visible = false;
 		} else {
-			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
+			resHeight = toolmenu.outerHeight() + toolbar-button.outerHeight();
 			$("#toolbar").animate({ width: '50px', height: resHeight });
 			
-			toolbarbutton.addClass("toolbarbutton-open");
+			toolbarbutton.addClass("toolbar-button-open");
 			toolbarbutton.html("◤")
 			
 			toolmenu.visible = true;
@@ -130,17 +130,17 @@ var gui = new (function () {
 
 	$(function () {
 
-		menubutton = $("#menubutton");
+		menubutton = $("#menu-button");
 		menu = $("#menu");
 		menu.visible = false;
 
-		toolbarbutton = $("#toolbarbutton");
+		toolbarbutton = $("#toolbar-button");
 		toolmenu = $("#toolmenu");
 		toolmenu.visible = true;
 		ghostboldnesspicker = $("#ghost-boldnesspicker");
 		ghostboldnesspicker.visible = false;
 		
-		userbarbutton = $("#userbarbutton");
+		userbarbutton = $("#userbar-button");
 		userbarbutton.usertext = $("#usertext");
 		userbarbutton.onlinecount = $("#online-count");
 		usermenu = $("#usermenu");
@@ -148,7 +148,7 @@ var gui = new (function () {
 
 		errormodal = $("#errormodal");
 
-		sharebutton = $("#sharebutton");
+		sharebutton = $("#share-button");
 		
 
 		userbarbutton.click(function () {

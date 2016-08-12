@@ -86,9 +86,9 @@ $(function(){
 
 	/* buttons events */
 
-	$("#sharebutton").click(function(){
+	$("#share-button").click(function(){
 		$("#sharemodal").modal("show");
-		$("#sharebutton").removeClass("btn-warning-c");
+		$("#share-button").removeClass("btn-warning-c");
 	});
 	$("#help-button").click(function(){
 		$("#helpmodal").modal("show");
@@ -96,9 +96,9 @@ $(function(){
 	$("#new-button").click(function(){
 		window.open(location.toString().split('#')[0]);
 	});
-	$("#save-button").click(function(){
+	$("#save-button, #save-button-neterror").click(function(){
 		var url = draw.getUrl("svg"); // TODO png
-		$('.export-img-button').attr('href', url);
+		$('#savemodal .export-img-button').attr('href', url);
 		$("#savemodal").modal("show");
 	});
 
@@ -178,7 +178,7 @@ $(function(){
 
 	app.on("logged on", function(){
 
-		$("#sharebutton").addClass("btn-warning-c");
+		$("#share-button").addClass("btn-warning-c");
 
 		app.sync();
 
