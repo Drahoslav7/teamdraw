@@ -132,6 +132,8 @@ var gui = new (function () {
 
 	$(function () {
 
+		$.fn.awesomeCursor.defaults.size = 20;
+		$.fn.awesomeCursor.defaults.hotspot = [2, 2];
 		$.fn.awesomeCursor.defaults.font = {
 			family: 'Material Design Icons',
 			cssClass: 'mdi mdi-%s'
