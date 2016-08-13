@@ -176,7 +176,7 @@ var gui = new (function () {
 		// tooltipes
 		$('[title]').map(function(i, el){
 			var title = $(this).attr("title");
-			title = title.replace("(", '<b>').replace(")", "</b>");
+			title = title.replace(/\((.)\)/, "<u>$1</u>");
 			$(this).attr("title", title);
 			$(this).tooltip({
 				html: true,

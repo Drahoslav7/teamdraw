@@ -73,6 +73,25 @@ var draw = new(function Draw(){
 		});
 	};
 
+	/**
+	 * return end point aligned to multiple of angle relative to start
+	 * @param  {Point} start  first point of vector
+	 * @param  {Point} end    point of vector, this will be aligned
+	 * @param  {number} angle [description]
+	 * @param  {number} offset angle default 0
+	 * @return {Point}       aligned end point relative to start
+	 */
+	function alignToAngle(start, end, angle, offset) {
+		offset = offset || 0;
+		var vector = end.subtract(start);
+		var vangle = (vector.angle + 360) % 360;
+		var deviation = vangle % angle;
+		if (deviation >= angle/2 + offset) {
+			deviation = deviation-angle;
+		}
+		return end.rotate(-deviation+offset, start);
+	}
+
 	/** tools behavior definitions **/
 
 	// selector
@@ -170,15 +189,10 @@ var draw = new(function Draw(){
 		};
 		line.onMouseDrag = function(event){
 			path.removeSegment(1);
-			path.add(event.point);
 			if (event.modifiers.control) { // only multiples of 15 degree
-				const M = 15;
-				var angle = event.point.subtract(from).angle + 360;
-				var deviation = angle % M;
-				if (deviation >= M/2) {
-					deviation = deviation-M;
-				}
-				path.rotate(-deviation, from);
+				path.add(alignToAngle(from, event.point, 15));
+			} else {
+				path.add(event.point);
 			}
 		};
 		line.onMouseUp = function(event){
@@ -190,6 +204,8 @@ var draw = new(function Draw(){
 			}, 200);
 		};		
 	})();
+
+
 
 	// rectangle
 	(function(){
@@ -211,6 +227,9 @@ var draw = new(function Draw(){
 		rectangle.onMouseDrag = function(event){
 			var to = event.point;
 			path.removeSegments(1); // all except first
+			if (event.modifiers.control) {
+				to = alignToAngle(from, to, 90, 45);
+			};
 			path.addSegments([
 				{x: to.x, y: from.y},
 				to,
