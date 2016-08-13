@@ -108,11 +108,11 @@ html, body {
 	width: inherit;
 }
 
-#toolmenu {
+#toollist {
 	width: inherit;
 }
 
-#toolmenu.btn-group-vertical > .btn:first-child:not(:last-child) {
+#toollist.btn-group-vertical > .btn:first-child:not(:last-child) {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 }
@@ -247,4 +247,9 @@ html, body {
 
 .modal-header h3 {
 	margin: 0;
+}
+
+
+.tooltip .tooltip-inner {
+	font-size: 14px
 }

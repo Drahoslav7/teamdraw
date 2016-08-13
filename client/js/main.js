@@ -8,6 +8,8 @@ $(function(){
 
 	var neterrormodal = $("#neterrormodal");
 
+	var helpmodal = $("#helpmodal");
+
 	$("#signmodal").modal({
 		"backdrop" : "static",
 		"keyboard" : false,
@@ -25,6 +27,26 @@ $(function(){
 		"keyboard" : false,
 		"show": false,
 	});
+
+	helpmodal.modal({
+		"backdrop" : false,
+		"show": false,
+	});
+	helpmodal.on("show.bs.modal", function() {
+		$('[title]').tooltip("show");
+		gui.menuResize();
+		if (!gui.isUserlistVisible()) {
+			gui.userListResize();
+		}
+		if (!gui.isToolListVisible()) {
+			gui.toolBarResize();
+		}
+		helpmodal.one("hide.bs.modal", function() {
+			$('[title]').tooltip("hide");
+		});
+	});
+
+
 
 	// init
 
@@ -90,7 +112,7 @@ $(function(){
 		$("#share-button").removeClass("btn-warning-c");
 	});
 	$("#help-button").click(function(){
-		$("#helpmodal").modal("show");
+		helpmodal.modal("show");
 	});
 	$("#new-button").click(function(){
 		window.open(location.toString().split('#')[0]);
@@ -138,7 +160,7 @@ $(function(){
 
 
 	$("#helpmodal .btn-primary").click(function(){
-		$("#helpmodal").modal("hide");
+		helpmodal.modal("hide");
 	});
 
 	$("#errormodal .btn-primary").click(function(){

@@ -4,18 +4,22 @@ var gui = new (function () {
 	var menu;
 
 	var toolbarbutton;
-	var toolmenu;
+	var toollist;
+
+	var userbarbutton;
+	var userlist;
 
 	var colorpicker;
 	var ghostcolorpicker;
 	var ghostboldnesspicker;
-	
-	var userbarbutton;
-	var userlist;
 
-	var errormodal;
+	this.isUserlistVisible = function () {
+		return userlist.visible;
+	};
 
-	var sharebutton;
+	this.isToolListVisible = function () {
+		return toollist.visible;
+	}
 
 
 	this.userListResize = function (doNotToggle) {
@@ -37,7 +41,7 @@ var gui = new (function () {
 
 	this.toolBarResize = function () {
 		var resHeight;
-		if (toolmenu.visible) {
+		if (toollist.visible) {
 			resHeight = toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight}, function() {
 				toolbarbutton.removeClass("toolbar-button-open");
@@ -45,9 +49,9 @@ var gui = new (function () {
 			});
 			toolbarbutton.html("◢");
 			
-			toolmenu.visible = false;
+			toollist.visible = false;
 		} else {
-			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
+			resHeight = toollist.outerHeight() + toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight}, function() {
 				$(this).removeClass("closed");
 			});
@@ -55,7 +59,7 @@ var gui = new (function () {
 			
 			toolbarbutton.addClass("toolbar-button-open");
 			
-			toolmenu.visible = true;
+			toollist.visible = true;
 		}
 	};
 
@@ -170,8 +174,8 @@ var gui = new (function () {
 		menu.visible = false;
 
 		toolbarbutton = $("#toolbar-button");
-		toolmenu = $("#toolmenu");
-		toolmenu.visible = true;
+		toollist = $("#toollist");
+		toollist.visible = true;
 		ghostboldnesspicker = $("#ghost-boldnesspicker");
 		ghostboldnesspicker.visible = false;
 		
@@ -180,10 +184,6 @@ var gui = new (function () {
 		userlist = $("#userlist");
 		userlist.visible = true;
 
-		errormodal = $("#errormodal");
-
-		sharebutton = $("#share-button");
-		
 
 		userbarbutton.click(function () {
 			gui.userListResize();
@@ -197,13 +197,16 @@ var gui = new (function () {
 			gui.toolBarResize();
 		});
 
+
 		userbarbutton.hover(function () {
 			$(".user[title]").tooltip("show");
 		}, function () {
 			$(".user[title]").tooltip("hide");
 		});
 		
-		// tooltipes
+		/**
+		 * tooltips
+		 */
 		$('[title]').map(function(i, el){
 			var title = $(this).attr("title");
 			title = title.replace(/\((.)\)/, "<u>$1</u>");
@@ -219,6 +222,11 @@ var gui = new (function () {
 			});
 		});
 
+		userbarbutton.tooltip("destroy").tooltip({
+			container: "body",
+			placement: "left",
+			trigger: "manual"
+		});
 		/**
 		 * boldnes picker
 		 */
