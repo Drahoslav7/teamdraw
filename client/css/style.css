@@ -54,6 +54,11 @@ html, body {
 	float: left;
 }
 
+#menu-button.open {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
 #share-button {
 	float: right;
 }
@@ -85,8 +90,8 @@ html, body {
 	padding: 6px 0px;
 	height: 42px;
 	width: 0;
-	border-top-right-radius: 4px;
-	border-bottom-right-radius: 4px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
 	background: #455e73;
 }
 
@@ -96,16 +101,15 @@ html, body {
 	width: 50px;
 	margin-top: 8px;
 	position: relative;
-	overflow: visible;
-	margin-left: 8px;
-}
-
-#toolbar.closed {
 	overflow: hidden;
+	margin-left: 8px;
+	border-radius: 5px;
 }
 
 #toolbar-button {
 	width: inherit;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 #toollist {
@@ -117,14 +121,9 @@ html, body {
 	border-top-right-radius: 0px;
 }
 
-.toolbar-button-open {
-	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px;
-}
-
 .spectrum-custom {
 	background-color: #b3bbc3;
-	border-radius: 4px;
+	border-radius: 5px;
 	border: none;
 }
 
@@ -138,15 +137,17 @@ html, body {
 	width: 50px;
 	height: 500px;
 	margin-top: 8px;
-	position: relative;
 	overflow: hidden;
 	margin-right: 8px;
+	border-radius: 5px;
 }
 #userbar-button, #toolbar-button {
 	text-align: center;
 	width: inherit;
 	height: 32px;
 	padding: 7px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
 }
 
 #userlist {
@@ -158,18 +159,6 @@ html, body {
 	padding: 5px 5px;
 	font-size: 20px;
 }
-
-#userlist.btn-group-vertical > .btn:first-child:not(:last-child) {
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
-	overflow: visible;
-}
-
-.userbar-button-open {
-	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px;
-}
-
 
 #button-wrapper {
 	margin: auto;
@@ -233,16 +222,6 @@ html, body {
 .btn-tool:hover, .btn-tool.selected {
 	color: #fff;
 	background: #8c9ba9;
-}
-
-.btn-menubutton-open {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-.btn-userlistbutton-open {
-	border-bottom-left-radius: 0;
-	border-bottom-right-radius: 0;
 }
 
 .modal-header h3 {

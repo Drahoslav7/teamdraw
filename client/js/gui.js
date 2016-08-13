@@ -26,15 +26,11 @@ var gui = new (function () {
 
 		if (userlist.visible && !doNotToggle) { // hide
 			var resHeight = userbarbutton.outerHeight();
-			$("#userbar").animate({height: resHeight}, function () {
-				userbarbutton.removeClass("userbar-button-open");
-			});
+			$("#userbar").animate({height: resHeight});
 			userlist.visible = false;
 		} else if ((!doNotToggle && !userlist.visible) || (doNotToggle && userlist.visible)) { // show
 			resHeight = userlist.outerHeight() + userbarbutton.outerHeight();
-			$("#userbar").animate({height: resHeight}, function () {
-			});
-			userbarbutton.addClass("userbar-button-open");
+			$("#userbar").animate({height: resHeight});
 			userlist.visible = true;
 		}
 	};
@@ -43,22 +39,15 @@ var gui = new (function () {
 		var resHeight;
 		if (toollist.visible) {
 			resHeight = toolbarbutton.outerHeight();
-			$("#toolbar").animate({height: resHeight}, function() {
-				toolbarbutton.removeClass("toolbar-button-open");
-				$(this).addClass("closed");
-			});
+			$("#toolbar").animate({height: resHeight});
 			toolbarbutton.html("◢");
 			
 			toollist.visible = false;
 		} else {
 			resHeight = toollist.outerHeight() + toolbarbutton.outerHeight();
-			$("#toolbar").animate({height: resHeight}, function() {
-				$(this).removeClass("closed");
-			});
+			$("#toolbar").animate({height: resHeight});
 			toolbarbutton.html("◤")
-			
-			toolbarbutton.addClass("toolbar-button-open");
-			
+
 			toollist.visible = true;
 		}
 	};
@@ -66,12 +55,12 @@ var gui = new (function () {
 	this.menuResize = function () {
 		if (menu.visible) {
 			menu.animate({width: 0}, function() {
-				menubutton.removeClass("btn-menubutton-open");
+				menubutton.removeClass("open");
 				menu.visible = false;
 			});
 		} else	{
 			var resWidth = $("#save-button").outerWidth(true) + $("#new-button").outerWidth(true) + $("#help-button").outerWidth(true);
-			menubutton.addClass("btn-menubutton-open");
+			menubutton.addClass("open");
 			menu.animate({width: resWidth}, function(){
 				menu.visible = true;
 			});
