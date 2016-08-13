@@ -8,10 +8,11 @@ var Logger = function(name, color){
 
 
 	this.log = console.log.bind(console, "%c"+name+":", "color:"+color);
+	this.err = console.error.bind(console, "%c"+name+":", "color:"+color);
 
 	this.error = function(err){
 		if (err !== null) {
-			return console.error.bind(console, "%c"+name+":", "color:"+color).apply(console, arguments);
+			return this.err.apply(this.err, arguments);
 		}
 	};
 	return this;
