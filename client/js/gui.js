@@ -11,7 +11,7 @@ var gui = new (function () {
 	var ghostboldnesspicker;
 	
 	var userbarbutton;
-	var usermenu;
+	var userlist;
 
 	var errormodal;
 
@@ -20,18 +20,18 @@ var gui = new (function () {
 
 	this.userListResize = function (doNotToggle) {
 
-		if (usermenu.visible && !doNotToggle) {
+		if (userlist.visible && !doNotToggle) { // hide
 			var resHeight = userbarbutton.outerHeight();
-			$("#userbar").animate({width: '50px', height: resHeight }, function () {
+			$("#userbar").animate({height: resHeight}, function () {
 				userbarbutton.removeClass("userbar-button-open");
 			});
-			usermenu.visible = false;
-		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
-			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
-			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
+			userlist.visible = false;
+		} else if ((!doNotToggle && !userlist.visible) || (doNotToggle && userlist.visible)) { // show
+			resHeight = userlist.outerHeight() + userbarbutton.outerHeight();
+			$("#userbar").animate({height: resHeight}, function () {
 			});
 			userbarbutton.addClass("userbar-button-open");
-			usermenu.visible = true;
+			userlist.visible = true;
 		}
 	};
 
@@ -132,6 +132,30 @@ var gui = new (function () {
 	};
 
 
+	this.createUserElement = function(user) {
+		var userElement = $("<div class='user'></div>");
+		var penciltoggler = $("<i class='mdi mdi-pencil'></i>");
+		var userIco = $("<i class='mdi mdi-account'></i>");
+		penciltoggler.hover(function() {
+			$(this).toggleClass("mdi-pencil mdi-pencil-off");
+		}, function() {
+			$(this).toggleClass("mdi-pencil mdi-pencil-off");
+		});
+		userElement.attr("title", user);
+		if(user === app.getNick()) {
+			userElement.addClass("mySelf");
+			userIco.toggleClass("mdi-account mdi-account-star")
+		}
+		userElement.append(userIco);
+		userElement.append(penciltoggler);
+		userElement.tooltip({
+			animation: false,
+			placement: "left",
+			container: "body",
+		});
+		return userElement;
+	};
+
 	$(function () {
 
 		$.fn.awesomeCursor.defaults.size = 20;
@@ -153,8 +177,8 @@ var gui = new (function () {
 		
 		userbarbutton = $("#userbar-button");
 		userbarbutton.onlinecount = $("#online-count");
-		usermenu = $("#usermenu");
-		usermenu.visible = true;
+		userlist = $("#userlist");
+		userlist.visible = true;
 
 		errormodal = $("#errormodal");
 
@@ -171,6 +195,12 @@ var gui = new (function () {
 
 		toolbarbutton.click(function () {
 			gui.toolBarResize();
+		});
+
+		userbarbutton.hover(function () {
+			$(".user[title]").tooltip("show");
+		}, function () {
+			$(".user[title]").tooltip("hide");
 		});
 		
 		// tooltipes

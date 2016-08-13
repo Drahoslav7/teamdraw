@@ -55,16 +55,15 @@ $(function(){
 	/* app events */
 
 	app.on("userlist update", function(users){
-		console.log(users); // users = pole jmen
+		var userList = $("#userlist");
 
-		var userList = $("#usermenu");
-
-		console.log("New User");
+		console.log("New User", users);
 
 		$("#online-count").html(users.length);
 		userList.empty();
-		users.forEach(function (item) {
-			userList.append("<div class='" + ((item===app.getNick())?"mySelf":"") + "'>" + item + "</div>");
+
+		users.forEach(function (user) {
+			userList.append(gui.createUserElement(user));
 		});
 		gui.userListResize(true);
 	});
