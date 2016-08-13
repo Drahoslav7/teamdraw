@@ -29,7 +29,8 @@ var gui = new (function () {
 		} else if ((!doNotToggle && !usermenu.visible) || (doNotToggle && usermenu.visible)) {
 			resHeight = usermenu.outerHeight() + userbarbutton.outerHeight();
 			$("#userbar").animate({ width: '150px', height: resHeight  }, function () {
-			});		userbarbutton.addClass("userbar-button-open");
+			});
+			userbarbutton.addClass("userbar-button-open");
 			usermenu.visible = true;
 		}
 	};
@@ -75,7 +76,7 @@ var gui = new (function () {
 	
 	this.showBoldnessTool = function() {
 		if (!ghostboldnesspicker.visible) {
-			ghostboldnesspicker.animate({width: '150px'});
+			ghostboldnesspicker.animate({width: '150px'}, 150);
 			ghostboldnesspicker.visible = true;
 		} else {
 			this.hideBoldnessTool();
@@ -84,7 +85,7 @@ var gui = new (function () {
 	
 	this.hideBoldnessTool = function() {
 		if (ghostboldnesspicker.visible) {
-			ghostboldnesspicker.animate({width: 0});
+			ghostboldnesspicker.animate({width: 0}, 150);
 			ghostboldnesspicker.visible = false;
 		};
 	};
@@ -232,7 +233,7 @@ var gui = new (function () {
 				var aroundpicker = $(':not(#ghost-colorpicker *)');
 				if(!ghostcolorpicker.is(':visible')) {
 					$("#tool-color").off('mousedown', toggle);
-					ghostcolorpicker.show(50, function(){
+					ghostcolorpicker.show(150, function(){
 						colorpicker.spectrum("show"); // bugfix, spectrum won't properly update otherwise
 						aroundpicker.on("mousedown", hide);
 					});
@@ -240,7 +241,7 @@ var gui = new (function () {
 				function hide(e){
 					e.stopPropagation();
 					aroundpicker.off("mousedown", hide);
-					ghostcolorpicker.hide(50, function(){
+					ghostcolorpicker.hide(150, function(){
 						colorpicker.spectrum("hide");
 						$("#tool-color").on('mousedown', toggle);
 					});

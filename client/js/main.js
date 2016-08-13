@@ -183,7 +183,6 @@ $(function(){
 		// key bindings
 		$(window).keydown(function(event){
 			if(draw.getCurrentToolName() !== 'text') {
-				console.log("keydown keyCode", event.keyCode);
 				switch(event.keyCode){
 					case 83: // s
 						draw.selectTool("selector");

@@ -80,15 +80,38 @@ var draw = new(function Draw(){
 		var selector = new paper.Tool();
 		_tools.selector = selector;
 		var path;
+		var willShift = false;
 		selector.onMouseDown = selector.onMouseDrag = function(event){
-			if(!event.modifiers.control && event.type !== 'mousedrag'){
-				paper.project.deselectAll();
+			if(event.type === 'mousedown'){
+				if(getItemsNearPoint(event.point).some(function(item) { // clicked at selected item
+					return item.selected === true;
+				})){
+					willShift = true;
+				}
 			}
-			getItemsNearPoint(event.point).forEach(function(item){
-				item.selected = true;
-			});
+			if(!willShift){ // selecting
+				if(!event.modifiers.control && event.type === 'mousedown'){
+					paper.project.deselectAll();
+				}
+				getItemsNearPoint(event.point).forEach(function(item){
+					item.selected = true;
+				});
+			} else if(event.type === 'mousedrag') { // shifting
+				var delta = event.delta;
+				var itemNumbers = [];
+				paper.project.selectedItems.forEach(function(item){
+					itemNumbers.push(item.n);
+				});
+				app.postAction('translate', {
+					ns: itemNumbers,
+					delta: {x: delta.x, y: delta.y}
+				});
+			}
 			paper.view.draw();
-		}
+		};
+		selector.onMouseUp = function(event) {
+			willShift = false;
+		};
 	})();
 
 	// pencil
@@ -371,9 +394,7 @@ var draw = new(function Draw(){
 
 
 	this.unselectAll = function() {
-		paper.project.selectedItems.forEach(function(item){
-			item.selected = false;
-		});
+		paper.project.deselectAll();
 	};
 
 	this.deleteSelected = function() {
@@ -403,7 +424,7 @@ var draw = new(function Draw(){
 			case 'right':
 				x += step; break;
 		}
-		var delta = new paper.Point(x,y);
+		// var delta = new paper.Point(x,y);
 		var itemNumbers = [];
 		paper.project.selectedItems.forEach(function(item){
 			itemNumbers.push(item.n);
