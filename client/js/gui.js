@@ -40,6 +40,7 @@ var gui = new (function () {
 			resHeight = toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight}, function() {
 				toolbarbutton.removeClass("toolbar-button-open");
+				$(this).addClass("closed");
 			});
 			toolbarbutton.html("◢");
 			
@@ -47,6 +48,7 @@ var gui = new (function () {
 		} else {
 			resHeight = toolmenu.outerHeight() + toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight}, function() {
+				$(this).removeClass("closed");
 			});
 			toolbarbutton.html("◤")
 			
@@ -170,7 +172,21 @@ var gui = new (function () {
 			gui.toolBarResize();
 		});
 		
-		$('[data-toggle="tooltip"]').tooltip();
+		// tooltipes
+		$('[title]').map(function(i, el){
+			var title = $(this).attr("title");
+			title = title.replace("(", '<b>').replace(")", "</b>");
+			$(this).attr("title", title);
+			$(this).tooltip({
+				html: true,
+				placement: "auto right",
+				delay: {show: 500, hide: 0},
+				container: "body",
+				trigger: "hover"
+			}).click(function(){
+				$(this).tooltip("hide");
+			});
+		});
 
 		/**
 		 * boldnes picker
@@ -194,42 +210,43 @@ var gui = new (function () {
 		/**
 		 * color picker
 		 */
+		(function(){
+			ghostcolorpicker = $("#ghost-colorpicker");
+			var posY = $("#tool-color").position().top;
+			var posX = $("#tool-color").outerWidth(true);
+			ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
+			ghostcolorpicker.hide();
 
-		ghostcolorpicker = $("#ghost-colorpicker");
-		var posY = $("#tool-color").position().top;
-		var posX = $("#tool-color").outerWidth(true);
-		ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
-		ghostcolorpicker.hide();
+			colorpicker = $('<input>');
+			colorpicker.appendTo(ghostcolorpicker);
+			colorpicker.spectrum({
+				showButtons: false,
+				flat: true,
+				containerClassName: 'spectrum-custom',
+				move: function(color) {
+					draw.setColor(color.toHexString());
+				}
+			});
 
-		colorpicker = $('<input>');
-		colorpicker.appendTo(ghostcolorpicker);
-		colorpicker.spectrum({
-			showButtons: false,
-			flat: true,
-			containerClassName: 'spectrum-custom',
-			move: function(color) {
-				draw.setColor(color.toHexString());
-			}
-		});
-		
-		$("#tool-color").on('mousedown', function toggle() {
-			var aroundpicker = $(':not(#ghost-colorpicker *)');
-			if(!ghostcolorpicker.is(':visible')) {
-				$("#tool-color").off('mousedown', toggle);
-				ghostcolorpicker.show(50, function(){
-					colorpicker.spectrum("show"); // bugfix, spectrum won't properly update otherwise
-					aroundpicker.on("mousedown", hide);
-				});
-			}
-			function hide(e){
-				e.stopPropagation();
-				aroundpicker.off("mousedown", hide);
-				ghostcolorpicker.hide(50, function(){
-					colorpicker.spectrum("hide");
-					$("#tool-color").on('mousedown', toggle);
-				});
-			}
-		});
+			$("#tool-color").on('mousedown', function toggle() {
+				var aroundpicker = $(':not(#ghost-colorpicker *)');
+				if(!ghostcolorpicker.is(':visible')) {
+					$("#tool-color").off('mousedown', toggle);
+					ghostcolorpicker.show(50, function(){
+						colorpicker.spectrum("show"); // bugfix, spectrum won't properly update otherwise
+						aroundpicker.on("mousedown", hide);
+					});
+				}
+				function hide(e){
+					e.stopPropagation();
+					aroundpicker.off("mousedown", hide);
+					ghostcolorpicker.hide(50, function(){
+						colorpicker.spectrum("hide");
+						$("#tool-color").on('mousedown', toggle);
+					});
+				}
+			});
+		})();
 
 	});
 });

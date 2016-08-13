@@ -7,9 +7,9 @@ var Logger = function(name, color){
 	}[name] || "black";
 
 
-	this.log =  console.log.bind(console, "%c"+name+":", "color:"+color);
+	this.log = console.log.bind(console, "%c"+name+":", "color:"+color);
 
-	this.error =  function(err){
+	this.error = function(err){
 		if (err !== null) {
 			return console.error.bind(console, "%c"+name+":", "color:"+color).apply(console, arguments);
 		}

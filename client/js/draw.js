@@ -201,9 +201,9 @@ var draw = new(function Draw(){
 		text.onKeyDown = function(event){
 			if (event.key === 'backspace') {
 				_textItem.content = _textItem.content.substring(0, _textItem.content.length-1);
+			} else {
+				_textItem.content += event.character;
 			}
-			event.stop(); // prevent default (backspace etc)
-			_textItem.content += event.character;
 		};
 
 		text.onMouseMove = function(event){
@@ -333,11 +333,11 @@ var draw = new(function Draw(){
 		});
 		if (direction > 0 && paper.view.getZoom() < 4) {
 			paper.view.scale(Math.sqrt(2), center);
-			paper.view._zoom *= Math.sqrt(2); // fix, should be set by scale
+			paper.view._zoom *= Math.sqrt(2); // bug workaround, should be set by scale
 		}
 		if (direction < 0 && paper.view.getZoom() > 1/4) {
 			paper.view.scale(1/Math.sqrt(2), center);
-			paper.view._zoom /= Math.sqrt(2); // fix, should be set by scale
+			paper.view._zoom /= Math.sqrt(2); // bug workaround, should be set by scale
 		}
 	};
 
@@ -358,18 +358,25 @@ var draw = new(function Draw(){
 		}
 	}
 
-	this.setColor = function(color){
+	this.setColor = function(color) {
 		_color = color;
 		_textItem.fillColor = color;
 		gui.setColorOfPicker(color);
 	}
 
-	this.setSize = function(size){
+	this.setSize = function(size) {
 		_size = size;
 		_textItem.fontSize = size * 6 + 4;
 	}
 
-	this.deleteSelected = function(){
+
+	this.unselectAll = function() {
+		paper.project.selectedItems.forEach(function(item){
+			item.selected = false;
+		});
+	};
+
+	this.deleteSelected = function() {
 		paper.project.selectedItems.forEach(function(item){
 			erase(item);
 		});

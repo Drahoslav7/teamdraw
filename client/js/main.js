@@ -183,21 +183,28 @@ $(function(){
 		// key bindings
 		$(window).keydown(function(event){
 			if(draw.getCurrentToolName() !== 'text') {
+				console.log("keydown keyCode", event.keyCode);
 				switch(event.keyCode){
-					case 69: // e
-						draw.selectTool("eraser");
+					case 83: // s
+						draw.selectTool("selector");
 						break;
 					case 80: // p
 						draw.selectTool("pencil");
 						break;
-					case 83: // s
-						draw.selectTool("selector");
+					case 69: // e
+						draw.selectTool("eraser");
 						break;
 					case 77: // m
 						draw.selectTool("move");
 						break;
 					case 67: // c
 						draw.selectTool("eyedropper");
+						break;
+					case 76: // l
+						draw.selectTool("line")
+						break;
+					case 82: // r
+						draw.selectTool("rectangle")
 						break;
 					case 84: // t
 						draw.selectTool("text");
@@ -206,6 +213,14 @@ $(function(){
 
 					case 46: // del
 						draw.deleteSelected();
+						break;
+					case 27: // esc
+						draw.unselectAll();
+						break;
+
+					case 9: // tab
+						// todo hide all gui
+						event.preventDefault();
 						break;
 
 					case 37:
