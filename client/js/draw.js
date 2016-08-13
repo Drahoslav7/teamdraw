@@ -156,6 +156,7 @@ var draw = new(function Draw(){
 		var line = new paper.Tool();
 		_tools.line = line;
 		var path;
+		var from;
 		line.onMouseDown = function(event){
 			path = new paper.Path({
 				strokeCap: 'round',
@@ -163,12 +164,22 @@ var draw = new(function Draw(){
 				strokeColor: _color,
 				strokeWidth: _size,
 			});
-			path.add(event.point);
-			path.add(event.point);
+			from = event.point;
+			path.add(from);
+			path.add(from);
 		};
 		line.onMouseDrag = function(event){
 			path.removeSegment(1);
 			path.add(event.point);
+			if (event.modifiers.control) { // only multiples of 15 degree
+				const M = 15;
+				var angle = event.point.subtract(from).angle + 360;
+				var deviation = angle % M;
+				if (deviation >= M/2) {
+					deviation = deviation-M;
+				}
+				path.rotate(-deviation, from);
+			}
 		};
 		line.onMouseUp = function(event){
 			var cachepath = path;
