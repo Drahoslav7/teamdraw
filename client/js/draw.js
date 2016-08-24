@@ -58,14 +58,14 @@ var draw = new(function Draw(){
 	}
 
 	function getItemsNearPoint (point) {
-		var r = 4; // radius
+		var radius = 4;
 		return paper.project.getItems({
 			n: function(n){
 				return n !== undefined;
 			}
 		}).filter(function(item) {
 			if(item instanceof paper.Path){
-				return item.getNearestPoint(point).isClose(point, r);
+				return item.getNearestPoint(point).isClose(point, radius);
 			}
 			if(item instanceof paper.PointText){
 				return item.bounds.contains(point);
@@ -97,10 +97,8 @@ var draw = new(function Draw(){
 	 * tools behavior definitions
 	 */
 
-	// selector
-	(function(){
+	_tools["selector"] = (function(){
 		var selector = new paper.Tool();
-		_tools.selector = selector;
 		var path;
 		var willShift = false;
 		selector.onMouseDown = selector.onMouseDrag = function(event){
@@ -134,12 +132,11 @@ var draw = new(function Draw(){
 		selector.onMouseUp = function(event) {
 			willShift = false;
 		};
+		return selector;
 	})();
 
-	// pencil
-	(function(){
+	_tools["pencil"] = (function(){
 		var pencil = new paper.Tool();
-		_tools.pencil = pencil;
 		pencil.minDistance = 1;
 		// pencil.maxDistance = 5;
 		var path;
@@ -171,12 +168,11 @@ var draw = new(function Draw(){
 				paper.view.draw();
 			}, 200);
 		};
+		return pencil;
 	})();
 
-	// brush
-	(function(){
+	_tools["brush"] = (function(){
 		var brush = new paper.Tool();
-		_tools.brush = brush;
 		var lastDeltas = [];
 		var path;
 		brush.onMouseDown = function(event){
@@ -219,12 +215,11 @@ var draw = new(function Draw(){
 				paper.view.draw();
 			}, 200);
 		};
+		return brush;
 	})();
 
-	// line
-	(function(){
+	_tools["line"] = (function(){
 		var line = new paper.Tool();
-		_tools.line = line;
 		var path;
 		var from;
 		line.onMouseDown = function(event){
@@ -253,15 +248,12 @@ var draw = new(function Draw(){
 				cachepath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
-		};		
+		};
+		return line;
 	})();
 
-
-
-	// rectangle
-	(function(){
+	_tools["rectangle"] = (function(){
 		var rectangle = new paper.Tool();
-		_tools.rectangle = rectangle;
 		var path;
 		var from;
 		rectangle.onMouseDown = function(event){
@@ -294,13 +286,11 @@ var draw = new(function Draw(){
 				paper.view.draw();
 			}, 200);
 		};
+		return rectangle;
 	})();
 
-
-	// text
-	(function(){
+	_tools["text"] = (function(){
 		var text = new paper.Tool();
-		_tools.text = text;
 
 		text.onKeyDown = function(event){
 			if (event.key === 'backspace') {
@@ -321,13 +311,11 @@ var draw = new(function Draw(){
 				paper.view.draw();
 			}, 100);
 		};
+		return text;
 	})();
 
-
-	// eyedropper
-	(function(){
+	_tools["eyedropper"] = (function(){
 		var eyedropper = new paper.Tool();
-		_tools.eyedropper = eyedropper;
 		var path;
 
 		eyedropper.onMouseDown = function(event){
@@ -345,13 +333,11 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		};
-
+		return eyedropper;
 	})();
 
-	// eraser
-	(function(){
+	_tools["eraser"] = (function(){
 		var eraser = new paper.Tool();
-		_tools.eraser = eraser;
 		var path;
 
 		eraser.onMouseDown = eraser.onMouseDrag = function(event){
@@ -367,12 +353,11 @@ var draw = new(function Draw(){
 			});
 			paper.view.draw();
 		}
+		return eraser;
 	})();
 
-	// move
-	(function(){
+	_tools["move"] = (function(){
 		var move = new paper.Tool();
-		_tools.move = move;
 		var pos = {
 			deltaX: 0,
 			deltaY: 0,
@@ -389,6 +374,7 @@ var draw = new(function Draw(){
 			paper.view.scrollBy([-pos.deltaX, -pos.deltaY]);
 			paper.view.draw();
 		};
+		return move;
 	})();
 
 
