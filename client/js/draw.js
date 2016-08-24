@@ -21,7 +21,7 @@ var draw = new(function Draw(){
 	$(function(){
 		_canvas = $("#canvas");
 		paper.setup(_canvas[0]);
-		paper.view.scrollBy([-paper.view.center.x, -paper.view.center.y]); // center fisrt
+		paper.view.scrollBy([-paper.view.center.x, -paper.view.center.y]); // center first
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		};
@@ -161,10 +161,10 @@ var draw = new(function Draw(){
 				path.remove();
 				path = circle;
 			}
-			var cachepath = path;
+			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
-				cachepath.remove(); // will be replaced with update from server
+				cachedPath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
 		};
@@ -208,10 +208,10 @@ var draw = new(function Draw(){
 		brush.onMouseUp = function(event){
 			lastDeltas = [];
 			// path.simplify();
-			var cachepath = path;
+			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
-				cachepath.remove(); // will be replaced with update from server
+				cachedPath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
 		};
@@ -242,10 +242,10 @@ var draw = new(function Draw(){
 			}
 		};
 		line.onMouseUp = function(event){
-			var cachepath = path;
+			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
-				cachepath.remove(); // will be replaced with update from server
+				cachedPath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
 		};
@@ -281,8 +281,9 @@ var draw = new(function Draw(){
 		}
 		rectangle.onMouseUp = function(event){
 			app.postAction("item", path.exportJSON({asString:false}));
+			var cachedPath = path;
 			setTimeout(function(){
-				path.remove(); // will be replaced with update from server
+				cachedPath.remove(); // will be replaced with update from server
 				paper.view.draw();
 			}, 200);
 		};
@@ -358,20 +359,20 @@ var draw = new(function Draw(){
 
 	_tools["move"] = (function(){
 		var move = new paper.Tool();
-		var pos = {
-			deltaX: 0,
-			deltaY: 0,
+		var delta = {
+			x: 0,
+			y: 0,
 		};
 		move.onMouseDown = function (event) {
-			pos = {
-				deltaX: 0,
-				deltaY: 0,
+			delta = {
+				x: 0,
+				y: 0,
 			};
 		};
 		move.onMouseDrag = function (event){
-			pos.deltaX += event.delta.x;
-			pos.deltaY += event.delta.y;
-			paper.view.scrollBy([-pos.deltaX, -pos.deltaY]);
+			delta.x += event.delta.x;
+			delta.y += event.delta.y;
+			paper.view.scrollBy([-delta.x, -delta.y]);
 			paper.view.draw();
 		};
 		return move;
@@ -416,6 +417,11 @@ var draw = new(function Draw(){
 	// init end
 
 
+	/*
+	 * Public API
+	 */
+
+
 	this.zoom = function(direction, clientCenter) {
 		var center = paper.view.getEventPoint({
 			clientX: clientCenter.x,
@@ -446,18 +452,18 @@ var draw = new(function Draw(){
 		} else {
 			console.error("unknown tool", toolname)
 		}
-	}
+	};
 
 	this.setColor = function(color) {
 		_color = color;
 		_textItem.fillColor = color;
 		gui.setColorOfPicker(color);
-	}
+	};
 
 	this.setSize = function(size) {
 		_size = size;
 		_textItem.fontSize = size * 6 + 4;
-	}
+	};
 
 
 	this.unselectAll = function() {
@@ -471,7 +477,7 @@ var draw = new(function Draw(){
 		paper.view.draw();
 	};
 
-	this.moveSelected = function(dirrection) { // todo make universal
+	this.moveSelected = function(dirrection) {
 		var x = 0;
 		var y = 0;
 		var step = 5;
@@ -513,6 +519,6 @@ var draw = new(function Draw(){
 		//convert svg source to URI data scheme.
 		var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
 		return url;
-	}
+	};
 
 });
