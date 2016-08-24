@@ -296,6 +296,47 @@ var draw = new(function Draw(){
 		return rectangle;
 	})();
 
+	_tools["oval"] = (function(){
+		var oval = new paper.Tool();
+		var path;
+		var from;
+		oval.onMouseDown = function(event){
+			from = event.point;
+			path = new paper.Path.Ellipse({
+				point: from,
+				size: from.subtract(from),
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
+		};
+		oval.onMouseDrag = function(event){
+			var to = event.point;
+			path.remove();
+			if (event.modifiers.shift) {
+				to = alignToAngle(from, to, 90, 45);
+			};
+			path = new paper.Path.Ellipse({
+				point: from,
+				size: to.subtract(from),
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
+		}
+		oval.onMouseUp = function(event){
+			app.postAction("item", path.exportJSON({asString:false}));
+			var cachedPath = path;
+			setTimeout(function(){
+				cachedPath.remove(); // will be replaced with update from server
+				paper.view.draw();
+			}, 200);
+		};
+		return oval;
+	})();
+
 	_tools["text"] = (function(){
 		var text = new paper.Tool();
 
