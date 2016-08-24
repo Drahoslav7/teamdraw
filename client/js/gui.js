@@ -97,6 +97,10 @@ var gui = new (function () {
 				icon = 'pencil';
 				options.flip = 'vertical';
 				break;
+			case 'brush':
+				icon = 'brush';
+				options.rotate = '90';
+				break;
 			case 'eraser':
 				icon = 'eraser';
 				options.flip = 'vertical';

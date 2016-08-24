@@ -92,7 +92,10 @@ var draw = new(function Draw(){
 		return end.rotate(-deviation+offset, start);
 	}
 
-	/** tools behavior definitions **/
+
+	/**
+	 * tools behavior definitions
+	 */
 
 	// selector
 	(function(){
@@ -161,6 +164,54 @@ var draw = new(function Draw(){
 				path.remove();
 				path = circle;
 			}
+			var cachepath = path;
+			app.postAction("item", path.exportJSON({asString:false}));
+			setTimeout(function(){
+				cachepath.remove(); // will be replaced with update from server
+				paper.view.draw();
+			}, 200);
+		};
+	})();
+
+	// brush
+	(function(){
+		var brush = new paper.Tool();
+		_tools.brush = brush;
+		var lastDeltas = [];
+		var path;
+		brush.onMouseDown = function(event){
+			brush.minDistance = _size;
+			brush.maxDistance = _size*4;
+			path = new paper.Path({
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				fillColor: _color,
+				strokeWidth: _size,
+			});
+			path.add(event.point);
+		};
+		brush.onMouseDrag = function(event){
+			if (path.segments.length > 1) {
+				path.removeSegment(path.segments.length-1);
+			}
+			var delta = event.delta;
+			lastDeltas.push(delta);
+			if (lastDeltas.length > 17) {
+				lastDeltas.shift();
+			}
+			var averageRadius = lastDeltas.reduce(function (sum, delta) {
+				return sum + delta.length;
+			}, 0) / lastDeltas.length;
+			var toSide = delta.normalize(averageRadius);
+			path.add(event.point.add(toSide.rotate(90)));
+			path.insert(0, event.point.add(toSide.rotate(-90)));
+			path.add(event.point.add(toSide));
+			path.closePath();
+			path.smooth({type: "catmull-rom"});
+		};
+		brush.onMouseUp = function(event){
+			lastDeltas = [];
+			// path.simplify();
 			var cachepath = path;
 			app.postAction("item", path.exportJSON({asString:false}));
 			setTimeout(function(){
@@ -454,7 +505,7 @@ var draw = new(function Draw(){
 			case 'right':
 				x += step; break;
 		}
-		// var delta = new paper.Point(x,y);
+
 		var itemNumbers = [];
 		paper.project.selectedItems.forEach(function(item){
 			itemNumbers.push(item.n);
@@ -468,26 +519,6 @@ var draw = new(function Draw(){
 	this.getCurrentToolName = function(){
 		return _currentToolName;
 	};
-
-
-	// var _undoned = [];
-	// this.undo = function(){
-	// 	var item = _objects.pop();
-	// 	if(item){
-	// 		item.visible = false;
-	// 		paper.view.draw();
-	// 		_undoned.push(item);
-	// 	}
-	// }
-
-	// this.redo = function(){
-	// 	var item = _undoned.pop();
-	// 	if(item){
-	// 		_objects.push(item)
-	// 		item.visible = true;
-	// 		paper.view.draw();
-	// 	}
-	// };
 
 	this.getUrl = function(){
 		var svg = paper.project.exportSVG({asString:true});
