@@ -167,59 +167,65 @@ $(function(){
 		$(window).keydown(function(event){
 			if(draw.getCurrentToolName() !== "text") {
 				switch(event.keyCode){
-					case 83: // s
+					case KeyCode.KEY_S:
 						draw.selectTool("selector");
 						break;
-					case 80: // p
+					case KeyCode.KEY_P:
 						draw.selectTool("pencil");
 						break;
-					case 69: // e
+					case KeyCode.KEY_B:
+						draw.selectTool("brush");
+						break;
+					case KeyCode.KEY_E:
 						draw.selectTool("eraser");
 						break;
-					case 77: // m
+					case KeyCode.KEY_M:
 						draw.selectTool("move");
 						break;
-					case 67: // c
+					case KeyCode.KEY_C:
 						draw.selectTool("eyedropper");
 						break;
-					case 76: // l
+					case KeyCode.KEY_L:
 						draw.selectTool("line")
 						break;
-					case 82: // r
+					case KeyCode.KEY_O:
+						draw.selectTool("oval");
+						break;
+					case KeyCode.KEY_R:
 						draw.selectTool("rectangle")
 						break;
-					case 84: // t
+					case KeyCode.KEY_T:
 						draw.selectTool("text");
 						event.preventDefault();
 						break;
 
-					case 46: // del
+					case KeyCode.KEY_DELETE:
 						draw.deleteSelected();
 						break;
-					case 27: // esc
+					case KeyCode.KEY_ESCAPE:
 						draw.unselectAll();
 						break;
 
-					case 9: // tab
+					case KeyCode.KEY_TAB:
 						// todo hide all gui
 						event.preventDefault();
 						break;
 
-					case 37:
+					case KeyCode.KEY_LEFT:
 						draw.moveSelected("left");
 						break;
-					case 38:
+					case KeyCode.KEY_UP:
 						draw.moveSelected("up");
 						break;
-					case 39:
+					case KeyCode.KEY_RIGHT:
 						draw.moveSelected("right");
 						break;
-					case 40:
+					case KeyCode.KEY_DOWN:
 						draw.moveSelected("down");
 						break;
 				}
 			} else {
-				if(event.keyCode === 27) { // ESC
+				if(event.keyCode === KeyCode.KEY_ESCAPE) {
 					draw.selectTool("selector");
 				}
 			}
@@ -235,14 +241,14 @@ $(function(){
 			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
-				if(event.keyCode === 32 && !pressed){ // spacebar
+				if(event.keyCode === KeyCode.KEY_SPACE && !pressed){
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
 					draw.selectTool("move");
 				}
 			})
 			$(window).keyup(function(event){
-				if(event.keyCode === 32 && pressed){ // spacebar
+				if(event.keyCode === KeyCode.KEY_SPACE && pressed){
 					draw.selectTool(prevToolName);
 					pressed = false;
 				}
