@@ -64,12 +64,18 @@ var draw = new(function Draw(){
 				return n !== undefined;
 			}
 		}).filter(function(item) {
-			if(item instanceof paper.Path){
+			if (item instanceof paper.Path) {
+				if (item.isClosed() && item.fillColor) {
+					if (item.contains(point)) {
+						return true;
+					}
+				}
 				return item.getNearestPoint(point).isClose(point, radius);
 			}
-			if(item instanceof paper.PointText){
+			if (item instanceof paper.PointText) {
 				return item.bounds.contains(point);
 			}
+			return false;
 		});
 	};
 
