@@ -241,7 +241,7 @@ var draw = new(function Draw(){
 		};
 		line.onMouseDrag = function(event){
 			path.removeSegment(1);
-			if (event.modifiers.control) { // only multiples of 15 degree
+			if (event.modifiers.shift) { // only multiples of 15 degree
 				path.add(alignToAngle(from, event.point, 15));
 			} else {
 				path.add(event.point);
@@ -276,7 +276,7 @@ var draw = new(function Draw(){
 		rectangle.onMouseDrag = function(event){
 			var to = event.point;
 			path.removeSegments(1); // all except first
-			if (event.modifiers.control) {
+			if (event.modifiers.shift) {
 				to = alignToAngle(from, to, 90, 45);
 			};
 			path.addSegments([

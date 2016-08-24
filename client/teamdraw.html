@@ -174,14 +174,48 @@
 					<h3><span class="mdi mdi-help-circle" aria-hidden="true"></span> Help</h3>
 				</div>
 				<div class="modal-body text-justify">
-					<p>
-						<i class="mdi  mdi-24px mdi-pencil"></i>
-						You are supposed to draw something.
-					</p>
-					<p>
-						<i class="mdi  mdi-24px mdi-share"></i>
-						Ideally in team with someone.
-					</p>
+					<!-- tabs -->
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-toggle="tab" href="#basics">Basics</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#tips">Tips &amp; tricks</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#about">About</a>
+						</li>
+					</ul>
+					<!-- contents -->
+					<div class="tab-content">
+						<div id="basics" class="tab-pane fade in active">
+							<p>
+								<i class="mdi  mdi-24px mdi-pencil"></i>
+								You are supposed to draw something.
+							</p>
+							<p>
+								<i class="mdi  mdi-24px mdi-share"></i>
+								Ideally in team with someone.
+							</p>
+						</div>
+						<div id="tips" class="tab-pane fade">
+							<p>Use <code>mouse wheel</code> to zoom in and out.</p>
+							<p>
+								You can select multiple items if holding <code>control</code> while using <code>selector</code> tool.
+							</p>
+							<p>
+								Hold <code>shift</code> while using <code>line</code> or <code>rectangle</code> tool to draw regular shapes.
+							</p>
+						</div>
+						<div id="about" class="tab-pane fade">
+							<p>
+								This tool was originally made as school project by Drahoslav Bednář and David Balvín.
+							</p>
+							<p>
+								Later it was modified to better fit our personal needs.
+							</p>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>

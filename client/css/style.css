@@ -232,3 +232,7 @@ html, body {
 .tooltip .tooltip-inner {
 	font-size: 14px
 }
+
+.tab-content {
+	margin-top: 1em;
+}

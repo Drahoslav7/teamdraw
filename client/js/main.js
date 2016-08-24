@@ -5,47 +5,8 @@ $(function(){
 	var console = new Logger("main");
 
 	var errormodal = $("#errormodal");
-
 	var neterrormodal = $("#neterrormodal");
-
 	var helpmodal = $("#helpmodal");
-
-	$("#signmodal").modal({
-		"backdrop" : "static",
-		"keyboard" : false,
-		"show": false,
-	});
-
-	errormodal.modal({
-		"backdrop" : "static",
-		"keyboard" : false,
-		"show": false,
-	});
-
-	neterrormodal.modal({
-		"backdrop" : "static",
-		"keyboard" : false,
-		"show": false,
-	});
-
-	helpmodal.modal({
-		"backdrop" : false,
-		"show": false,
-	});
-	helpmodal.on("show.bs.modal", function() {
-		$('[title]').tooltip("show");
-		gui.menuResize();
-		if (!gui.isUserlistVisible()) {
-			gui.userListResize();
-		}
-		if (!gui.isToolListVisible()) {
-			gui.toolBarResize();
-		}
-		helpmodal.one("hide.bs.modal", function() {
-			$('[title]').tooltip("hide");
-		});
-	});
-
 
 
 	// init
@@ -57,15 +18,15 @@ $(function(){
 			$("#signmodal").modal("show");
 		});
 	} else {
-		app.join(function(err, fresh){
+		app.join(function(err, firstTime){
 			// TODO err
 			if(err){
 				errormodal.modal("show");
 			}
 			console.error(err);
-			if(fresh){
+			if(firstTime){
 				$("#signmodal").modal("show");
-			} else {
+			} else { // already loggged in
 				app.login(app.getNick(), function(err){
 					// TODO err
 					console.error(err);
@@ -115,11 +76,11 @@ $(function(){
 		helpmodal.modal("show");
 	});
 	$("#new-button").click(function(){
-		window.open(location.toString().split('#')[0]);
+		window.open(location.toString().split("#")[0]);
 	});
 	$("#save-button, #save-button-neterror").click(function(){
 		var url = draw.getUrl("svg"); // TODO png
-		$('#savemodal .export-img-button').attr('href', url);
+		$("#savemodal .export-img-button").attr("href", url);
 		$("#savemodal").modal("show");
 	});
 
@@ -128,8 +89,8 @@ $(function(){
 	$("#signmodal").on("shown.bs.modal", function(){
 		console.log("sign modal");
 		$("#nick").focus();
-		if(localStorage['nick']){
-			$("#nick").val(localStorage['nick']);
+		if(localStorage["nick"]){
+			$("#nick").val(localStorage["nick"]);
 		}
 		$("#signmodal form").submit(function(event){
 			event.preventDefault();
@@ -141,6 +102,7 @@ $(function(){
 					$("#signmodal").modal("hide");
 				} else {
 					$("#nickgroup").addClass("has-error");
+					$("#nick").val("");
 					$("#nick").attr("placeholder", err);
 					console.log("Invalid Nick");
 				}
@@ -150,7 +112,7 @@ $(function(){
 
 	$("#sharemodal").on("shown.bs.modal", function(){
 		console.log("share modal");
-		var link = location.toString().split('#')[0] + "#" + app.getToken();
+		var link = location.toString().split("#")[0] + "#" + app.getToken();
 		$("#sharemodal #link").val(link);
 		$("#sharemodal #link").select();
 		$("#sharemodal .btn-primary").click(function(){
@@ -167,11 +129,11 @@ $(function(){
 		location = location.pathname;
 	});
 
-	$('.export-img-button').click(function(event){
+	$(".export-img-button").click(function(event){
 		event.preventDefault();
-		var type = $(this).attr('data-img-type');
+		var type = $(this).attr("data-img-type");
 		console.log("exporting as",type);
-		window.open($(this).attr('href'), '_blank');
+		window.open($(this).attr("href"), "_blank");
 		$("#savemodal").modal("hide");
 	});
 
@@ -203,7 +165,7 @@ $(function(){
 
 		// key bindings
 		$(window).keydown(function(event){
-			if(draw.getCurrentToolName() !== 'text') {
+			if(draw.getCurrentToolName() !== "text") {
 				switch(event.keyCode){
 					case 83: // s
 						draw.selectTool("selector");
@@ -244,33 +206,33 @@ $(function(){
 						break;
 
 					case 37:
-						draw.moveSelected('left');
+						draw.moveSelected("left");
 						break;
 					case 38:
-						draw.moveSelected('up');
+						draw.moveSelected("up");
 						break;
 					case 39:
-						draw.moveSelected('right');
+						draw.moveSelected("right");
 						break;
 					case 40:
-						draw.moveSelected('down');
+						draw.moveSelected("down");
 						break;
 				}
 			} else {
 				if(event.keyCode === 27) { // ESC
-					draw.selectTool('selector');
+					draw.selectTool("selector");
 				}
 			}
 		});
 
 		// wheel scroll
-		$(window).on('mousewheel', function(e){
+		$(window).on("mousewheel", function(e){
 			draw.zoom(e.deltaY, {x: e.clientX, y: e.clientY});
 		});
 
 		// select move tool when spacebar down
 		(function(){
-			var prevToolName = '';
+			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
 				if(event.keyCode === 32 && !pressed){ // spacebar

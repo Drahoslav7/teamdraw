@@ -69,7 +69,7 @@ var gui = new (function () {
 	
 	this.showBoldnessTool = function() {
 		if (!ghostboldnesspicker.visible) {
-			ghostboldnesspicker.animate({width: '150px'}, 150);
+			ghostboldnesspicker.animate({width: "150px"}, 150);
 			ghostboldnesspicker.visible = true;
 		} else {
 			this.hideBoldnessTool();
@@ -84,43 +84,43 @@ var gui = new (function () {
 	};
 	
 	this.changeCursor = function(toolname){
-		var icon = '';
+		var icon = "";
 		var options = {};
 		switch(toolname){
-			case 'selector':
-				icon = 'cursor-default';
+			case "selector":
+				icon = "cursor-default";
 				break;
-			case 'move':
-				icon = 'cursor-move';
+			case "move":
+				icon = "cursor-move";
 				break;
-			case 'pencil':
-				icon = 'pencil';
-				options.flip = 'vertical';
+			case "pencil":
+				icon = "pencil";
+				options.flip = "vertical";
 				break;
-			case 'brush':
-				icon = 'brush';
-				options.rotate = '90';
+			case "brush":
+				icon = "brush";
+				options.rotate = "90";
 				break;
-			case 'eraser':
-				icon = 'eraser';
-				options.flip = 'vertical';
+			case "eraser":
+				icon = "eraser";
+				options.flip = "vertical";
 				break;
-			case 'eyedropper':
-				icon = 'eyedropper';
-				options.flip = 'vertical';
+			case "eyedropper":
+				icon = "eyedropper";
+				options.flip = "vertical";
 				break;
 			default:
-				$('#workarea').css('cursor','');
+				$("#workarea").css("cursor","");
 				return;
 		}
-		$('#workarea').awesomeCursor(icon, options);
+		$("#workarea").awesomeCursor(icon, options);
 	};
 
 	this.highlightTool = function(toolname){
-		$('.btn-tool').removeClass('selected');
-		$('.btn-tool').filter(function(i, el){
-			return $(el).attr('data-tool') === toolname;
-		}).addClass('selected');
+		$(".btn-tool").removeClass("selected");
+		$(".btn-tool").filter(function(i, el){
+			return $(el).attr("data-tool") === toolname;
+		}).addClass("selected");
 	};
 
 	this.setColorOfPicker = function(color){
@@ -155,11 +155,55 @@ var gui = new (function () {
 
 	$(function () {
 
+
+		/*
+		 * modals seetings
+		 */
+
+		var preventClose = {
+			"backdrop" : "static",
+			"keyboard" : false,
+			"show": false,
+		};
+
+		$("#signmodal").modal(preventClose);
+
+		$("#errormodal").modal(preventClose);
+
+		$("#neterrormodal").modal(preventClose);
+
+		$("#helpmodal").modal({
+			"backdrop" : false,
+			"show": false,
+		}).on("show.bs.modal", function() {
+			$("[title]").tooltip("show");
+			$("#workarea").animate({
+				opacity: 0.2
+			});
+			gui.menuResize();
+			if (!gui.isUserlistVisible()) {
+				gui.userListResize();
+			}
+			if (!gui.isToolListVisible()) {
+				gui.toolBarResize();
+			}
+			$(this).one("hide.bs.modal", function() {
+				$("[title]").tooltip("hide");
+				$("#workarea").animate({
+					opacity: 1.0
+				});
+			});
+		});
+
+		/**
+		 * Cursor presets
+		 */
+
 		$.fn.awesomeCursor.defaults.size = 20;
 		$.fn.awesomeCursor.defaults.hotspot = [2, 2];
 		$.fn.awesomeCursor.defaults.font = {
-			family: 'Material Design Icons',
-			cssClass: 'mdi mdi-%s'
+			family: "Material Design Icons",
+			cssClass: "mdi mdi-%s"
 		};
 
 		menubutton = $("#menu-button");
@@ -200,7 +244,7 @@ var gui = new (function () {
 		/**
 		 * tooltips
 		 */
-		$('[title]').map(function(i, el){
+		$("[title]").map(function(i, el){
 			var title = $(this).attr("title");
 			title = title.replace(/\((.)\)/, "<u>$1</u>");
 			$(this).attr("title", title);
@@ -249,23 +293,23 @@ var gui = new (function () {
 			ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
 			ghostcolorpicker.hide();
 
-			colorpicker = $('<input>');
+			colorpicker = $("<input>");
 			colorpicker.appendTo(ghostcolorpicker);
 			colorpicker.spectrum({
 				showButtons: false,
 				flat: true,
-				containerClassName: 'spectrum-custom',
+				containerClassName: "spectrum-custom",
 				move: function(color) {
 					draw.setColor(color.toHexString());
 				}
 			});
 
-			$("#tool-color").on('mousedown', function toggle() {
-				var aroundpicker = $(':not(#ghost-colorpicker *)');
-				if(!ghostcolorpicker.is(':visible')) {
-					$("#tool-color").off('mousedown', toggle);
+			$("#tool-color").on("mousedown", function toggle() {
+				var aroundpicker = $(":not(#ghost-colorpicker *)");
+				if(!ghostcolorpicker.is(":visible")) {
+					$("#tool-color").off("mousedown", toggle);
 					ghostcolorpicker.show(150, function(){
-						colorpicker.spectrum("show"); // bugfix, spectrum won't properly update otherwise
+						colorpicker.spectrum("show"); // bugfix, spectrum won"t properly update otherwise
 						aroundpicker.on("mousedown", hide);
 					});
 				}
@@ -274,7 +318,7 @@ var gui = new (function () {
 					aroundpicker.off("mousedown", hide);
 					ghostcolorpicker.hide(150, function(){
 						colorpicker.spectrum("hide");
-						$("#tool-color").on('mousedown', toggle);
+						$("#tool-color").on("mousedown", toggle);
 					});
 				}
 			});

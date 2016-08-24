@@ -28,58 +28,71 @@ if (!SSL_KEY || !SSL_CA || !SSL_CERT) { // http
 }
 
 var io = require("socket.io").listen(server, {
-
 	origins: ALLOWED_ORIGINS
 });
 var tool = require("./tools");
 
 var instances = {};
 
-function Instance(token){
+function Instance(){
 	// private:
 	
 	var _actions = []; // this has to be syncing across clients
+	var _token; // globally unicate identifier of instance
+	var _users = []; // collection of obejcts {secret: string, nick: string}
 
-	var _token = token; // globally unicate identifier of instance
-	var _users = []; // collection of obejcts {secter: , nick: }
+	do {
+		_token = tool.genToken();
+	} while(_token in instances);
+
+	instances[_token] = this;
 
 	// public:
 
-	this.join = function(secret, nick){
-		if(_users.some(function(user){
-			return nick && user.nick === nick && user.secret != secret;
-		})){
-			return "name already taken";
-		};
+	/**
+	 * this had to be called twice, without nick when creating or joining
+	 * and with nick when logging
+	 * @param  {string} secret to verify user
+	 * @param  {string|undefined} nick
+	 * @return {error}        error if some
+	 */
+	this.join = function(secret, nick) {
+		if (nick) {
+			if (_users.some(function(user) {
+				return user.nick === nick && user.secret != secret;
+			})) {
+				return "nick already taken";
+			};
+		}
 
-		var existing = _users.find(function(user){
+		var existing = _users.find(function(user) {
 			return user.secret === secret;
 		});
-		if(existing) {
+		if (existing) {
 			existing.nick = nick;
-		} else{
+		} else {
 			_users.push({secret: secret, nick: nick});
 		}
-		console.log(nick, "joined", token);
+		console.log(nick, "joined", _token);
 		return null;
 	};
 
 
-	this.getToken = function(){
+	this.getToken = function() {
 		return _token;
-	}
+	};
 
-	this.getUsers = function(){
+	this.getUsers = function() {
 		var users = [];
-		_users.forEach(function(user){
-			if(user.nick){
+		_users.forEach(function(user) {
+			if (user.nick) {
 				users.push(user.nick);
 			}
 		});
-		return users; 
+		return users;
 	};
 
-	this.pushAction = function(action){
+	this.pushAction = function(action) {
 		_actions.push(action);
 		action.n = _actions.length;
 		return action;
@@ -101,13 +114,6 @@ io.on('connection', function (socket) {
 	var secret;
 	var instance;
 
-
-	/* pingpong */
-	socket.emit('ping', "hello");
-	socket.on('pong', function (data) {
-		console.log('pong', data);
-	});
-
 	io.emit("info", { // to all
 		err: null,
 		data: "new connection",
@@ -119,45 +125,52 @@ io.on('connection', function (socket) {
 
 	/* app actions */
 
+	/**
+	 * Create new instance
+	 * @param  {object} data {}
+	 * @param  {function} cb
+	 */
 	socket.on("create", function(data, cb){
-		if(instance){
+		if (instance) {
 			return cb({
 				err: "instance already created"
 			});
 		}
 		secret = tool.genToken(20); // user verifier
-		var token; // instance identifier
-		do{
-			token = tool.genToken();
-		} while(token in instances);
-
-		instance = new Instance(token);
+		
+		instance = new Instance();
 		instance.join(secret);
-		instances[token] = instance;
 		
 		cb({
 			err: null,
 			data: {
-				token: token, 
+				token: instance.getToken(), 
 				secret: secret, 
 			},
 		});
 	});
 
-
+	/**
+	 * Join to existing instance
+	 * @param  {object} data  {
+	 *         token: string
+	 *         secret: string|undefined
+	 * }
+	 * @param  {function} cb
+	 */
 	socket.on("join", function(data, cb){
-		if(instance){
+		if (instance) {
 			return cb({
 				err: "already joined to instance"
 			});
 		}
-		if(!(data.token in instances)){
+		if (!(data.token in instances)) {
 			return cb({
 				err: "instance with this token does not exists"
 			});
 		}
 		instance = instances[data.token];
-		if(data.secret){
+		if (data.secret) {
 			secret = data.secret;
 		} else {
 			secret = tool.genToken(20); // user verifier
@@ -170,7 +183,13 @@ io.on('connection', function (socket) {
 		});
 	});
 
-
+	/**
+	 * Log in, that means to set nick to unnamed user already created in instance.
+	 * And start listenning to events in instance's room.
+	 * Must be called after create or join!
+	 * @param  {string} nick
+	 * @param  {function} cb
+	 */
 	socket.on("login", function(nick, cb){
 		console.log("login", nick);
 		if(instance === undefined){
@@ -194,8 +213,8 @@ io.on('connection', function (socket) {
 		});
 	});
 
-	socket.on("action", function(item, cb){
-		var savedAction = instance.pushAction(item);
+	socket.on("action", function(action, cb){
+		var savedAction = instance.pushAction(action);
 		io.to(instance.getToken()).emit("update", {
 			data: savedAction
 		});
