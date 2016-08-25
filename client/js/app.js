@@ -53,14 +53,8 @@ var app = new (function App(){
 		fire("userlist update", msg.users);
 	});
 
-	/// debug:
-
-	io.on("user disconnected", function(){
-		console.log("some user disconnected");
-	});
-
-	io.on("info", function(msg){
-		fire("info", msg.data);
+	io.on("cursors", function(cursors){
+		fire("cursors update", cursors);
 	});
 
 	io.on("update", function(msg){
@@ -71,6 +65,16 @@ var app = new (function App(){
 		// }
 		_actions.push(msg.data);
 		fire("update", msg.data);
+	});
+
+	/// debug:
+
+	io.on("user disconnected", function(){
+		console.log("some user disconnected");
+	});
+
+	io.on("info", function(msg){
+		fire("info", msg.data);
 	});
 
 
@@ -190,7 +194,14 @@ var app = new (function App(){
 		}
 		_actions.push(action);
 		io.postAction(action);
-	}
+	};
+
+	this.postCursorPosition = onlyOncePerInterval(function (position) {
+		io.postCursor({
+			name: app.getNick(),
+			position: position,
+		});
+	}, 200);
 
 	this.sync = function(){
 		var lastActionId = _actions.length;
@@ -202,3 +213,21 @@ var app = new (function App(){
 	};
 
 });
+
+function onlyOncePerInterval (func, interval) {
+	var lastTimestamp = 0;
+	var finish;
+	return function onlyOnceWrapper () {
+		var args = arguments;
+		var now = Date.now();
+		if (lastTimestamp + interval < now) {
+			func.apply(null, args);
+			lastTimestamp = now;
+		} else {
+			clearTimeout(finish);
+			finish = setTimeout(function(){
+				func.apply(null, args);
+			}, interval);
+		}
+	};
+}

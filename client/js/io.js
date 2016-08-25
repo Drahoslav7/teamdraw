@@ -40,6 +40,10 @@ var io = new (function Client(){
 		socket.emit("action", action);
 	}
 
+	this.postCursor = function(cursor){
+		socket.emit("cursor", cursor);
+	}
+
 	this.sync = function(lastActionId){
 		socket.emit("sync", lastActionId);
 	}

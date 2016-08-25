@@ -1,10 +1,88 @@
+function CursorManager(project) {
+	var _cursorTemplate;
+	var _cursorSymbol;
+	var _cursors = {};
+
+	var mainLayer = project.activeLayer;
+	var cursorsLayer = new paper.Layer();
+	mainLayer.activate();
+
+	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
+		cursor.pivot = [5, 1];
+		_cursorTemplate = cursor;
+		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
+	});
+
+	this.zoomIn = function(scaleFactor) {
+		_cursorTemplate.scale(1/scaleFactor);
+	};
+	this.zoomOut = function(scaleFactor) {
+		_cursorTemplate.scale(1/scaleFactor);
+	};
+	this.exists = function(name){
+		return !!(name in _cursors);
+	};
+
+	this.new = function(name) {
+		if (name in _cursors) {
+			throw "cursor with this name already exist";
+		}
+		var randomPoint = paper.Point.random().multiply(paper.view.size).add(paper.view.bounds);
+		var cursor = _cursorSymbol.place(randomPoint)
+		cursor.pivot = _cursorTemplate.pivot;
+		cursor.opacity = 0;
+		cursorsLayer.addChild(cursor);
+		_cursors[name] = cursor;
+	};
+	this.moveCursorTo = function (name, position, duration) {
+		var steps = Math.floor(duration * (60/1000)) || 1;
+		if (!(name in _cursors)) {
+			throw "cursor with this name does not exist";
+		}
+		var cursor = _cursors[name];
+		var destination = new paper.Point(position);
+		var step = destination.subtract(cursor.position).divide(steps);
+		cursor.onFrame = function(event) {
+			if(event.count === steps){
+				cursor.onFrame = null;
+			} else {
+				cursor.translate(step);
+			}
+		};
+		setTimeout(function() {
+			if (cursor.data.lastActivity + 1000*15 <= Date.now()) {
+				setInactive(name);
+			}
+		}, 1000*15);
+		setActive(name);
+		cursor.data.lastActivity = Date.now();
+	};
+
+	function setInactive(name) {
+		var cursor = _cursors[name];
+		if (cursor.opacity === 1) {
+			cursor.onFrame = function(event) {
+				if(cursor.opacity <= 0){
+					cursor.onFrame = null;
+					cursor.opacity = 0;
+				} else {
+					cursor.opacity -= 0.1;
+				}
+			};
+		}
+	};
+	function setActive(name) {
+		var cursor = _cursors[name];
+		if (cursor.opacity === 0) {
+			cursor.opacity = 1;
+		}
+	};
+}
+
 
 var draw = new(function Draw(){
 
 	var console = new Logger("draw");
-
-	var _canvas;
-	var _ctx;
 
 	var _currentToolName = '';
 
@@ -17,10 +95,11 @@ var draw = new(function Draw(){
 
 	var _textItem;
 
+	var cursorManager;
+
 	/* init */
 	$(function(){
-		_canvas = $("#canvas");
-		paper.setup(_canvas[0]);
+		paper.setup("canvas");
 		paper.view.scrollBy([-paper.view.center.x, -paper.view.center.y]); // center first
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
@@ -33,6 +112,31 @@ var draw = new(function Draw(){
 
 		draw.setColor('#333');
 		draw.setSize(2);
+
+		cursorManager = new CursorManager(paper.project);
+
+		app.on("logged on", function() {
+			paper.project.view.on('mousemove', function(event) {
+				app.postCursorPosition(event.point);
+			});
+		});
+
+		app.on("userlist update", function(users) {
+			users.forEach(function(user) {
+				if (app.getNick() !== user && !cursorManager.exists(user)) {
+					cursorManager.new(user);
+				}
+			});
+		});
+
+		app.on("cursors update", function(cursors) {
+			cursors.forEach(function(cursor){
+				if (app.getNick() !== cursor.name) {
+					cursorManager.moveCursorTo(cursor.name, paper.Point.importJSON(cursor.position), 200);
+				}
+			});
+		});
+
 	});
 
 	function erase(item) {
@@ -65,7 +169,7 @@ var draw = new(function Draw(){
 			}
 		}).filter(function(item) {
 			if (item instanceof paper.Path) {
-				if (item.isClosed() && item.fillColor) {
+				if (item.isClosed() && item.hasFill()) {
 					if (item.contains(point)) {
 						return true;
 					}
@@ -367,9 +471,9 @@ var draw = new(function Draw(){
 		var path;
 
 		eyedropper.onMouseDown = function(event){
-			var items = getItemsNearPoint(event.point);
-			items.some(function(item){
-				draw.setColor(item.strokeColor.toCSS());
+			getItemsNearPoint(event.point).some(function(item){
+				var color = item.strokeColor || item.fillColor;
+				draw.setColor(color.toCSS());
 				return true;
 			});
 		};
@@ -475,12 +579,14 @@ var draw = new(function Draw(){
 			clientY: clientCenter.y,
 		});
 		if (direction > 0 && paper.view.getZoom() < 4) {
-			paper.view.scale(Math.sqrt(2), center);
-			paper.view._zoom *= Math.sqrt(2); // bug workaround, should be set by scale
+			paper.view.scale(Math.SQRT2, center);
+			paper.view._zoom *= Math.SQRT2; // bug workaround, should be set by scale
+			cursorManager.zoomIn(Math.SQRT2);
 		}
 		if (direction < 0 && paper.view.getZoom() > 1/4) {
-			paper.view.scale(1/Math.sqrt(2), center);
-			paper.view._zoom /= Math.sqrt(2); // bug workaround, should be set by scale
+			paper.view.scale(1/Math.SQRT2, center);
+			paper.view._zoom /= Math.SQRT2; // bug workaround, should be set by scale
+			cursorManager.zoomOut(1/Math.SQRT2);
 		}
 	};
 

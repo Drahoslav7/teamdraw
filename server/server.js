@@ -213,7 +213,7 @@ io.on('connection', function (socket) {
 		});
 	});
 
-	socket.on("action", function(action, cb){
+	socket.on("action", function(action, cb) {
 		var savedAction = instance.pushAction(action);
 		io.to(instance.getToken()).emit("update", {
 			data: savedAction
@@ -221,12 +221,16 @@ io.on('connection', function (socket) {
 
 	});
 
-	socket.on("sync", function(lastActionId){
-		instance.getActionsSince(lastActionId).forEach(function(action){
+	socket.on("sync", function(lastActionId) {
+		instance.getActionsSince(lastActionId).forEach(function(action) {
 			socket.emit("update", {
 				data: action
 			});
 		});
+	});
+
+	socket.on("cursor", function(cursor) {
+		io.to(instance.getToken()).emit("cursors", [cursor]);
 	});
 
 });
