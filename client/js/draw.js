@@ -174,7 +174,10 @@ var draw = new(function Draw(){
 						return true;
 					}
 				}
-				return item.getNearestPoint(point).isClose(point, radius);
+				var nearestPoint = item.getNearestPoint(point);
+				if (nearestPoint) {
+					return nearestPoint.isClose(point, radius);
+				}
 			}
 			if (item instanceof paper.PointText) {
 				return item.bounds.contains(point);
