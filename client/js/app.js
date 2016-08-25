@@ -201,7 +201,7 @@ var app = new (function App(){
 			name: app.getNick(),
 			position: position,
 		});
-	}, 200);
+	}, 125);
 
 	this.sync = function(){
 		var lastActionId = _actions.length;

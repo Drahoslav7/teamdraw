@@ -132,7 +132,7 @@ var draw = new(function Draw(){
 		app.on("cursors update", function(cursors) {
 			cursors.forEach(function(cursor){
 				if (app.getNick() !== cursor.name) {
-					cursorManager.moveCursorTo(cursor.name, paper.Point.importJSON(cursor.position), 200);
+					cursorManager.moveCursorTo(cursor.name, paper.Point.importJSON(cursor.position), 125);
 				}
 			});
 		});
