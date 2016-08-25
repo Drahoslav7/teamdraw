@@ -116,17 +116,35 @@ var gui = new (function () {
 		$("#workarea").awesomeCursor(icon, options);
 	};
 
-	this.highlightTool = function(toolname){
+	this.highlightTool = function(toolname) {
 		$(".btn-tool").removeClass("selected");
 		$(".btn-tool").filter(function(i, el){
 			return $(el).attr("data-tool") === toolname;
 		}).addClass("selected");
 	};
 
-	this.setColorOfPicker = function(color){
+	this.setColorOfPicker = function(color) {
 		$("#tool-color").css({color: color});
 		colorpicker.spectrum("set", color);
 	};
+
+	var zoomTimeout;
+	this.setZoomInfo = function(zoomLevel) {
+		var zoomPercentage = Math.floor(zoomLevel*100);
+		console.log("zoom", zoomPercentage);
+		if (zoomPercentage === 100) {
+			clearTimeout(zoomTimeout);
+			zoomTimeout = setTimeout(function(){
+				$("#zoom").hide(250);
+			}, 400);
+		} else {
+			clearTimeout(zoomTimeout);
+			setTimeout(function(){
+				$("#zoom").show(250);
+			}, 100);
+		}
+		$("#zoom").html(zoomPercentage+" %");
+	}
 
 
 	this.createUserElement = function(user) {

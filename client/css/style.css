@@ -236,3 +236,16 @@ html, body {
 .tab-content {
 	margin-top: 1em;
 }
+
+#bottom {
+	width: 100%;
+	position: fixed;
+	bottom: 3px;
+}
+
+#zoom {
+	background: rgba(240,240,240,0.8);
+	font-size: 16px;
+	float: right;
+	display: none;
+}

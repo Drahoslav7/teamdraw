@@ -601,6 +601,7 @@ var draw = new(function Draw(){
 		}
 		cursorManager.copeZoom(multiple);
 		paper.view._zoom *= multiple; // .view.setZoom() calls scale itself, we dont want that
+		gui.setZoomInfo(paper.view.getZoom());
 	};
 
 	this.selectTool = function(toolname){

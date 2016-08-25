@@ -119,6 +119,10 @@
 				
 			</div>
 		</div>
+
+		<div id="bottom">
+			<div id="zoom" class="mdi mdi-magnify"></div>
+		</div>
 	</div>
 
 	<div id="alert" class="alert alert-success collapse">
@@ -127,169 +131,173 @@
 
 
 	<!--  MODALS -->
+	<div>
 
-	<div id="signmodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form>
+		<div id="signmodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<form>
+						<div class="modal-header">
+						</div>
+						<div class="modal-body form-horizontal">
+							<div id="nickgroup" class="form-group">
+								<label for="nick" class="col-sm-4 control-label">
+									My name is:
+								</label>
+								<div class="col-sm-4">
+									<input id="nick" class="form-control" type="text" placeholder="Nickname">
+								</div>
+								<button class="btn btn-primary">Join</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="sharemodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
 					<div class="modal-header">
 					</div>
 					<div class="modal-body form-horizontal">
-						<div id="nickgroup" class="form-group">
-							<label for="nick" class="col-sm-4 control-label">
-								My name is:
+						<div class="form-group">
+							<label for="link" class="col-sm-3 control-label">
+								Share Link:
 							</label>
-							<div class="col-sm-4">
-								<input id="nick" class="form-control" type="text" placeholder="Nickname">
+							<div class="col-sm-6">
+								<input id="link" class="form-control" type="text">
 							</div>
-							<button class="btn btn-primary">Join</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-
-	<div id="sharemodal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-				</div>
-				<div class="modal-body form-horizontal">
-					<div class="form-group">
-						<label for="link" class="col-sm-3 control-label">
-							Share Link:
-						</label>
-						<div class="col-sm-6">
-							<input id="link" class="form-control" type="text">
-						</div>
-						<div class="col-sm-3">
-							<button class="btn btn-primary">Close</button>
+							<div class="col-sm-3">
+								<button class="btn btn-primary">Close</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<div id="helpmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3><span class="mdi mdi-help-circle" aria-hidden="true"></span> Help</h3>
-				</div>
-				<div class="modal-body text-justify">
-					<!-- tabs -->
-					<ul class="nav nav-tabs">
-						<li class="active">
-							<a data-toggle="tab" href="#basics">Basics</a>
-						</li>
-						<li>
-							<a data-toggle="tab" href="#tips">Tips &amp; tricks</a>
-						</li>
-						<li>
-							<a data-toggle="tab" href="#about">About</a>
-						</li>
-					</ul>
-					<!-- contents -->
-					<div class="tab-content">
-						<div id="basics" class="tab-pane fade in active">
-							<p>
-								<i class="mdi  mdi-24px mdi-pencil"></i>
-								You are supposed to draw something.
-							</p>
-							<p>
-								<i class="mdi  mdi-24px mdi-share"></i>
-								Ideally in team with someone.
-							</p>
-						</div>
-						<div id="tips" class="tab-pane fade">
-							<p>Use <code>mouse wheel</code> to zoom in and out.</p>
-							<p>
-								You can select multiple items if holding <code>control</code> while using <code>selector</code> tool.
-							</p>
-							<p>
-								Hold <code>shift</code> while using <code>line</code>, <code>rectangle</code> or <code>oval</code> tool to draw regular shapes.
-							</p>
-						</div>
-						<div id="about" class="tab-pane fade">
-							<p>
-								This tool was originally made as school project by Drahoslav Bednář and David Balvín.
-							</p>
-							<p>
-								Later it was modified to better fit our personal needs.
-							</p>
+		<div id="helpmodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3><span class="mdi mdi-help-circle" aria-hidden="true"></span> Help</h3>
+					</div>
+					<div class="modal-body text-justify">
+						<!-- tabs -->
+						<ul class="nav nav-tabs">
+							<li class="active">
+								<a data-toggle="tab" href="#basics">Basics</a>
+							</li>
+							<li>
+								<a data-toggle="tab" href="#tips">Tips &amp; tricks</a>
+							</li>
+							<li>
+								<a data-toggle="tab" href="#about">About</a>
+							</li>
+						</ul>
+						<!-- contents -->
+						<div class="tab-content">
+							<div id="basics" class="tab-pane fade in active">
+								<p>
+									<i class="mdi  mdi-24px mdi-pencil"></i>
+									You are supposed to draw something.
+								</p>
+								<p>
+									<i class="mdi  mdi-24px mdi-share"></i>
+									Ideally in team with someone.
+								</p>
+							</div>
+							<div id="tips" class="tab-pane fade">
+								<p>Use <code>mouse wheel</code> or <code>PgUp</code>/<code>PgDn</code> to zoom in and out.</p>
+								<p>
+									You can select multiple items if holding <code>control</code> while using <code>selector</code> tool.
+								</p>
+								<p>
+									Hold <code>shift</code> while using <code>line</code>, <code>rectangle</code> or <code>oval</code> tool to draw regular shapes.
+								</p>
+							</div>
+							<div id="about" class="tab-pane fade">
+								<p>
+									This tool was originally made as school project by Drahoslav Bednář and David Balvín.
+								</p>
+								<p>
+									Later it was modified to better fit our personal needs.
+								</p>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-	<div id="errormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3><span class="mdi mdi-alert" aria-hidden="true"></span></h3>
-				</div>
-				<div class="modal-body">
-					<div id="error-msg" class="alert alert-warning">
-						Instance with this url does not exists.<br>
-						It may be expired, or link is invalid.<br>
-						New instance will be created.
+					<div class="modal-footer">
+						<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
-				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<div id="neterrormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3><span class="mdi mdi-alert" aria-hidden="true"></span></h3>
-				</div>
-				<div class="modal-body">
-					<div class="alert alert-warning">
-						You have been disconnected from the session. Trying to reconnect.<br>
-						You can save also save your session as an image now.
+		<div id="errormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3><span class="mdi mdi-alert" aria-hidden="true"></span></h3>
+					</div>
+					<div class="modal-body">
+						<div id="error-msg" class="alert alert-warning">
+							Instance with this url does not exists.<br>
+							It may be expired, or link is invalid.<br>
+							New instance will be created.
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary"><span class="mdi mdi-ok"></span> Understood</button>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button id="save-button-neterror" class="btn btn-primary"><span class="mdi mdi-content-save"></span> Save</button>
-					<button class="btn btn-info"><span class="fa fa-spinner fa-pulse"></span> Reconnecting</button>
+			</div>
+		</div>
+
+
+		<div id="neterrormodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3><span class="mdi mdi-alert" aria-hidden="true"></span></h3>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-warning">
+							You have been disconnected from the session. Trying to reconnect.<br>
+							You can save also save your session as an image now.
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="save-button-neterror" class="btn btn-primary"><span class="mdi mdi-content-save"></span> Save</button>
+						<button class="btn btn-info"><span class="fa fa-spinner fa-pulse"></span> Reconnecting</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<div id="savemodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h3><span class="mdi mdi-file-image" aria-hidden="true"></span> Save</h3>
-				</div>
-				<div class="modal-body text-justify">
-					Picture will be exported to image and opened in new window, then you can save it by pressing <b>control + S</b>.	
-				</div>
-				<div class="modal-footer">
-					<a class="btn btn-primary export-img-button" data-image-type="svg" down-load="teamdraw.svg"></span> Export as SVG</a>
-					<!-- <a class="btn btn-primary export-img-button" data-image-type="png" down-load="expenses.png"></span> Export as PNG</a> -->
+		<div id="savemodal" class="modal fade" tabindex="-1" role="article" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3><span class="mdi mdi-file-image" aria-hidden="true"></span> Save</h3>
+					</div>
+					<div class="modal-body text-justify">
+						Picture will be exported to image and opened in new window, then you can save it by pressing <b>control + S</b>.
+					</div>
+					<div class="modal-footer">
+						<a class="btn btn-primary export-img-button" data-image-type="svg" down-load="teamdraw.svg"></span> Export as SVG</a>
+						<!-- <a class="btn btn-primary export-img-button" data-image-type="png" down-load="expenses.png"></span> Export as PNG</a> -->
+					</div>
 				</div>
 			</div>
 		</div>
+
 	</div>
+
 
 </body>
 </html>
