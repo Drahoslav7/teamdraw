@@ -223,6 +223,14 @@ $(function(){
 					case KeyCode.KEY_DOWN:
 						draw.moveSelected("down");
 						break;
+
+					case KeyCode.KEY_PAGE_UP:
+						draw.zoom(+1);
+						break;
+					case KeyCode.KEY_PAGE_DOWN:
+						draw.zoom(-1);
+						break;
+
 				}
 			} else {
 				if(event.keyCode === KeyCode.KEY_ESCAPE) {

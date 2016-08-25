@@ -574,15 +574,15 @@ var draw = new(function Draw(){
 
 
 	this.zoom = function(direction, clientCenter) {
-		var center = paper.view.getEventPoint({
+		var center = clientCenter ? paper.view.getEventPoint({
 			clientX: clientCenter.x,
 			clientY: clientCenter.y,
-		});
+		}) : paper.view.center;
 		var multiple = 1;
-		if (direction > 0 && paper.view.getZoom() < 4) {
+		if (direction > 0 && !almostEquals(paper.view.getZoom(), 4)) {
 			multiple = Math.SQRT2;
 		}
-		if (direction < 0 && paper.view.getZoom() > 1/4) {
+		if (direction < 0 && !almostEquals(paper.view.getZoom(), 1/4)) {
 			multiple = Math.SQRT1_2;
 		}
 		var step = Math.sqrt(Math.sqrt(multiple));
@@ -688,3 +688,8 @@ var draw = new(function Draw(){
 	};
 
 });
+
+function almostEquals (a, b, e) {
+	e = e || 1E-8;
+	return Math.abs(a-b) < e;
+}
