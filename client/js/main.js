@@ -249,22 +249,23 @@ $(function(){
 			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
-				if(event.keyCode === KeyCode.KEY_SPACE && !pressed){
+				if(event.keyCode === KeyCode.KEY_SPACE && !pressed) {
+					event.preventDefault(); // prevent spacebar to select outlined tool
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
 					draw.selectTool("move");
 				}
 			})
 			$(window).keyup(function(event){
-				if(event.keyCode === KeyCode.KEY_SPACE && pressed){
+				if(event.keyCode === KeyCode.KEY_SPACE && pressed) {
 					draw.selectTool(prevToolName);
 					pressed = false;
 				}
-			})
+			});
 
 		})();
 
-	});// on logged on
+	}); // on logged on
 
 
 
