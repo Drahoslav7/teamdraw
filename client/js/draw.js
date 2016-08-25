@@ -13,10 +13,7 @@ function CursorManager(project) {
 		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
 	});
 
-	this.zoomIn = function(scaleFactor) {
-		_cursorTemplate.scale(1/scaleFactor);
-	};
-	this.zoomOut = function(scaleFactor) {
+	this.copeZoom = function(scaleFactor) {
 		_cursorTemplate.scale(1/scaleFactor);
 	};
 	this.exists = function(name){
@@ -581,16 +578,29 @@ var draw = new(function Draw(){
 			clientX: clientCenter.x,
 			clientY: clientCenter.y,
 		});
+		var multiple = 1;
 		if (direction > 0 && paper.view.getZoom() < 4) {
-			paper.view.scale(Math.SQRT2, center);
-			paper.view._zoom *= Math.SQRT2; // bug workaround, should be set by scale
-			cursorManager.zoomIn(Math.SQRT2);
+			multiple = Math.SQRT2;
 		}
 		if (direction < 0 && paper.view.getZoom() > 1/4) {
-			paper.view.scale(1/Math.SQRT2, center);
-			paper.view._zoom /= Math.SQRT2; // bug workaround, should be set by scale
-			cursorManager.zoomOut(1/Math.SQRT2);
+			multiple = Math.SQRT1_2;
 		}
+		var step = Math.sqrt(Math.sqrt(multiple));
+		var steps = 0;
+		if (!paper.view.onFrame) {
+			paper.view.onFrame = function(event) {
+				if (steps > 4) {
+					paper.view.onFrame = null;
+				} else {
+					steps++;
+					paper.view.scale(step, center);
+				}
+			};
+		} else {
+			paper.view.scale(multiple, center);
+		}
+		cursorManager.copeZoom(multiple);
+		paper.view._zoom *= multiple; // .view.setZoom() calls scale itself, we dont want that
 	};
 
 	this.selectTool = function(toolname){
