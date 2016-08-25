@@ -589,7 +589,7 @@ var draw = new(function Draw(){
 		var steps = 0;
 		if (!paper.view.onFrame) {
 			paper.view.onFrame = function(event) {
-				if (steps > 4) {
+				if (steps === 4) {
 					paper.view.onFrame = null;
 				} else {
 					steps++;
