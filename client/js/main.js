@@ -230,7 +230,6 @@ $(function(){
 					case KeyCode.KEY_PAGE_DOWN:
 						draw.zoom(-1);
 						break;
-
 				}
 			} else {
 				if(event.keyCode === KeyCode.KEY_ESCAPE) {
@@ -244,26 +243,27 @@ $(function(){
 			draw.zoom(e.deltaY, {x: e.clientX, y: e.clientY});
 		});
 
-		// select move tool when spacebar down
-		(function(){
+		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE);
+		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT);
+
+		function toggleToolWhileHoldingKey (toolname, keyCode) {
 			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
-				if(event.keyCode === KeyCode.KEY_SPACE && !pressed) {
-					event.preventDefault(); // prevent spacebar to select outlined tool
+				if(event.keyCode === keyCode && !pressed) {
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
-					draw.selectTool("move");
+					draw.selectTool(toolname);
 				}
 			})
 			$(window).keyup(function(event){
-				if(event.keyCode === KeyCode.KEY_SPACE && pressed) {
+				if(event.keyCode === keyCode && pressed) {
+					event.preventDefault(); // prevent spacebar to select outlined tool
 					draw.selectTool(prevToolName);
 					pressed = false;
 				}
 			});
-
-		})();
+		}
 
 	}); // on logged on
 

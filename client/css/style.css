@@ -206,6 +206,7 @@ html, body {
 }
 
 .btn-tool, .btn-boldness-tool, #menu .btn {
+	outline: none !important;
 	color: #000;
 	background: #b3bbc3;
 }
