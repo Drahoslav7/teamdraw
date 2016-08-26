@@ -251,6 +251,7 @@ $(function(){
 			var pressed = false;
 			$(window).keydown(function(event){
 				if(event.keyCode === keyCode && !pressed) {
+					event.preventDefault();
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
 					draw.selectTool(toolname);

@@ -104,8 +104,16 @@ var draw = new(function Draw(){
 
 		_textItem = new paper.PointText({
 			// fontFamily: 'Courier New',
-			fontSize: 20
+			fontSize: 20,
+			content: " ",
 		});
+		_textItem.onFrame = function(event) {
+			if (event.count % 25 === 0) {
+				this.content = this.content.replace(/(_| )$/, function(match) {
+					return match === "_" ? " ": "_";
+				});
+			}
+		};
 
 		draw.setColor('#333');
 		draw.setSize(2);
@@ -445,21 +453,28 @@ var draw = new(function Draw(){
 		var text = new paper.Tool();
 
 		text.onKeyDown = function(event){
+			_textItem.content = _textItem.content.slice(0, -1);
 			if (event.key === 'backspace') {
-				_textItem.content = _textItem.content.substring(0, _textItem.content.length-1);
+				event.preventDefault();
+				_textItem.content = _textItem.content.slice(0, -1);
 			} else {
 				_textItem.content += event.character;
 			}
+			_textItem.content += " ";
 		};
 
 		text.onMouseMove = function(event){
-			_textItem.point = event.point;
+			_textItem.point = event.point.add([10, -10]);
 		};
 
 		text.onMouseUp = function(event){
+			if (_textItem.content.length === 1) {
+				return;
+			}
+			_textItem.content = _textItem.content.slice(0, -1);
 			app.postAction("item", _textItem.exportJSON({asString:false}));
 			setTimeout(function(){
-				_textItem.content = '';
+				_textItem.content = " ";
 				paper.view.draw();
 			}, 100);
 		};
