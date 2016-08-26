@@ -598,10 +598,10 @@ var draw = new(function Draw(){
 		}) : paper.view.center;
 		var multiple = 1;
 		var zoom = paper.view.getZoom();
-		if (direction > 0 && !(almostEquals(zoom, 4) || zoom > 4)) {
+		if (direction > 0 && zoom < 4 && !almostEquals(zoom, 4)) {
 			multiple = Math.SQRT2;
 		}
-		if (direction < 0 && !(almostEquals(zoom, 1/4) || zoom < 1/4)) {
+		if (direction < 0 && zoom > 1/4 && !almostEquals(zoom, 1/4)) {
 			multiple = Math.SQRT1_2;
 		}
 		var step = Math.sqrt(Math.sqrt(multiple));
@@ -611,9 +611,17 @@ var draw = new(function Draw(){
 				if (steps === 4) {
 					paper.view.onFrame = null;
 				} else {
+					var zoom = paper.view.getZoom();
+					if (
+						(step > 1 && zoom < 4 && !almostEquals(zoom, 4)) ||
+						(step < 1 && zoom > 1/4 && !almostEquals(zoom, 1/4))
+					) {
+						paper.view.scale(step, center);
+						gui.setZoomInfo(paper.view.getZoom());
+					} else {
+						paper.view.onFrame = null;
+					}
 					steps++;
-					paper.view.scale(step, center);
-					gui.setZoomInfo(paper.view.getZoom());
 				}
 			};
 		} else {
@@ -622,6 +630,8 @@ var draw = new(function Draw(){
 		}
 		cursorManager.copeZoom(multiple);
 		gui.setZoomInfo(paper.view.getZoom());
+
+
 	};
 
 	this.selectTool = function(toolname){
