@@ -223,7 +223,7 @@ var draw = new(function Draw(){
 			if(event.type === 'mousedown'){
 				if(getItemsNearPoint(event.point).some(function(item) { // clicked at selected item
 					return item.selected === true;
-				})){
+				}) && !event.modifiers.control){
 					willShift = true;
 				}
 			}
@@ -232,7 +232,12 @@ var draw = new(function Draw(){
 					paper.project.deselectAll();
 				}
 				getItemsNearPoint(event.point).forEach(function(item){
-					item.selected = true;
+					if (event.type === 'mousedown') {
+						item.selected = !item.selected;
+					}
+					if (event.type === 'mousedrag') {
+						item.selected = true;
+					}
 				});
 			} else if(event.type === 'mousedrag') { // shifting
 				var delta = event.delta;
