@@ -131,7 +131,6 @@ var gui = new (function () {
 	var zoomTimeout;
 	this.setZoomInfo = function(zoomLevel) {
 		var zoomPercentage = Math.floor(zoomLevel*100);
-		console.log("zoom", zoomPercentage);
 		if (zoomPercentage === 100) {
 			clearTimeout(zoomTimeout);
 			zoomTimeout = setTimeout(function(){
