@@ -100,6 +100,14 @@ var draw = new(function Draw(){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
 		};
 
+		var background = new paper.Shape.Rectangle({
+			rectangle: paper.view.bounds,
+			fillColor: {hue: 0, saturation: 0, lightness: 0.96},
+		});
+		background.onFrame = function() {
+			this.bounds = paper.view.bounds;
+		};
+
 		_textItem = new paper.PointText({
 			// fontFamily: 'Courier New',
 			fontSize: 20,

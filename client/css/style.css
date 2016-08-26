@@ -13,7 +13,7 @@ html, body {
 #workarea {
 	width: 100%;
 	height: 100%;
-	background: #eee;
+	background: hsla(0, 0%, 96%, 1);
 }
 
 #canvas {
@@ -27,14 +27,6 @@ html, body {
 	top: 0;
 	width: 100%;
 	height: 0;
-}
-
-.statusbar {
-	width: 100%;
-	position: absolute;
-	bottom: 0;
-	background: rgba(0,0,0,0.1);
-	padding: 0.5em 1em;
 }
 
 #top {
@@ -245,7 +237,7 @@ html, body {
 }
 
 #zoom {
-	background: rgba(240,240,240,0.8);
+	background: hsla(0, 0%, 96%, 0.9);
 	font-size: 16px;
 	float: right;
 	display: none;
