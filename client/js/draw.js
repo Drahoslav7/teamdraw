@@ -599,10 +599,11 @@ var draw = new(function Draw(){
 			clientY: clientCenter.y,
 		}) : paper.view.center;
 		var multiple = 1;
-		if (direction > 0 && !almostEquals(paper.view.getZoom(), 4)) {
+		var zoom = paper.view.getZoom();
+		if (direction > 0 && !(almostEquals(zoom, 4) || zoom > 4)) {
 			multiple = Math.SQRT2;
 		}
-		if (direction < 0 && !almostEquals(paper.view.getZoom(), 1/4)) {
+		if (direction < 0 && !(almostEquals(zoom, 1/4) || zoom < 1/4)) {
 			multiple = Math.SQRT1_2;
 		}
 		var step = Math.sqrt(Math.sqrt(multiple));
@@ -614,13 +615,14 @@ var draw = new(function Draw(){
 				} else {
 					steps++;
 					paper.view.scale(step, center);
+					gui.setZoomInfo(paper.view.getZoom());
 				}
 			};
 		} else {
 			paper.view.scale(multiple, center);
+			gui.setZoomInfo(paper.view.getZoom());
 		}
 		cursorManager.copeZoom(multiple);
-		paper.view._zoom *= multiple; // .view.setZoom() calls scale itself, we dont want that
 		gui.setZoomInfo(paper.view.getZoom());
 	};
 
@@ -711,6 +713,6 @@ var draw = new(function Draw(){
 });
 
 function almostEquals (a, b, e) {
-	e = e || 1E-8;
+	e = e || 1E-6;
 	return Math.abs(a-b) < e;
 }
