@@ -40,7 +40,7 @@ function CursorManager(project) {
 		var destination = new paper.Point(position);
 		var step = destination.subtract(cursor.position).divide(steps);
 		cursor.onFrame = function(event) {
-			if(event.count === steps){
+			if (event.count === steps) {
 				cursor.onFrame = null;
 			} else {
 				cursor.translate(step);
@@ -59,20 +59,18 @@ function CursorManager(project) {
 		var cursor = _cursors[name];
 		if (cursor.opacity === 1) {
 			cursor.onFrame = function(event) {
-				if(cursor.opacity <= 0){
+				if (cursor.opacity <= 0) {
 					cursor.onFrame = null;
 					cursor.opacity = 0;
 				} else {
-					cursor.opacity -= 0.1;
+					cursor.opacity -= 0.02;
 				}
 			};
 		}
 	};
 	function setActive(name) {
 		var cursor = _cursors[name];
-		if (cursor.opacity === 0) {
-			cursor.opacity = 1;
-		}
+		cursor.opacity = 1;
 	};
 }
 
