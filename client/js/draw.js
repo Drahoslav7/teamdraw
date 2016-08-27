@@ -109,9 +109,10 @@ var draw = new(function Draw(){
 		};
 
 		_textItem = new paper.PointText({
-			// fontFamily: 'Courier New',
+			// fontFamily: 'Consolas',
 			fontSize: 20,
 			content: " ",
+			visible: false,
 		});
 		_textItem.onFrame = function(event) {
 			if (event.count % 25 === 0) {

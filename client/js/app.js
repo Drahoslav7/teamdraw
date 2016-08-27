@@ -57,14 +57,11 @@ var app = new (function App(){
 		fire("cursors update", cursors);
 	});
 
-	io.on("update", function(msg){
-		// TODO check continuity:
-		// if(msg.data.n !== _actions.length + 1){
-		// 	app.sync();
-		// 	return;
-		// }
+	io.on("update", function(msg, cb){
+		// TODO check continuity
 		_actions.push(msg.data);
 		fire("update", msg.data);
+		cb();
 	});
 
 	/// debug:

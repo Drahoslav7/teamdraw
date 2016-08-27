@@ -30,19 +30,55 @@ if (!SSL_KEY || !SSL_CA || !SSL_CERT) { // http
 var io = require("socket.io").listen(server, {
 	origins: ALLOWED_ORIGINS
 });
-var tool = require("./tools");
+var crypto = require("./crypto");
 
 var instances = {};
 
-function Instance(){
+/**
+ * user rights
+ */
+const TO_SEE = 1<<0;
+const TO_DRAW = 1<<1;
+const TO_CHANGE_RIGHTS = 1<<2;
+
+function User(secret) {
+
+	var _secret = secret || crypto.genSecret();
+	var _rights = TO_SEE | TO_DRAW;
+
+	this.nick = undefined;
+
+	this.getSecret = function () {
+		return _secret;
+	};
+	this.hasRight = function (right) {
+		return !!(_rights & right);
+	};
+	this.setRight = function (right) {
+		_rights |= right;
+	}
+	this.getRights = function () {
+		return _rights;
+	}
+	this.toJSON = function () {
+		return {
+			nick: this.nick,
+			secret: _secret,
+			rights: _rights,
+		};
+	};
+}
+
+function Instance() {
 	// private:
 	
 	var _actions = []; // this has to be syncing across clients
 	var _token; // globally unicate identifier of instance
-	var _users = []; // collection of obejcts {secret: string, nick: string}
+	var _users = []; // collection of obejcts {secret: string, nick: string, rights: number}
+	var _creationTime = new Date();
 
 	do {
-		_token = tool.genToken();
+		_token = crypto.genToken();
 	} while(_token in instances);
 
 	instances[_token] = this;
@@ -52,28 +88,37 @@ function Instance(){
 	/**
 	 * this had to be called twice, without nick when creating or joining
 	 * and with nick when logging
-	 * @param  {string} secret to verify user
-	 * @param  {string|undefined} nick
+	 * @param  {User} user to (re)join
 	 * @return {error}        error if some
 	 */
-	this.join = function(secret, nick) {
-		if (nick) {
-			if (_users.some(function(user) {
-				return user.nick === nick && user.secret != secret;
+	this.join = function(user, userSocket) {
+
+		if (user.nick) {
+			if (_users.some(function(otherUser) {
+				return otherUser.nick === user.nick && user.getSecret() !== otherUser.getSecret();
 			})) {
 				return "nick already taken";
 			};
 		}
 
-		var existing = _users.find(function(user) {
-			return user.secret === secret;
+		// update if exists
+		var existingUser = _users.find(function(otherUser, i) {
+			if (user.getSecret() === otherUser.getSecret()) {
+				user.setRight(otherUser.getRights());
+				this[i] = user;
+				return true;
+			}
 		});
-		if (existing) {
-			existing.nick = nick;
-		} else {
-			_users.push({secret: secret, nick: nick});
+		// othervise push as new
+		if (!existingUser) {
+			_users.push(user);
 		}
-		console.log(nick, "joined", _token);
+
+		if (userSocket) {
+			userSocket.join(_token);
+		}
+
+		console.log(user.nick, "joined", _token);
 		return null;
 	};
 
@@ -104,24 +149,26 @@ function Instance(){
 		});
 	};
 
+	this.emit = function() {
+		io.to(_token).emit.apply(io.to(_token), arguments);
+	};
+
+	this.toJSON = function() {
+		return {
+			name: _token,
+			time: _creationTime,
+			users: _users,
+			actionsLength: _actions.length,
+		};
+	};
+
 }
 
-
-
 io.on('connection', function (socket) {
-	console.log("user connected");
+	console.log("user connection");
 
-	var secret;
+	var user;
 	var instance;
-
-	io.emit("info", { // to all
-		err: null,
-		data: "new connection",
-	})
-	socket.on('disconnect', function () {
-		io.emit('user disconnected');
-	});
-
 
 	/* app actions */
 
@@ -136,16 +183,23 @@ io.on('connection', function (socket) {
 				err: "instance already created"
 			});
 		}
-		secret = tool.genToken(20); // user verifier
+		if (user) {
+			return cb({
+				err: "user already created"
+			});
+		}
 		
+		user = new User();
+		user.setRight(TO_CHANGE_RIGHTS);
+
 		instance = new Instance();
-		instance.join(secret);
+		var err = instance.join(user);
 		
 		cb({
-			err: null,
+			err: err,
 			data: {
-				token: instance.getToken(), 
-				secret: secret, 
+				token: instance.getToken(),
+				secret: user.getSecret(), 
 			},
 		});
 	});
@@ -159,6 +213,11 @@ io.on('connection', function (socket) {
 	 * @param  {function} cb
 	 */
 	socket.on("join", function(data, cb){
+		if (user) {
+			return cb({
+				err: "user already created"
+			});
+		}
 		if (instance) {
 			return cb({
 				err: "already joined to instance"
@@ -170,16 +229,13 @@ io.on('connection', function (socket) {
 			});
 		}
 		instance = instances[data.token];
-		if (data.secret) {
-			secret = data.secret;
-		} else {
-			secret = tool.genToken(20); // user verifier
-		}
-		var err = instance.join(secret);
+
+		user = new User(data.secret);
+		var err = instance.join(user);
 
 		cb({
 			err: err,
-			secret: secret,
+			secret: user.getSecret(),
 		});
 	});
 
@@ -192,45 +248,53 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("login", function(nick, cb){
 		console.log("login", nick);
-		if(instance === undefined){
+		if (instance === undefined) {
 			return cb({
 				err: "no instance to login to",
 			});
 		}
-		if(!secret){
-			console.error("no secret when loging in");
+		if (user === undefined) {
+			return cb({
+				err: "no user to name when loging in",
+			});
 		}
 		
-		var err = instance.join(secret, nick);
+		user.nick = nick;
+		var err = instance.join(user, socket);
 
 		cb({
 			err: err
 		});
 
-		socket.join(instance.getToken());
-		io.to(instance.getToken()).emit("userlist", {
+		instance.emit("userlist", {
 			users: instance.getUsers()
 		});
 	});
 
 	socket.on("action", function(action, cb) {
 		var savedAction = instance.pushAction(action);
-		io.to(instance.getToken()).emit("update", {
+		instance.emit("update", {
 			data: savedAction
 		});
 
 	});
 
 	socket.on("sync", function(lastActionId) {
-		instance.getActionsSince(lastActionId).forEach(function(action) {
-			socket.emit("update", {
-				data: action
-			});
-		});
+		var actions = instance.getActionsSince(lastActionId);
+		sendNextOne();
+		function sendNextOne() {
+			if(actions.length !== 0) {
+				socket.emit("update", {
+					data: actions.shift()
+				}, sendNextOne);
+			}
+		}
 	});
 
 	socket.on("cursor", function(cursor) {
-		io.to(instance.getToken()).emit("cursors", [cursor]);
+		if (instance) { // why this happens before login?
+			instance.emit("cursors", [cursor]);
+		}
 	});
 
 });
