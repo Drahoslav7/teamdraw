@@ -162,13 +162,7 @@ io.on('connection', function (socket) {
 		if (!instance || !user) {
 			return;
 		}
-		if (!io.sockets.sockets.some(function (socket) { // another socket with same user not exists
-			if (socket.user) {
-				if (socket.user.nick === user.nick && socket.user !== user) {
-					return true;
-				}
-			}
-		})) {
+		if (!isUserAlsoOnAnotherSocket(user)) {
 			instance.leave(user);
 
 			instance.emit("userlist", {
@@ -177,6 +171,16 @@ io.on('connection', function (socket) {
 			console.log("user", user.name, "leaved");
 		};
 	});
+
+	function isUserAlsoOnAnotherSocket(user) {
+		return io.sockets.sockets.some(function (socket) {
+			if (socket.user) {
+				if (socket.user.nick === user.nick && socket.user !== user) {
+					return true;
+				}
+			}
+		});
+	}
 
 });
 
