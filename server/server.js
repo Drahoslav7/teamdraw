@@ -35,6 +35,11 @@ var User = require("./user");
 var Instance = require("./instance");
 
 
+console.log("Server is running on port", PORT);
+
+/**
+ * MAIN IO
+ */
 io.on('connection', function (socket) {
 	console.log("user connection");
 
@@ -132,6 +137,10 @@ io.on('connection', function (socket) {
 		});
 	});
 
+	/**
+	 * event below should only be used after join or create
+	 */
+
 	socket.on("action", function(action, cb) {
 		var savedAction = instance.pushAction(action);
 		instance.emit("update", {
@@ -186,12 +195,17 @@ io.on('connection', function (socket) {
 
 
 /**
- * ADMINISTRATION
+ * ADMINISTRATOR IO
  */
 
-server.on('request', function(request, response) {
-	
-});
- 
+var adminio = io.of("/admin");
 
-console.log("Server is running on port", PORT);
+adminio.on("connection", function(socket) {
+	console.log("admin connection");
+
+	socket.on("get instances", function(data, callback) {
+		callback(Instance.getAll());
+	});
+});
+
+ 

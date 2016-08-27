@@ -1,9 +1,3 @@
-/* config */
-const server = {
-	hostname: location.hostname || "localhost",
-	port: 7890,
-};
-
 // IO wrapper
 var io = new (function Client(){
 

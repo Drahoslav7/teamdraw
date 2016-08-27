@@ -4,7 +4,11 @@ var instances = {};
 
 Instance.get = function(token) {
 	return instances[token];
-}
+};
+
+Instance.getAll = function() {
+	return instances;
+};
 
 function Instance(io) {
 	// private:

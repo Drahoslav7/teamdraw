@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title>Admin</title>
+	<meta charset="UTF-8">
+	
+	<link rel="shortcut icon" href="favicon.ico"/>
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/materialdesignicons.min.css">
+
+	<!-- libs -->
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/socket.io.js"></script>
+	
+
+	<!-- ours -->
+	<script src="js/server.config.js"></script>
+	<script src="js/logger.js"></script>
+
+<style>
+
+</style>
+<script>
+var console = new Logger('admin');
+
+var url = location.protocol + "//" + server.hostname + ":" + server.port + "/admin";
+var socket = io.connect(url);
+
+$(function() {
+	socket.emit("get instances", null, function(instances) {
+		instances = Object.keys(instances).map(key => instances[key]);
+		instances = instances.sort((a,b) => a.time < b.time);
+		console.log("instances", instances);
+		$("textarea").val(JSON.stringify(instances, null, '\t'));
+	});
+});
+
+</script>
+
+</head>
+<body>
+	<div class="container">
+		<h1>TeamDraw Admin</h1>
+		<div></div>
+		<textarea id="instances" cols="150" rows="20"></textarea>
+	</div>
+</body>
+</html>

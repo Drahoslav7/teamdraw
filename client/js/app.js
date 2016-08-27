@@ -66,16 +66,6 @@ var app = new (function App(){
 		}
 	});
 
-	/// debug:
-
-	io.on("user disconnected", function(){
-		console.log("some user disconnected");
-	});
-
-	io.on("info", function(msg){
-		fire("info", msg.data);
-	});
-
 
 	/////////////////////////////////
 	// public:
@@ -143,8 +133,6 @@ var app = new (function App(){
 			if(resp.err === null){
 				setNick(nick);
 				fire("logged on");
-			} else {
-				console.log(err);
 			}
 			cb(resp.err);
 			app.save();
@@ -193,7 +181,6 @@ var app = new (function App(){
 			type: type,
 			data: data
 		}
-		_actions.push(action);
 		io.postAction(action);
 	};
 

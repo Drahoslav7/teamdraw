@@ -4,6 +4,7 @@ var Logger = function(name, color){
 		"app": "green",
 		"draw": "brown",
 		"io": "purple",
+		"admin": "pink",
 	}[name] || "black";
 
 
