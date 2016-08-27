@@ -143,10 +143,12 @@ var app = new (function App(){
 			if(resp.err === null){
 				setNick(nick);
 				fire("logged on");
+			} else {
+				console.log(err);
 			}
 			cb(resp.err);
+			app.save();
 		});
-		this.save();
 	};
 
 	this.create = function(cb){
