@@ -61,7 +61,9 @@ var app = new (function App(){
 		// TODO check continuity
 		_actions.push(msg.data);
 		fire("update", msg.data);
-		cb();
+		if (cb) {
+			cb();
+		}
 	});
 
 	/// debug:
