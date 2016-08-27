@@ -59,6 +59,12 @@ function Instance(io) {
 		return null;
 	};
 
+	this.leave = function (user) {
+		_users = _users.filter(function (anotherUser) {
+			return user.getSecret() !== anotherUser.getSecret();
+		});
+	};
+
 
 	this.getToken = function() {
 		return _token;

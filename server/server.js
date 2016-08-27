@@ -27,7 +27,7 @@ if (!SSL_KEY || !SSL_CA || !SSL_CERT) { // http
 	}).listen(PORT);
 }
 
-var io = require("socket.io").listen(server, {
+var io = require("socket.io")(server, {
 	origins: ALLOWED_ORIGINS
 });
 
@@ -50,18 +50,15 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("create", function(data, cb){
 		if (instance) {
-			return cb({
-				err: "instance already created"
-			});
+			return cb({	err: "instance already created"	});
 		}
 		if (user) {
-			return cb({
-				err: "user already created"
-			});
+			return cb({	err: "user already created"	});
 		}
 		
 		user = new User();
 		user.setRight(TO_CHANGE_RIGHTS);
+		socket.user = user;
 
 		instance = new Instance(io);
 		var err = instance.join(user);
@@ -84,26 +81,21 @@ io.on('connection', function (socket) {
 	 * @param  {function} cb
 	 */
 	socket.on("join", function(data, cb){
-		if (user) {
-			return cb({
-				err: "user already created"
-			});
-		}
 		if (instance) {
-			return cb({
-				err: "already joined to instance"
-			});
+			return cb({	err: "already joined to instance" });
+		}
+		if (user) {
+			return cb({	err: "user already created"	});
 		}
 
 		instance = Instance.get(data.token);
 
 		if (!instance) {
-			return cb({
-				err: "instance with this token does not exists"
-			});
+			return cb({	err: "instance with this token does not exists"	});
 		}
 
 		user = new User(data.secret);
+		socket.user = user;
 		var err = instance.join(user);
 
 		cb({
@@ -122,14 +114,10 @@ io.on('connection', function (socket) {
 	socket.on("login", function(nick, cb){
 		console.log("login", nick);
 		if (instance === undefined) {
-			return cb({
-				err: "no instance to login to",
-			});
+			return cb({	err: "no instance to login to" });
 		}
 		if (user === undefined) {
-			return cb({
-				err: "no user to name when loging in",
-			});
+			return cb({	err: "no user to name when loging in" });
 		}
 		
 		user.nick = nick;
@@ -169,6 +157,37 @@ io.on('connection', function (socket) {
 		}
 	});
 
+	socket.on("disconnect", function() {
+		console.log("user disconnected");
+		if (!instance || !user) {
+			return;
+		}
+		if (!io.sockets.sockets.some(function (socket) { // another socket with same user not exists
+			if (socket.user) {
+				if (socket.user.nick === user.nick && socket.user !== user) {
+					return true;
+				}
+			}
+		})) {
+			instance.leave(user);
+
+			instance.emit("userlist", {
+				users: instance.getUsers()
+			});
+			console.log("user", user.name, "leaved");
+		};
+	});
+
 });
+
+
+/**
+ * ADMINISTRATION
+ */
+
+server.on('request', function(request, response) {
+	
+});
+ 
 
 console.log("Server is running on port", PORT);
