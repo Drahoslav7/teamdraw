@@ -30,139 +30,10 @@ if (!SSL_KEY || !SSL_CA || !SSL_CERT) { // http
 var io = require("socket.io").listen(server, {
 	origins: ALLOWED_ORIGINS
 });
-var crypto = require("./crypto");
 
-var instances = {};
+var User = require("./user");
+var Instance = require("./instance");
 
-/**
- * user rights
- */
-const TO_SEE = 1<<0;
-const TO_DRAW = 1<<1;
-const TO_CHANGE_RIGHTS = 1<<2;
-
-function User(secret) {
-
-	var _secret = secret || crypto.genSecret();
-	var _rights = TO_SEE | TO_DRAW;
-
-	this.nick = undefined;
-
-	this.getSecret = function () {
-		return _secret;
-	};
-	this.hasRight = function (right) {
-		return !!(_rights & right);
-	};
-	this.setRight = function (right) {
-		_rights |= right;
-	}
-	this.getRights = function () {
-		return _rights;
-	}
-	this.toJSON = function () {
-		return {
-			nick: this.nick,
-			secret: _secret,
-			rights: _rights,
-		};
-	};
-}
-
-function Instance() {
-	// private:
-	
-	var _actions = []; // this has to be syncing across clients
-	var _token; // globally unicate identifier of instance
-	var _users = []; // collection of obejcts {secret: string, nick: string, rights: number}
-	var _creationTime = new Date();
-
-	do {
-		_token = crypto.genToken();
-	} while(_token in instances);
-
-	instances[_token] = this;
-
-	// public:
-
-	/**
-	 * this had to be called twice, without nick when creating or joining
-	 * and with nick when logging
-	 * @param  {User} user to (re)join
-	 * @return {error}        error if some
-	 */
-	this.join = function(user, userSocket) {
-
-		if (user.nick) {
-			if (_users.some(function(otherUser) {
-				return otherUser.nick === user.nick && user.getSecret() !== otherUser.getSecret();
-			})) {
-				return "nick already taken";
-			};
-		}
-
-		// update if exists
-		var existingUser = _users.find(function(otherUser, i) {
-			if (user.getSecret() === otherUser.getSecret()) {
-				user.setRight(otherUser.getRights());
-				this[i] = user;
-				return true;
-			}
-		});
-		// othervise push as new
-		if (!existingUser) {
-			_users.push(user);
-		}
-
-		if (userSocket) {
-			userSocket.join(_token);
-		}
-
-		console.log(user.nick, "joined", _token);
-		return null;
-	};
-
-
-	this.getToken = function() {
-		return _token;
-	};
-
-	this.getUsers = function() {
-		var users = [];
-		_users.forEach(function(user) {
-			if (user.nick) {
-				users.push(user.nick);
-			}
-		});
-		return users;
-	};
-
-	this.pushAction = function(action) {
-		_actions.push(action);
-		action.n = _actions.length;
-		return action;
-	};
-
-	this.getActionsSince = function(n){
-		return _actions.filter(function(action){
-			return action.n > n;
-		});
-	};
-
-	this.emit = function() {
-		io.to(_token).emit.apply(io.to(_token), arguments);
-	};
-
-	this.toJSON = function() {
-		return {
-			name: _token,
-			time: _creationTime,
-			users: _users,
-			actionsLength: _actions.length,
-		};
-	};
-
-}
 
 io.on('connection', function (socket) {
 	console.log("user connection");
@@ -192,7 +63,7 @@ io.on('connection', function (socket) {
 		user = new User();
 		user.setRight(TO_CHANGE_RIGHTS);
 
-		instance = new Instance();
+		instance = new Instance(io);
 		var err = instance.join(user);
 		
 		cb({
@@ -223,12 +94,14 @@ io.on('connection', function (socket) {
 				err: "already joined to instance"
 			});
 		}
-		if (!(data.token in instances)) {
+
+		instance = Instance.get(data.token);
+
+		if (!instance) {
 			return cb({
 				err: "instance with this token does not exists"
 			});
 		}
-		instance = instances[data.token];
 
 		user = new User(data.secret);
 		var err = instance.join(user);
@@ -276,7 +149,6 @@ io.on('connection', function (socket) {
 		instance.emit("update", {
 			data: savedAction
 		});
-
 	});
 
 	socket.on("sync", function(lastActionId) {
