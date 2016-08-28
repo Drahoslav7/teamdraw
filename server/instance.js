@@ -82,7 +82,14 @@ function Instance(io) {
 		var users = [];
 		_users.forEach(function(user) {
 			if (user.nick && user.online) {
-				users.push(user.nick);
+				users.push({
+					nick: user.nick,
+					rights: {
+						toSee: user.hasRight(TO_SEE),
+						toDraw: user.hasRight(TO_DRAW),
+						toChangeRights: user.hasRight(TO_CHANGE_RIGHTS),
+					}
+				});
 			}
 		});
 		return users;
@@ -104,29 +111,29 @@ function Instance(io) {
 		io.to(_token).emit.apply(io.to(_token), arguments);
 	};
 
-	this.muteUser = function(name) {
-		var user = _users.find(user => user.name === name);
+	this.muteUser = function(nick) {
+		var user = _users.find(user => user.nick === nick);
 		if(user) {
 			user.removeRight(TO_DRAW);
 		}
 	};
 
-	this.blindUser = function(name) {
-		var user = _users.find(user => user.name === name);
+	this.blindUser = function(nick) {
+		var user = _users.find(user => user.nick === nick);
 		if(user) {
 			user.removeRight(TO_SEE);
 		}
 	}
 
-	this.unMuteUser = function(name) {
-		var user = _users.find(user => user.name === name);
+	this.unmuteUser = function(nick) {
+		var user = _users.find(user => user.nick === nick);
 		if(user) {
 			user.addRight(TO_DRAW);
 		}
 	};
 
-	this.unBlindUser = function(name) {
-		var user = _users.find(user => user.name === name);
+	this.unblindUser = function(nick) {
+		var user = _users.find(user => user.nick === nick);
 		if(user) {
 			user.addRight(TO_SEE);
 		}
@@ -134,8 +141,8 @@ function Instance(io) {
 
 	this.toJSON = function() {
 		return {
-			name: _token,
-			time: _creationTime,
+			token: _token,
+			creationTime: _creationTime,
 			users: _users,
 			actionsLength: _actions.length,
 		};

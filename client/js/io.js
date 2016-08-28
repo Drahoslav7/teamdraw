@@ -42,5 +42,12 @@ var io = new (function Client(){
 		socket.emit("sync", lastActionId);
 	}
 
+	this.acl = function(action, userNick){
+		socket.emit("acl", {
+			what: action,
+			nick: userNick,
+		});
+	}
+
 
 });

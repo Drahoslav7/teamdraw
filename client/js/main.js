@@ -45,8 +45,12 @@ $(function(){
 		$("#online-count").html(users.length);
 		userList.empty();
 
+		var me = users.find(function(user) {
+			return user.nick === app.getNick()
+		});
+
 		users.forEach(function (user) {
-			userList.append(gui.createUserElement(user));
+			userList.append(gui.createUserElement(user, me));
 		});
 		gui.userListResize(true);
 	});

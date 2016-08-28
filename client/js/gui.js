@@ -146,18 +146,32 @@ var gui = new (function () {
 	}
 
 
-	this.createUserElement = function(user) {
+	this.createUserElement = function(user, me) {
+
 		var userElement = $("<div class='user'></div>");
-		var penciltoggler = $("<i class='mdi mdi-pencil'></i>");
+		var penciltoggler = $("<i class='mdi'></i>");
 		var userIco = $("<i class='mdi mdi-account'></i>");
-		penciltoggler.hover(function() {
-			$(this).toggleClass("mdi-pencil mdi-pencil-off");
-		}, function() {
-			$(this).toggleClass("mdi-pencil mdi-pencil-off");
-		});
-		userElement.attr("title", user);
-		if(user === app.getNick()) {
+		if (user.rights.toDraw) {
+			penciltoggler.addClass('mdi-pencil');
+		} else {
+			penciltoggler.addClass('mdi-pencil-off');
+		}
+
+		if (me.rights.toChangeRights) {
+			penciltoggler.hover(function() {
+				$(this).toggleClass("mdi-pencil mdi-pencil-off");
+			}, function() {
+				$(this).toggleClass("mdi-pencil mdi-pencil-off");
+			});
+			penciltoggler.click(function() {
+				app.toggleMuteToUser(user);
+			});
+		}
+		userElement.attr("title", user.nick);
+		if (user.nick === app.getNick()) {
 			userElement.addClass("mySelf");
+		}
+		if (user.rights.toChangeRights) {
 			userIco.toggleClass("mdi-account mdi-account-star")
 		}
 		userElement.append(userIco);

@@ -135,8 +135,8 @@ var draw = new(function Draw(){
 
 		app.on("userlist update", function(users) {
 			users.forEach(function(user) {
-				if (app.getNick() !== user && !cursorManager.exists(user)) {
-					cursorManager.new(user);
+				if (app.getNick() !== user.nick && !cursorManager.exists(user.nick)) {
+					cursorManager.new(user.nick);
 				}
 			});
 		});

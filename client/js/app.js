@@ -123,7 +123,7 @@ var app = new (function App(){
 	 * @param  {string}   nick nick of user
 	 * @param  {Function} cb   callback function
 	 */
-	this.login = function(nick, cb){
+	this.login = function(nick, cb) {
 		if(!nick){
 			cb("nick required");
 			return; 
@@ -139,7 +139,7 @@ var app = new (function App(){
 		});
 	};
 
-	this.create = function(cb){
+	this.create = function(cb) {
 		console.log("creating new canvas");
 		var conf = {}; // TODO nastavení?
 		io.create(conf, function (resp){
@@ -153,7 +153,7 @@ var app = new (function App(){
 		});
 	};
 
-	this.join = function(cb){
+	this.join = function(cb) {
 		var token = location.hash.substr(1);
 		console.log("token when joininig", token);
 		if(token in localStorage){
@@ -176,7 +176,7 @@ var app = new (function App(){
 		}
 	};
 
-	this.postAction = function(type, data){
+	this.postAction = function(type, data) {
 		var action = {
 			type: type,
 			data: data
@@ -196,9 +196,25 @@ var app = new (function App(){
 		io.sync(lastActionId);
 	};
 
-	this.export = function(){
-		fire("export");
+	// ACL
+
+	this.toggleMuteToUser = function(user) {
+		console.log("toggleMute", user)
+		if(user.rights.toDraw) {
+			io.acl("mute", user.nick);
+		} else {
+			io.acl("unmute", user.nick);
+		}
 	};
+
+	this.toggleBlindToUser = function(user) {
+		if(user.rights.toSee) {
+			io.acl("blind", user.nick);
+		} else {
+			io.acl("unblind", user.nick);
+		}
+	};
+
 
 });
 

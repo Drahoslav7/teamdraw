@@ -75,6 +75,7 @@ io.on('connection', function (socket) {
 				secret: user.getSecret(), 
 			},
 		});
+		adminio.inform();
 	});
 
 	/**
@@ -107,6 +108,7 @@ io.on('connection', function (socket) {
 			err: err,
 			secret: user.getSecret(),
 		});
+		adminio.inform();
 	});
 
 	/**
@@ -138,7 +140,7 @@ io.on('connection', function (socket) {
 		instance.emit("userlist", {
 			users: instance.getUsers()
 		});
-		adminio.emit("instances", Instance.getAll());
+		adminio.inform();
 	});
 
 	/**
@@ -146,10 +148,14 @@ io.on('connection', function (socket) {
 	 */
 
 	socket.on("action", function(action, cb) {
+		if (!user.hasRight(TO_DRAW)) {
+			return; // TODO inform client
+		}
 		var savedAction = instance.pushAction(action);
 		instance.emit("update", {
 			data: savedAction
 		});
+		adminio.inform();
 	});
 
 	socket.on("sync", function(lastActionId) {
@@ -181,9 +187,24 @@ io.on('connection', function (socket) {
 			instance.emit("userlist", {
 				users: instance.getUsers()
 			});
-			adminio.emit("instances", Instance.getAll());
+			adminio.inform();
 			console.log("user", user.name, "leaved");
 		};
+	});
+
+	socket.on("acl", function(data) {
+		if (!user.hasRight(TO_CHANGE_RIGHTS)) {
+			return;
+		}
+		var methodName = data.what + "User";
+		if (methodName in instance) {
+			instance[methodName](data.nick);
+
+			instance.emit("userlist", {
+				users: instance.getUsers()
+			});
+			adminio.inform();
+		}
 	});
 
 	function isUserAlsoOnAnotherSocket(user) {
@@ -205,6 +226,12 @@ io.on('connection', function (socket) {
 
 var adminio = io.of("/admin");
 
+adminio.inform = function() {
+	if (this.sockets.length !== 0) {
+		this.emit("instances", Instance.getAll());
+	}
+}
+
 adminio.on("connection", function(socket) {
 	console.log("admin connection");
 
@@ -212,5 +239,3 @@ adminio.on("connection", function(socket) {
 		callback(Instance.getAll());
 	});
 });
-
- 
