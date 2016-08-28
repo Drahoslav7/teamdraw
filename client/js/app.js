@@ -199,7 +199,6 @@ var app = new (function App(){
 	// ACL
 
 	this.toggleMuteToUser = function(user) {
-		console.log("toggleMute", user)
 		if(user.rights.toDraw) {
 			io.acl("mute", user.nick);
 		} else {
