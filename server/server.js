@@ -62,7 +62,7 @@ io.on('connection', function (socket) {
 		}
 		
 		user = new User();
-		user.setRight(TO_CHANGE_RIGHTS);
+		user.addRight(TO_CHANGE_RIGHTS);
 		socket.user = user;
 
 		instance = new Instance(io);
@@ -187,9 +187,9 @@ io.on('connection', function (socket) {
 	});
 
 	function isUserAlsoOnAnotherSocket(user) {
-		return io.sockets.sockets.some(function (socket) {
-			if (socket.user) {
-				if (socket.user.nick === user.nick && socket.user !== user) {
+		return io.sockets.sockets.some(function (anotherSocket) {
+			if (anotherSocket.user) {
+				if (socket.user === anotherSocket.user && socket !== anotherSocket) {
 					return true;
 				}
 			}

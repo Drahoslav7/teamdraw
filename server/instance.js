@@ -1,4 +1,5 @@
 var crypto = require("./crypto");
+require("./user");
 
 var instances = {};
 
@@ -36,7 +37,7 @@ function Instance(io) {
 
 		if (user.nick) {
 			if (_users.some(function(otherUser) {
-				return otherUser.nick === user.nick && user.getSecret() !== otherUser.getSecret();
+				return otherUser.nick === user.nick && user !== otherUser;
 			})) {
 				return "nick already taken";
 			};
@@ -44,14 +45,14 @@ function Instance(io) {
 
 		// update if exists
 		var existingUser = _users.find(function(otherUser, i) {
-			if (user.getSecret() === otherUser.getSecret()) {
-				user.setRights(otherUser.getRights());
-				_users[i] = user;
+			if (user === otherUser) {
 				return true;
 			}
 		});
-		// othervise push as new
-		if (!existingUser) {
+
+		if (existingUser) {
+			existingUser.online = true;
+		} else {
 			_users.push(user);
 		}
 
@@ -65,8 +66,8 @@ function Instance(io) {
 
 	this.leave = function (user) {
 		_users.forEach( anotherUser => {
-			if (user.getSecret() === anotherUser.getSecret()) {
-				user.offline = true;
+			if (user === anotherUser) {
+				user.online = false;
 			} 
 		});
 		;
@@ -80,7 +81,7 @@ function Instance(io) {
 	this.getUsers = function() {
 		var users = [];
 		_users.forEach(function(user) {
-			if (user.nick && !user.offline) {
+			if (user.nick && user.online) {
 				users.push(user.nick);
 			}
 		});
@@ -102,6 +103,34 @@ function Instance(io) {
 	this.emit = function() {
 		io.to(_token).emit.apply(io.to(_token), arguments);
 	};
+
+	this.muteUser = function(name) {
+		var user = _users.find(user => user.name === name);
+		if(user) {
+			user.removeRight(TO_DRAW);
+		}
+	};
+
+	this.blindUser = function(name) {
+		var user = _users.find(user => user.name === name);
+		if(user) {
+			user.removeRight(TO_SEE);
+		}
+	}
+
+	this.unMuteUser = function(name) {
+		var user = _users.find(user => user.name === name);
+		if(user) {
+			user.addRight(TO_DRAW);
+		}
+	};
+
+	this.unBlindUser = function(name) {
+		var user = _users.find(user => user.name === name);
+		if(user) {
+			user.addRight(TO_SEE);
+		}
+	}
 
 	this.toJSON = function() {
 		return {
