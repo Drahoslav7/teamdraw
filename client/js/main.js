@@ -24,7 +24,7 @@ $(function(){
 				errormodal.modal("show");
 			}
 			console.error(err);
-			if(firstTime){
+			if(firstTime || !app.getNick()){
 				$("#signmodal").modal("show");
 			} else { // already loggged in
 				app.login(app.getNick(), function(err){

@@ -133,9 +133,9 @@ var app = new (function App(){
 			if(resp.err === null){
 				setNick(nick);
 				fire("logged on");
+				app.save();
 			}
 			cb(resp.err);
-			app.save();
 		});
 	};
 
@@ -146,6 +146,7 @@ var app = new (function App(){
 			if(resp.err === null){
 				setToken(resp.data.token);
 				_secret = resp.data.secret;
+				app.save();
 				cb(null);
 			} else {
 				cb(resp.err);
