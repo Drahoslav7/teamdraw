@@ -127,6 +127,9 @@ io.on('connection', function (socket) {
 		
 		user.nick = nick;
 		var err = instance.join(user, socket);
+		if (err) {
+			user.nick = undefined;
+		}
 
 		cb({
 			err: err
@@ -135,6 +138,7 @@ io.on('connection', function (socket) {
 		instance.emit("userlist", {
 			users: instance.getUsers()
 		});
+		adminio.emit("instances", Instance.getAll());
 	});
 
 	/**
@@ -177,6 +181,7 @@ io.on('connection', function (socket) {
 			instance.emit("userlist", {
 				users: instance.getUsers()
 			});
+			adminio.emit("instances", Instance.getAll());
 			console.log("user", user.name, "leaved");
 		};
 	});

@@ -45,8 +45,8 @@ function Instance(io) {
 		// update if exists
 		var existingUser = _users.find(function(otherUser, i) {
 			if (user.getSecret() === otherUser.getSecret()) {
-				user.setRight(otherUser.getRights());
-				this[i] = user;
+				user.setRights(otherUser.getRights());
+				_users[i] = user;
 				return true;
 			}
 		});
@@ -64,9 +64,12 @@ function Instance(io) {
 	};
 
 	this.leave = function (user) {
-		_users = _users.filter(function (anotherUser) {
-			return user.getSecret() !== anotherUser.getSecret();
+		_users.forEach( anotherUser => {
+			if (user.getSecret() === anotherUser.getSecret()) {
+				user.offline = true;
+			} 
 		});
+		;
 	};
 
 
@@ -77,7 +80,7 @@ function Instance(io) {
 	this.getUsers = function() {
 		var users = [];
 		_users.forEach(function(user) {
-			if (user.nick) {
+			if (user.nick && !user.offline) {
 				users.push(user.nick);
 			}
 		});

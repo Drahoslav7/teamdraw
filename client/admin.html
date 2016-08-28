@@ -28,12 +28,15 @@ var url = location.protocol + "//" + server.hostname + ":" + server.port + "/adm
 var socket = io.connect(url);
 
 $(function() {
-	socket.emit("get instances", null, function(instances) {
+	socket.on("instances", handleInstances)
+	socket.emit("get instances", null, handleInstances);
+
+	function handleInstances(instances) {
 		instances = Object.keys(instances).map(key => instances[key]);
 		instances = instances.sort((a,b) => a.time < b.time);
 		console.log("instances", instances);
 		$("textarea").val(JSON.stringify(instances, null, '\t'));
-	});
+	}
 });
 
 </script>

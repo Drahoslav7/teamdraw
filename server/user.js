@@ -14,6 +14,7 @@ function User(secret) {
 	var _rights = TO_SEE | TO_DRAW;
 
 	this.nick = undefined;
+	this.offline = undefined;
 
 	this.getSecret = function () {
 		return _secret;
@@ -24,6 +25,9 @@ function User(secret) {
 	this.setRight = function (right) {
 		_rights |= right;
 	}
+	this.setRights = function (right) {
+		_rights = right;
+	}
 	this.getRights = function () {
 		return _rights;
 	}
@@ -32,6 +36,7 @@ function User(secret) {
 			nick: this.nick,
 			secret: _secret,
 			rights: _rights,
+			offline: this.offline,
 		};
 	};
 }
