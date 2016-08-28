@@ -40,9 +40,10 @@ $(function(){
 	app.on("userlist update", function(users){
 		var userList = $("#userlist");
 
-		console.log("New User", users);
+		console.log("Userlist update", users);
 
 		$("#online-count").html(users.length);
+		$("[title]", userList).tooltip("destroy");
 		userList.empty();
 
 		var me = users.find(function(user) {
