@@ -105,6 +105,10 @@ $(function(){
 				if(err === null){
 					console.log("nick ok");
 					$("#signmodal").modal("hide");
+					if (localStorage.firstRun === undefined) {
+						$("#helpmodal").modal("show");
+						localStorage.firstRun = false;
+					}
 				} else {
 					$("#nickgroup").addClass("has-error");
 					$("#nick").val("");

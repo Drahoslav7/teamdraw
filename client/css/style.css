@@ -242,3 +242,7 @@ html, body {
 	float: right;
 	display: none;
 }
+
+#helpmodal strong {
+	font-size: 120%;
+}

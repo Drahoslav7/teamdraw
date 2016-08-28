@@ -179,7 +179,7 @@ var gui = new (function () {
 		userElement.tooltip({
 			animation: false,
 			placement: "left",
-			container: "body",
+			container: "#tooltips",
 		});
 		return userElement;
 	};
@@ -283,7 +283,7 @@ var gui = new (function () {
 				html: true,
 				placement: "auto right",
 				delay: {show: 500, hide: 0},
-				container: "body",
+				container: "#tooltips",
 				trigger: "hover"
 			}).click(function(){
 				$(this).tooltip("hide");
