@@ -22,6 +22,7 @@
 	<script src="js/paper-core.min.js"></script>
 	<script src="js/socket.io.js"></script>
 	<script src='js/spectrum.js'></script>
+	<script src='js/FileSaver.min.js'></script>
 
 	<!-- ours -->
 	<script src="js/server.config.js"></script>
@@ -295,11 +296,11 @@
 						<h3><span class="mdi mdi-file-image" aria-hidden="true"></span> Save</h3>
 					</div>
 					<div class="modal-body text-justify">
-						Picture will be exported to image and opened in new window, then you can save it by pressing <b>control + S</b>.
-					</div>
+						Picture can be saved as PNG (bitmap format) or SVG (vector format). Please choose what suits you better.
+					</div>	
 					<div class="modal-footer">
-						<a class="btn btn-primary export-img-button" data-image-type="svg" down-load="teamdraw.svg"></span> Export as SVG</a>
-						<!-- <a class="btn btn-primary export-img-button" data-image-type="png" down-load="expenses.png"></span> Export as PNG</a> -->
+						<button class="btn btn-primary save-file" data-type="svg">Save as SVG</button>
+						<button class="btn btn-primary save-file" data-type="png">Save as PNG</button>
 					</div>
 				</div>
 			</div>

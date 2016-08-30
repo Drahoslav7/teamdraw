@@ -717,15 +717,30 @@ var draw = new(function Draw(){
 	this.getCurrentToolName = function(){
 		return _currentToolName;
 	};
-
-	this.getUrl = function(){
-		var svg = paper.project.exportSVG({asString:true});
-		//add xml declaration
-		svg = '<?xml version="1.0" standalone="yes"?>\r\n' + svg;
-		//convert svg source to URI data scheme.
-		var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
-		return url;
-	};
+	
+	this.getBlob = function(fileType, callback) {
+		if(typeof callback === "function") {
+			if (fileType === "png") {
+				var selected = paper.project.selectedItems;
+				paper.project.deselectAll(); 
+				paper.view.draw();
+				paper.view.element.toBlob(function(blob){
+					callback(blob);
+					selected.forEach(function (item) {
+						item.selected = true;
+					});
+				});
+			}
+			if (fileType === "svg") {
+				var svgString = paper.project.exportSVG({asString:true});
+				var blob = new Blob(
+					[svgString],
+					{type: "image/svg+xml"}
+				);
+				callback(blob);
+			}
+		}
+	}
 
 });
 

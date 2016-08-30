@@ -83,11 +83,18 @@ $(function(){
 	$("#new-button").click(function(){
 		window.open(location.toString().split("#")[0]);
 	});
-	$("#save-button, #save-button-neterror").click(function(){
-		var url = draw.getUrl("svg"); // TODO png
-		$("#savemodal .export-img-button").attr("href", url);
+	$("#save-button, #save-button-neterror").click(function() {
 		$("#savemodal").modal("show");
 	});
+	$('#savemodal .save-file').click(function() {
+		console.log('click');
+		var fileType = $(this).attr('data-type');
+		draw.getBlob(fileType, function(blob) {
+			saveAs(blob, "teamdraw."+fileType);
+			$("#savemodal").modal("hide");
+		});
+	})
+
 
 	/* modals on show events */
 
