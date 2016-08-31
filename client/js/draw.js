@@ -567,10 +567,7 @@ var draw = new(function Draw(){
 				return;
 			}
 			var item = new paper[className];
-			var parent = item.getParent();
-			item.remove();
 			item.importJSON(action.data);
-			item.setParent(parent);
 			item.n = action.n; // for deleting and manipulation purposes
 		}
 		if(action.type === "erase"){
