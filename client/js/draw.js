@@ -304,8 +304,10 @@ var draw = new(function Draw(){
 	_tools["brush"] = (function(){
 		var brush = new paper.Tool();
 		var lastDeltas = [];
+		var startPoint;
 		var path;
 		brush.onMouseDown = function(event){
+			lastDeltas = [];
 			brush.minDistance = _size;
 			brush.maxDistance = _size*4;
 			path = new paper.Path({
@@ -314,10 +316,20 @@ var draw = new(function Draw(){
 				fillColor: _color,
 				strokeWidth: _size,
 			});
-			path.add(event.point);
+			startPoint = event.point
+			var toSide = paper.Point.random().normalize(_size);
+			path.add(startPoint.subtract(toSide));
+			path.add(startPoint.add(toSide.rotate(+90)));
+			path.add(startPoint.add(toSide));
+			path.add(startPoint.add(toSide.rotate(-90)));
+			path.closePath();
+			path.smooth({type: "catmull-rom"});
 		};
 		brush.onMouseDrag = function(event){
-			if (path.segments.length > 1) {
+			if (event.count === 0) {
+				path.removeSegments(0);
+				path.add(startPoint);
+			} else {
 				path.removeSegment(path.segments.length-1);
 			}
 			var delta = event.delta;
@@ -336,7 +348,7 @@ var draw = new(function Draw(){
 			path.smooth({type: "catmull-rom"});
 		};
 		brush.onMouseUp = function(event){
-			lastDeltas = [];
+
 			// path.simplify();
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}));
