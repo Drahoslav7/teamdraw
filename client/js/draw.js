@@ -719,7 +719,7 @@ var draw = new(function Draw(){
 	};
 	
 	this.getBlob = function(fileType, callback) {
-		if(typeof callback === "function") {
+		if (typeof callback === "function") {
 			if (fileType === "png") {
 				var selected = paper.project.selectedItems;
 				paper.project.deselectAll(); 

@@ -90,7 +90,8 @@ $(function(){
 		console.log('click');
 		var fileType = $(this).attr('data-type');
 		draw.getBlob(fileType, function(blob) {
-			saveAs(blob, "teamdraw."+fileType);
+			var time = (new Date()).toISOString().split('.')[0];
+			saveAs(blob, "teamdraw." + time + "." + fileType);
 			$("#savemodal").modal("hide");
 		});
 	})
