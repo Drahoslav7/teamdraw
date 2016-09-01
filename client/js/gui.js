@@ -299,19 +299,32 @@ var gui = new (function () {
 		 * boldnes picker
 		 */
 		(function(){
-			var posX = $("#tool-boldness").offset().top - ($("#ghost-boldnesspicker").outerHeight() - $("#tool-boldness").outerHeight())/2;
+			var posX = $("#tool-boldness").offset().top;
 			var posY = $("#tool-boldness").outerWidth(true);
 			$("#ghost-boldnesspicker").css({top: posX , left: posY+20});
 
-			$("#tool-boldness").click(function() {
+			$("#tool-boldness").on("click", function show(e) {
+				var aroundpicker = $(":not(#ghost-boldnesspicker *)");
+				$("#tool-boldness").off("click", show);
 				gui.showBoldnessTool();
+				setTimeout(function() {
+					aroundpicker.on("click", hide);
+				});
+				function hide (e) {
+					gui.hideBoldnessTool();
+					aroundpicker.off("click", hide);
+					setTimeout(function() {
+						$("#tool-boldness").on("click", show);
+					});
+				}
 			});
 
-			$(".btn-boldness-tool").click(function() {
+			$(".btn-boldness-tool").on("click", function() {
 				var boldness = $(this).attr("data-size");
 				draw.setSize(1<<boldness);
 				gui.hideBoldnessTool();
 			});
+
 		})();
 
 		/**
@@ -335,21 +348,20 @@ var gui = new (function () {
 				}
 			});
 
-			$("#tool-color").on("mousedown", function toggle() {
+			$("#tool-color").on("click", function toggle() {
 				var aroundpicker = $(":not(#ghost-colorpicker *)");
 				if(!ghostcolorpicker.is(":visible")) {
-					$("#tool-color").off("mousedown", toggle);
+					$("#tool-color").off("click", toggle);
 					ghostcolorpicker.show(150, function(){
 						colorpicker.spectrum("show"); // bugfix, spectrum won"t properly update otherwise
-						aroundpicker.on("mousedown", hide);
+						aroundpicker.on("click", hide);
 					});
 				}
 				function hide(e){
-					e.stopPropagation();
-					aroundpicker.off("mousedown", hide);
+					aroundpicker.off("click", hide);
 					ghostcolorpicker.hide(150, function(){
 						colorpicker.spectrum("hide");
-						$("#tool-color").on("mousedown", toggle);
+						$("#tool-color").on("click", toggle);
 					});
 				}
 			});

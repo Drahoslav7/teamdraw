@@ -198,6 +198,7 @@ html, body {
 }
 
 .btn-tool, .btn-boldness-tool, #menu .btn {
+	height: 38px;
 	outline: none !important;
 	color: #000;
 	background: #b3bbc3;
