@@ -609,48 +609,50 @@ var draw = new(function Draw(){
 	 */
 
 
-	this.zoom = function(direction, clientCenter) {
-		var center = clientCenter ? paper.view.getEventPoint({
-			clientX: clientCenter.x,
-			clientY: clientCenter.y,
-		}) : paper.view.center;
-		var multiple = 1;
-		var zoom = paper.view.getZoom();
-		if (direction > 0 && zoom < 4 && !almostEquals(zoom, 4)) {
-			multiple = Math.SQRT2;
-		}
-		if (direction < 0 && zoom > 1/4 && !almostEquals(zoom, 1/4)) {
-			multiple = Math.SQRT1_2;
-		}
-		var step = Math.sqrt(Math.sqrt(multiple));
-		var steps = 0;
-		if (!paper.view.onFrame) {
+	this.zoom = (function initZoom() {
+		const ZOOM_STEP_IN = Math.sqrt(Math.sqrt(Math.SQRT2));
+		const ZOOM_STEP_OUT = Math.sqrt(Math.sqrt(Math.SQRT1_2));
+		const FRAMES = 4;
+		const MIN_ZOOM = 1/4;
+		const MAX_ZOOM = 4;
+		var zoomCenter;
+		var zoomDirection = 0;
+
+		function zoom(direction, clientCenter) {
+			zoomCenter = clientCenter ? paper.view.getEventPoint({
+				clientX: clientCenter.x,
+				clientY: clientCenter.y,
+			}) : paper.view.center;
+			zoomDirection += direction*FRAMES;
+		};
+
+		$(function(){
 			paper.view.onFrame = function(event) {
-				if (steps === 4) {
-					paper.view.onFrame = null;
-				} else {
+				if (zoomDirection !== 0) {
 					var zoom = paper.view.getZoom();
 					if (
-						(step > 1 && zoom < 4 && !almostEquals(zoom, 4)) ||
-						(step < 1 && zoom > 1/4 && !almostEquals(zoom, 1/4))
+						(zoomDirection > 0 && zoom < MAX_ZOOM && !almostEquals(zoom, MAX_ZOOM)) ||
+						(zoomDirection < 0 && zoom > MIN_ZOOM && !almostEquals(zoom, MIN_ZOOM))
 					) {
-						paper.view.scale(step, center);
+						if (zoomDirection < 0) {
+							++zoomDirection;
+							paper.view.scale(ZOOM_STEP_OUT, zoomCenter);
+						}
+						if (zoomDirection > 0) {
+							--zoomDirection;
+							paper.view.scale(ZOOM_STEP_IN, zoomCenter);
+						}
+						paper.view.draw();
 						gui.setZoomInfo(paper.view.getZoom());
 					} else {
-						paper.view.onFrame = null;
+						zoomDirection = 0;
 					}
-					steps++;
 				}
 			};
-		} else {
-			paper.view.scale(multiple, center);
-			gui.setZoomInfo(paper.view.getZoom());
-		}
-		cursorManager.copeZoom(multiple);
-		gui.setZoomInfo(paper.view.getZoom());
+		});
 
-
-	};
+		return zoom;
+	})();
 
 	this.selectTool = function(toolname){
 		if(toolname in _tools){
