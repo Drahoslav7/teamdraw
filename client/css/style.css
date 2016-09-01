@@ -197,8 +197,11 @@ html, body {
 	border-bottom: 4px solid #455e73;
 }
 
-.btn-tool, .btn-boldness-tool, #menu .btn {
+.btn-tool, .btn-boldness-tool {
 	height: 38px;
+}
+
+.btn-tool, .btn-boldness-tool, #menu .btn {
 	outline: none !important;
 	color: #000;
 	background: #b3bbc3;
