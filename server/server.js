@@ -149,12 +149,13 @@ io.on('connection', function (socket) {
 
 	socket.on("action", function(action, cb) {
 		if (!user.hasRight(TO_DRAW)) {
-			return; // TODO inform client
+			return cb(new Error("No right to draw"));
 		}
 		var savedAction = instance.pushAction(action);
 		instance.emit("update", {
 			data: savedAction
 		});
+		cb();
 		adminio.inform();
 	});
 

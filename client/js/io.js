@@ -28,11 +28,12 @@ var io = new (function Client(){
 		});
 	};
 
+	this.postAction = function(action, cb){
+		socket.emit("action", action, cb);
+	}
+
 	// without response
 
-	this.postAction = function(action){
-		socket.emit("action", action);
-	}
 
 	this.postCursor = function(cursor){
 		socket.emit("cursor", cursor);

@@ -33,7 +33,7 @@ var app = new (function App(){
 		}
 	};
 
-	// conneciton:
+	// connection:
 	function connectionOk(){
 		console.log("connected");
 		fire("connected");
@@ -76,11 +76,11 @@ var app = new (function App(){
 	 * @param  {string}   eventName name of event
 	 * @param  {Function} cb        callback
 	 */
-	this.on = function(eventName, cb){
+	this.on = function(eventName, cb) {
 		if(!(eventName in _events)){
 			_events[eventName] = [];
 		}
-		if(!("call" in cb)){
+		if (typeof cb !== "function") {
 			return console.error(cb, "is not callable function");
 		}
 		_events[eventName].push(cb);
@@ -88,7 +88,7 @@ var app = new (function App(){
 
 	this.save = function(){
 		if(!_token){
-			console.error("nothing to save");
+			return console.error("nothing to save");
 		}
 		localStorage[_token] = JSON.stringify({
 			token: _token,
@@ -99,9 +99,9 @@ var app = new (function App(){
 	};
 
 	this.load = function(token){
-		try{
+		try {
 			var data = JSON.parse(localStorage[token]);
-		} catch(e){
+		} catch(e) {
 			console.err("bad data in localstorage", token);
 		}
 		_token = data.token;
@@ -110,13 +110,17 @@ var app = new (function App(){
 		console.log("loaded", data);
 	}
 
-	this.getToken = function(){
+	this.getToken = function() {
 		return _token;
 	}
 
-	this.getNick = function(){
+	this.getNick = function() {
 		return _nick;
 	}
+
+	/**************
+	 * io methods *
+	 **************/
 
 	/**
 	 * register user with given name
@@ -177,12 +181,17 @@ var app = new (function App(){
 		}
 	};
 
-	this.postAction = function(type, data) {
+	this.postAction = function(type, data, cb) {
+		function callback (response) {
+			if (typeof cb === "function") {
+				cb(response);
+			}
+		}
 		var action = {
 			type: type,
-			data: data
-		}
-		io.postAction(action);
+			data: data,
+		};
+		io.postAction(action, callback);
 	};
 
 	this.postCursorPosition = onlyOncePerInterval(function (position) {

@@ -77,7 +77,11 @@ var draw = new(function Draw(){
 	function erase(item) {
 		if (item.visible) { // prevent from multiple delete action on one item
 			item.visible = false;
-			app.postAction("erase", item.n);
+			app.postAction("erase", item.n, function(err) {
+				if (err) {
+					item.visible = true;
+				}
+			});
 		}
 	}
 
@@ -199,7 +203,7 @@ var draw = new(function Draw(){
 
 		selector.onMouseDrag = function(event) {
 			if (!willTranslate) { // selecting
-				getItemsNearEvent(event).forEach(function(item){
+				getItemsNearEvent(event).forEach(function(item) {
 					item.selected = true;
 				});
 			} else { // shifting
@@ -213,15 +217,20 @@ var draw = new(function Draw(){
 		selector.onMouseUp = function(event) {
 			willTranslate = false;
 			if (!translationDelta.isZero()) {
-				var itemNumbers = paper.project.selectedItems.map(function(item){
+				var translatinItems = paper.project.selectedItems
+				var itemNumbers = translatinItems.map(function(item) {
 					item.visible = false;
-					item.translate(translationDelta.multiply(-1));
 					return item.n;
 				});
-				paper.view.draw();
+
 				app.postAction('translate', {
 					ns: itemNumbers,
 					delta: toPlainObject(translationDelta),
+				}, function(err) {
+					translatinItems.forEach(function(item) {
+						item.translate(translationDelta.multiply(-1));
+						item.visible = true;
+					});
 				});
 			}
 		}
@@ -256,11 +265,10 @@ var draw = new(function Draw(){
 				path = circle;
 			}
 			var cachedPath = path;
-			app.postAction("item", path.exportJSON({asString:false}));
-			setTimeout(function(){
+			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-				paper.view.draw();
-			}, 200);
+
+			});
 		};
 		return pencil;
 	})();
@@ -315,11 +323,10 @@ var draw = new(function Draw(){
 
 			// path.simplify();
 			var cachedPath = path;
-			app.postAction("item", path.exportJSON({asString:false}));
-			setTimeout(function(){
+			app.postAction("item", path.exportJSON({asString:false}), function () {
 				cachedPath.remove(); // will be replaced with update from server
-				paper.view.draw();
-			}, 200);
+
+			});
 		};
 		return brush;
 	})();
@@ -349,11 +356,10 @@ var draw = new(function Draw(){
 		};
 		line.onMouseUp = function(event){
 			var cachedPath = path;
-			app.postAction("item", path.exportJSON({asString:false}));
-			setTimeout(function(){
+			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-				paper.view.draw();
-			}, 200);
+
+			});
 		};
 		return line;
 	})();
@@ -386,12 +392,11 @@ var draw = new(function Draw(){
 			]);
 		}
 		rectangle.onMouseUp = function(event){
-			app.postAction("item", path.exportJSON({asString:false}));
 			var cachedPath = path;
-			setTimeout(function(){
+			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-				paper.view.draw();
-			}, 200);
+
+			});
 		};
 		return rectangle;
 	})();
@@ -427,12 +432,11 @@ var draw = new(function Draw(){
 			});
 		}
 		oval.onMouseUp = function(event){
-			app.postAction("item", path.exportJSON({asString:false}));
 			var cachedPath = path;
-			setTimeout(function(){
+			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-				paper.view.draw();
-			}, 200);
+
+			});
 		};
 		return oval;
 	})();
@@ -460,11 +464,13 @@ var draw = new(function Draw(){
 				return;
 			}
 			_textItem.content = _textItem.content.slice(0, -1);
-			app.postAction("item", _textItem.exportJSON({asString:false}));
-			setTimeout(function(){
-				_textItem.content = " ";
-				paper.view.draw();
-			}, 100);
+			app.postAction("item", _textItem.exportJSON({asString:false}), function(err) {
+				if (err) {
+					_textItem.content += " ";
+				} else {
+					_textItem.content = " ";
+				}
+			});
 		};
 		return text;
 	})();
@@ -486,7 +492,7 @@ var draw = new(function Draw(){
 			getItemsNearPoint(event.point).some(function(item){
 				return item.selected = true;
 			});
-			paper.view.draw();
+
 		};
 		return eyedropper;
 	})();
@@ -499,13 +505,13 @@ var draw = new(function Draw(){
 			getItemsNearPoint(event.point).forEach(function(item) {
 				erase(item);
 			});
-			paper.view.draw();
+
 		};
 		eraser.onMouseDrag = function(event) {
 			getItemsNearEvent(event).forEach(function(item) {
 				erase(item);
 			});
-			paper.view.draw();
+
 		};
 		eraser.onMouseMove = function(event){ // hover
 
@@ -513,7 +519,7 @@ var draw = new(function Draw(){
 			getItemsNearEvent(event).forEach(function(item) {
 				item.selected = true;
 			});
-			paper.view.draw();
+
 		}
 		return eraser;
 	})();
@@ -534,7 +540,7 @@ var draw = new(function Draw(){
 			delta.x += event.delta.x;
 			delta.y += event.delta.y;
 			paper.view.scrollBy([-delta.x, -delta.y]);
-			paper.view.draw();
+
 		};
 		return move;
 	})();
@@ -542,35 +548,35 @@ var draw = new(function Draw(){
 
 	//// end of tools behavior definitions
 
-	app.on("update", function(action){
-		if(action.type === "item"){
-			var className = action.data[0];
+	app.on("update", function(action) {
+		if (action.type === "item") {
+			var json = action.data;
+			var n = action.n;
+			var className = json[0];
 			if (!(className in paper)) {
 				console.error("unknown item type", className);
 				return;
 			}
 			var item = new paper[className];
-			item.importJSON(action.data);
-			item.n = action.n; // for deleting and manipulation purposes
+			item.importJSON(json);
+			item.n = n; // for deleting and manipulation purposes
 		}
-		if(action.type === "erase"){
+		if (action.type === "erase") {
 			var n = action.data;
 			var item = paper.project.getItem(filterByN(n));
-			if(!item){
-				console.error("nothing with n=%d to erase", action.n);
-			} else {
-				item.remove();
+			if (!item) {
+				console.error("nothing with n=%d to erase", n);
+				return;
 			}
+			item.remove();
 		}
-		if(action.type === "translate"){
+		if (action.type === "translate") {
 			var ns = action.data.ns;
-			var delta = new paper.Point(action.data.delta);
-			paper.project.getItems(filterByN(ns)).forEach(function(item){
+			var delta = action.data.delta;
+			paper.project.getItems(filterByN(ns)).forEach(function(item) {
 				item.translate(delta);
-				item.visible = true;
 			});
 		}
-		paper.view.draw();
 	});
 
 	// init end
@@ -616,7 +622,7 @@ var draw = new(function Draw(){
 							paper.view.scale(ZOOM_STEP_IN, zoomCenter);
 							cursorManager.copeZoom(ZOOM_STEP_IN);
 						}
-						paper.view.draw();
+
 						gui.setZoomInfo(paper.view.getZoom());
 					} else {
 						zoomDirection = 0;
@@ -665,7 +671,6 @@ var draw = new(function Draw(){
 		paper.project.selectedItems.forEach(function(item){
 			erase(item);
 		});
-		paper.view.draw();
 	};
 
 	this.moveSelected = function(dirrection) {
@@ -702,13 +707,13 @@ var draw = new(function Draw(){
 	this.getCurrentToolName = function(){
 		return _currentToolName;
 	};
-	
+
 	this.getBlob = function(fileType, callback) {
 		if (typeof callback === "function") {
 			if (fileType === "png") {
 				var selected = paper.project.selectedItems;
-				paper.project.deselectAll(); 
-				paper.view.draw();
+				paper.project.deselectAll();
+
 				paper.view.element.toBlob(function(blob){
 					callback(blob);
 					selected.forEach(function (item) {
