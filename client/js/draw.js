@@ -188,10 +188,10 @@ var draw = new(function Draw(){
 			}
 
 			if (!willTranslate) { // selecting
-				if (!event.modifiers.control){
+				if (!event.modifiers.control) {
 					paper.project.deselectAll();
 				}
-				getItemsNearPoint(event.point).forEach(function(item){
+				getItemsNearPoint(event.point).forEach(function(item) {
 					item.selected = !item.selected;
 				});
 			}
@@ -204,7 +204,7 @@ var draw = new(function Draw(){
 				});
 			} else { // shifting
 				translationDelta = translationDelta.add(event.delta);
-				paper.project.selectedItems.forEach(function(item){
+				paper.project.selectedItems.forEach(function(item) {
 					item.translate(event.delta);
 				});
 			}
@@ -212,16 +212,18 @@ var draw = new(function Draw(){
 
 		selector.onMouseUp = function(event) {
 			willTranslate = false;
-			var itemNumbers = paper.project.selectedItems.map(function(item){
-				item.visible = false;
-				item.translate(translationDelta.multiply(-1));
-				return item.n;
-			});
-			paper.view.draw();
-			app.postAction('translate', {
-				ns: itemNumbers,
-				delta: toPlainObject(translationDelta),
-			});
+			if (!translationDelta.isZero()) {
+				var itemNumbers = paper.project.selectedItems.map(function(item){
+					item.visible = false;
+					item.translate(translationDelta.multiply(-1));
+					return item.n;
+				});
+				paper.view.draw();
+				app.postAction('translate', {
+					ns: itemNumbers,
+					delta: toPlainObject(translationDelta),
+				});
+			}
 		}
 
 		return selector;
