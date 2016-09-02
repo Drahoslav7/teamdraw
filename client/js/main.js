@@ -46,7 +46,7 @@ $(function(){
 		$("[title]", userList).tooltip("destroy");
 		userList.empty();
 
-		var me = users.find(function(user) {
+		var me = _.find(users, function(user) {
 			return user.nick === app.getNick()
 		});
 
