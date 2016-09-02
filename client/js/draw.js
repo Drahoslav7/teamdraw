@@ -175,15 +175,19 @@ var draw = new(function Draw(){
 	_tools["selector"] = (function(){
 		var selector = new paper.Tool();
 		var path;
-		var willShift = false;
+		var willTranslate = false;
+		var translationDelta = new paper.Point();
 
 		selector.onMouseDown = function(event) {
+			translationDelta = new paper.Point();
+
 			if (getItemsNearPoint(event.point).some(function(item) { // clicked at selected item
 				return item.selected === true;
 			}) && !event.modifiers.control) {
-				willShift = true;
+				willTranslate = true;
 			}
-			if (!willShift) { // selecting
+
+			if (!willTranslate) { // selecting
 				if (!event.modifiers.control){
 					paper.project.deselectAll();
 				}
@@ -194,25 +198,32 @@ var draw = new(function Draw(){
 		}
 
 		selector.onMouseDrag = function(event) {
-			if (!willShift) { // selecting
+			if (!willTranslate) { // selecting
 				getItemsNearEvent(event).forEach(function(item){
 					item.selected = true;
 				});
 			} else { // shifting
-				var itemNumbers = paper.project.selectedItems.map(function(item){
-					return item.n;
-				});
-				app.postAction('translate', {
-					ns: itemNumbers,
-					delta: toPlainObject(event.delta),
+				translationDelta = translationDelta.add(event.delta);
+				paper.project.selectedItems.forEach(function(item){
+					item.translate(event.delta);
 				});
 			}
-			paper.view.draw();
 		};
 
 		selector.onMouseUp = function(event) {
-			willShift = false;
-		};
+			willTranslate = false;
+			var itemNumbers = paper.project.selectedItems.map(function(item){
+				item.visible = false;
+				item.translate(translationDelta.multiply(-1));
+				return item.n;
+			});
+			paper.view.draw();
+			app.postAction('translate', {
+				ns: itemNumbers,
+				delta: toPlainObject(translationDelta),
+			});
+		}
+
 		return selector;
 	})();
 
@@ -554,6 +565,7 @@ var draw = new(function Draw(){
 			var delta = new paper.Point(action.data.delta);
 			paper.project.getItems(filterByN(ns)).forEach(function(item){
 				item.translate(delta);
+				item.visible = true;
 			});
 		}
 		paper.view.draw();
