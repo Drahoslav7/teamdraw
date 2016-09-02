@@ -607,10 +607,12 @@ var draw = new(function Draw(){
 						if (zoomDirection < 0) {
 							++zoomDirection;
 							paper.view.scale(ZOOM_STEP_OUT, zoomCenter);
+							cursorManager.copeZoom(ZOOM_STEP_OUT);
 						}
 						if (zoomDirection > 0) {
 							--zoomDirection;
 							paper.view.scale(ZOOM_STEP_IN, zoomCenter);
+							cursorManager.copeZoom(ZOOM_STEP_IN);
 						}
 						paper.view.draw();
 						gui.setZoomInfo(paper.view.getZoom());
