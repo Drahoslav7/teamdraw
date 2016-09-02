@@ -1,80 +1,3 @@
-function CursorManager(project) {
-	var _cursorTemplate;
-	var _cursorSymbol;
-	var _cursors = {};
-
-	var mainLayer = project.activeLayer;
-	var cursorsLayer = new paper.Layer();
-	mainLayer.activate();
-
-	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
-		cursor.pivot = [5, 1];
-		_cursorTemplate = cursor;
-		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
-	});
-
-	this.copeZoom = function(scaleFactor) {
-		_cursorTemplate.scale(1/scaleFactor);
-	};
-	this.exists = function(name){
-		return !!(name in _cursors);
-	};
-
-	this.new = function(name) {
-		if (name in _cursors) {
-			throw "cursor with this name already exist";
-		}
-		var randomPoint = paper.Point.random().multiply(paper.view.size).add(paper.view.bounds);
-		var cursor = _cursorSymbol.place(randomPoint)
-		cursor.pivot = _cursorTemplate.pivot;
-		cursor.opacity = 0;
-		cursorsLayer.addChild(cursor);
-		_cursors[name] = cursor;
-	};
-	this.moveCursorTo = function (name, position, duration) {
-		var steps = Math.floor(duration * (60/1000)) || 1;
-		if (!(name in _cursors)) {
-			throw "cursor with this name does not exist";
-		}
-		var cursor = _cursors[name];
-		var destination = new paper.Point(position);
-		var step = destination.subtract(cursor.position).divide(steps);
-		cursor.onFrame = function(event) {
-			if (event.count === steps) {
-				cursor.onFrame = null;
-			} else {
-				cursor.translate(step);
-			}
-		};
-		setTimeout(function() {
-			if (cursor.data.lastActivity + 1000*15 <= Date.now()) {
-				setInactive(name);
-			}
-		}, 1000*15);
-		setActive(name);
-		cursor.data.lastActivity = Date.now();
-	};
-
-	function setInactive(name) {
-		var cursor = _cursors[name];
-		if (cursor.opacity === 1) {
-			cursor.onFrame = function(event) {
-				if (cursor.opacity <= 0) {
-					cursor.onFrame = null;
-					cursor.opacity = 0;
-				} else {
-					cursor.opacity -= 0.02;
-				}
-			};
-		}
-	};
-	function setActive(name) {
-		var cursor = _cursors[name];
-		cursor.opacity = 1;
-	};
-}
-
-
 var draw = new(function Draw(){
 
 	var console = new Logger("draw");
@@ -129,7 +52,7 @@ var draw = new(function Draw(){
 
 		app.on("logged on", function() {
 			paper.project.view.on('mousemove', function(event) {
-				app.postCursorPosition(event.point);
+				app.postCursorPosition(toPlainObject(event.point));
 			});
 		});
 
@@ -144,7 +67,7 @@ var draw = new(function Draw(){
 		app.on("cursors update", function(cursors) {
 			cursors.forEach(function(cursor){
 				if (app.getNick() !== cursor.name) {
-					cursorManager.moveCursorTo(cursor.name, paper.Point.importJSON(cursor.position), 125);
+					cursorManager.moveCursorTo(cursor.name, cursor.position, 125);
 				}
 			});
 		});
@@ -158,28 +81,30 @@ var draw = new(function Draw(){
 		}
 	}
 
-	function filterByN(f_n) {
+	function filterByN(wantedN) {
 		return {
-			n: function(i_n){
-				if(typeof f_n === "number"){
-					return f_n === i_n;
+			n: function(providedN){
+				if(typeof wantedN === "number"){
+					return providedN === wantedN;
 				}
-				if(f_n instanceof Array){
-					return f_n.some(function(f_n){
-						return f_n === i_n;
+				if(wantedN instanceof Array){
+					return wantedN.some(function(wantedN){
+						return providedN === wantedN;
 					});
 				}
 			}
 		}
 	}
 
+	var withN = {
+		n: function(n){
+			return n !== undefined;
+		},
+	};
+
 	function getItemsNearPoint (point) {
-		var radius = 4;
-		return paper.project.getItems({
-			n: function(n){
-				return n !== undefined;
-			}
-		}).filter(function(item) {
+		var radius = 4 / paper.view.getZoom();
+		return paper.project.getItems(withN).filter(function(item) {
 			if (item instanceof paper.Path) {
 				if (item.isClosed() && item.hasFill()) {
 					if (item.contains(point)) {
@@ -197,6 +122,31 @@ var draw = new(function Draw(){
 			return false;
 		});
 	};
+
+	function getItemsNearEvent (event) {
+		var trackingPath = new paper.Path({
+			segments: [event.point.subtract(event.delta), event.point],
+			visible: false,
+		});
+		setTimeout(function() {
+			trackingPath.remove();
+		});
+
+		return _.uniq(paper.project.getItems(withN).filter(function(item) {
+			return trackingPath.intersects(item);
+		}).concat(getItemsNearPoint(event.point)));
+	};
+
+	/**
+	 * convert paper object to plain object, so it could be JSONized in more common way
+	 * eg.: {"x": 5, "y": 6} isntead of ["Point", 5, 6]
+	 */
+	function toPlainObject (paperObj) {
+		if(paperObj.className === "Point") {
+			return {x: paperObj.x, y: paperObj.y};
+		}
+		return paperObj;
+	}
 
 	/**
 	 * return end point aligned to multiple of angle relative to start
@@ -226,39 +176,40 @@ var draw = new(function Draw(){
 		var selector = new paper.Tool();
 		var path;
 		var willShift = false;
-		selector.onMouseDown = selector.onMouseDrag = function(event){
-			if(event.type === 'mousedown'){
-				if(getItemsNearPoint(event.point).some(function(item) { // clicked at selected item
-					return item.selected === true;
-				}) && !event.modifiers.control){
-					willShift = true;
-				}
+
+		selector.onMouseDown = function(event) {
+			if (getItemsNearPoint(event.point).some(function(item) { // clicked at selected item
+				return item.selected === true;
+			}) && !event.modifiers.control) {
+				willShift = true;
 			}
-			if(!willShift){ // selecting
-				if(!event.modifiers.control && event.type === 'mousedown'){
+			if (!willShift) { // selecting
+				if (!event.modifiers.control){
 					paper.project.deselectAll();
 				}
 				getItemsNearPoint(event.point).forEach(function(item){
-					if (event.type === 'mousedown') {
-						item.selected = !item.selected;
-					}
-					if (event.type === 'mousedrag') {
-						item.selected = true;
-					}
+					item.selected = !item.selected;
 				});
-			} else if(event.type === 'mousedrag') { // shifting
-				var delta = event.delta;
-				var itemNumbers = [];
-				paper.project.selectedItems.forEach(function(item){
-					itemNumbers.push(item.n);
+			}
+		}
+
+		selector.onMouseDrag = function(event) {
+			if (!willShift) { // selecting
+				getItemsNearEvent(event).forEach(function(item){
+					item.selected = true;
+				});
+			} else { // shifting
+				var itemNumbers = paper.project.selectedItems.map(function(item){
+					return item.n;
 				});
 				app.postAction('translate', {
 					ns: itemNumbers,
-					delta: {x: delta.x, y: delta.y}
+					delta: toPlainObject(event.delta),
 				});
 			}
 			paper.view.draw();
 		};
+
 		selector.onMouseUp = function(event) {
 			willShift = false;
 		};
@@ -531,15 +482,22 @@ var draw = new(function Draw(){
 		var eraser = new paper.Tool();
 		var path;
 
-		eraser.onMouseDown = eraser.onMouseDrag = function(event){
-			getItemsNearPoint(event.point).forEach(function(item){
+		eraser.onMouseDown = function(event) {
+			getItemsNearPoint(event.point).forEach(function(item) {
+				erase(item);
+			});
+			paper.view.draw();
+		};
+		eraser.onMouseDrag = function(event) {
+			getItemsNearEvent(event).forEach(function(item) {
 				erase(item);
 			});
 			paper.view.draw();
 		};
 		eraser.onMouseMove = function(event){ // hover
+
 			paper.project.deselectAll();
-			getItemsNearPoint(event.point).forEach(function(item){
+			getItemsNearEvent(event).forEach(function(item) {
 				item.selected = true;
 			});
 			paper.view.draw();
@@ -755,7 +713,85 @@ var draw = new(function Draw(){
 
 });
 
+
 function almostEquals (a, b, e) {
 	e = e || 1E-6;
 	return Math.abs(a-b) < e;
+}
+
+
+function CursorManager(project) {
+	var _cursorTemplate;
+	var _cursorSymbol;
+	var _cursors = {};
+
+	var mainLayer = project.activeLayer;
+	var cursorsLayer = new paper.Layer();
+	mainLayer.activate();
+
+	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
+		cursor.pivot = [5, 1];
+		_cursorTemplate = cursor;
+		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
+	});
+
+	this.copeZoom = function(scaleFactor) {
+		_cursorTemplate.scale(1/scaleFactor);
+	};
+	this.exists = function(name){
+		return !!(name in _cursors);
+	};
+
+	this.new = function(name) {
+		if (name in _cursors) {
+			throw "cursor with this name already exist";
+		}
+		var randomPoint = paper.Point.random().multiply(paper.view.size).add(paper.view.bounds);
+		var cursor = _cursorSymbol.place(randomPoint)
+		cursor.pivot = _cursorTemplate.pivot;
+		cursor.opacity = 0;
+		cursorsLayer.addChild(cursor);
+		_cursors[name] = cursor;
+	};
+	this.moveCursorTo = function (name, position, duration) {
+		var steps = Math.floor(duration * (60/1000)) || 1;
+		if (!(name in _cursors)) {
+			throw "cursor with this name does not exist";
+		}
+		var cursor = _cursors[name];
+		var destination = new paper.Point(position);
+		var step = destination.subtract(cursor.position).divide(steps);
+		cursor.onFrame = function(event) {
+			if (event.count === steps) {
+				cursor.onFrame = null;
+			} else {
+				cursor.translate(step);
+			}
+		};
+		setTimeout(function() {
+			if (cursor.data.lastActivity + 1000*15 <= Date.now()) {
+				setInactive(name);
+			}
+		}, 1000*15);
+		setActive(name);
+		cursor.data.lastActivity = Date.now();
+	};
+
+	function setInactive(name) {
+		var cursor = _cursors[name];
+		if (cursor.opacity === 1) {
+			cursor.onFrame = function(event) {
+				if (cursor.opacity <= 0) {
+					cursor.onFrame = null;
+					cursor.opacity = 0;
+				} else {
+					cursor.opacity -= 0.02;
+				}
+			};
+		}
+	};
+	function setActive(name) {
+		var cursor = _cursors[name];
+		cursor.opacity = 1;
+	};
 }
