@@ -158,9 +158,9 @@ $(function(){
 	/* toolbar */
 
 	$(".btn-tool[data-tool]").click(function() {
-		draw.selectTool($(this).attr("data-tool"));
+		draw.changeToolTo($(this).attr("data-tool"));
 	});
-		
+
 
 	/* other events */
 
@@ -170,7 +170,7 @@ $(function(){
 
 		app.sync();
 
-		draw.selectTool("pencil");
+		draw.changeToolTo("pencil");
 
 		draw.setColor("#333");
 		draw.setSize(2);
@@ -185,34 +185,34 @@ $(function(){
 			if(draw.getCurrentToolName() !== "text") {
 				switch(event.keyCode){
 					case KeyCode.KEY_S:
-						draw.selectTool("selector");
+						draw.changeToolTo("selector");
 						break;
 					case KeyCode.KEY_P:
-						draw.selectTool("pencil");
+						draw.changeToolTo("pencil");
 						break;
 					case KeyCode.KEY_B:
-						draw.selectTool("brush");
+						draw.changeToolTo("brush");
 						break;
 					case KeyCode.KEY_E:
-						draw.selectTool("eraser");
+						draw.changeToolTo("eraser");
 						break;
 					case KeyCode.KEY_M:
-						draw.selectTool("move");
+						draw.changeToolTo("move");
 						break;
 					case KeyCode.KEY_C:
-						draw.selectTool("eyedropper");
+						draw.changeToolTo("eyedropper");
 						break;
 					case KeyCode.KEY_L:
-						draw.selectTool("line")
+						draw.changeToolTo("line")
 						break;
 					case KeyCode.KEY_O:
-						draw.selectTool("oval");
+						draw.changeToolTo("oval");
 						break;
 					case KeyCode.KEY_R:
-						draw.selectTool("rectangle")
+						draw.changeToolTo("rectangle")
 						break;
 					case KeyCode.KEY_T:
-						draw.selectTool("text");
+						draw.changeToolTo("text");
 						event.preventDefault();
 						break;
 
@@ -250,7 +250,7 @@ $(function(){
 				}
 			} else {
 				if(event.keyCode === KeyCode.KEY_ESCAPE) {
-					draw.selectTool("selector");
+					draw.changeToolTo("selector");
 				}
 			}
 		});
@@ -263,6 +263,11 @@ $(function(){
 		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE);
 		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT);
 
+		const LEFT_BUTTON = 0;
+		const MIDDLE_BUTTON = 1;
+		const RIGHT_BUTTON = 2;
+		toggleToolWhileHoldingMouseButton("move", RIGHT_BUTTON);
+
 		function toggleToolWhileHoldingKey (toolname, keyCode) {
 			var prevToolName = "";
 			var pressed = false;
@@ -271,17 +276,38 @@ $(function(){
 					event.preventDefault();
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
-					draw.selectTool(toolname);
+					draw.changeToolTo(toolname);
 				}
 			})
 			$(window).keyup(function(event){
 				if(event.keyCode === keyCode && pressed) {
 					event.preventDefault(); // prevent spacebar to select outlined tool
-					draw.selectTool(prevToolName);
+					draw.changeToolTo(prevToolName);
 					pressed = false;
 				}
 			});
 		}
+
+		function toggleToolWhileHoldingMouseButton (toolname, button) {
+			var prevToolName = "";
+			$('#workarea').mousedown(function(event) {
+				if(event.button === button) {
+					event.preventDefault();
+					prevToolName = draw.getCurrentToolName();
+					draw.changeToolTo(toolname);
+				}
+			})
+			$('#workarea').mouseup(function(event) {
+				if(event.button === button) {
+					event.preventDefault(); // prevent spacebar to select outlined tool
+					draw.changeToolTo(prevToolName);
+				}
+			});
+		}
+
+		$('#workarea').contextmenu(function(event) {
+			event.preventDefault();
+		});
 
 	}); // on logged on
 

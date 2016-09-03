@@ -129,7 +129,7 @@ var draw = new(function Draw(){
 
 	function getItemsNearEvent (event) {
 		var trackingPath = new paper.Path({
-			segments: [event.point.subtract(event.delta), event.point],
+			segments: [event.lastPoint, event.point],
 			visible: false,
 		});
 		setTimeout(function() {
@@ -256,6 +256,9 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
+			if(!path) {
+				return;
+			}
 			if(path.segments.length === 1) { // is dot
 				var point = path.segments[0].point;
 				var circle = new paper.Path.Circle(point, path.strokeWidth/4);
@@ -267,8 +270,13 @@ var draw = new(function Draw(){
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-
 			});
+		};
+		pencil.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
 		};
 		return pencil;
 	})();
@@ -320,13 +328,22 @@ var draw = new(function Draw(){
 			path.smooth({type: "catmull-rom"});
 		};
 		brush.onMouseUp = function(event){
-
+			if (!path) {
+				return;
+			}
 			// path.simplify();
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function () {
 				cachedPath.remove(); // will be replaced with update from server
 
 			});
+		};
+		brush.abort = function() {
+			lastDeltas = [];
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
 		};
 		return brush;
 	})();
@@ -355,11 +372,20 @@ var draw = new(function Draw(){
 			}
 		};
 		line.onMouseUp = function(event){
+			if (!path) {
+				return;
+			}
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
 
 			});
+		};
+		line.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
 		};
 		return line;
 	})();
@@ -392,11 +418,20 @@ var draw = new(function Draw(){
 			]);
 		}
 		rectangle.onMouseUp = function(event){
+			if (!path) {
+				return;
+			}
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
 
 			});
+		};
+		rectangle.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
 		};
 		return rectangle;
 	})();
@@ -432,11 +467,20 @@ var draw = new(function Draw(){
 			});
 		}
 		oval.onMouseUp = function(event){
+			if (!path) {
+				return;
+			}
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
 
 			});
+		};
+		oval.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
 		};
 		return oval;
 	})();
@@ -471,6 +515,9 @@ var draw = new(function Draw(){
 					_textItem.content = " ";
 				}
 			});
+		};
+		text.abort = function() {
+			_textItem.content = " ";
 		};
 		return text;
 	})();
@@ -526,17 +573,25 @@ var draw = new(function Draw(){
 
 	_tools["move"] = (function(){
 		var move = new paper.Tool();
+		var dontDrag = false;
 		var delta = {
 			x: 0,
 			y: 0,
 		};
 		move.onMouseDown = function (event) {
+			if (!event) {
+				dontDrag = true;
+			}
 			delta = {
 				x: 0,
 				y: 0,
 			};
 		};
 		move.onMouseDrag = function (event){
+			if (dontDrag) {
+				dontDrag = false;
+				return;
+			}
 			delta.x += event.delta.x;
 			delta.y += event.delta.y;
 			paper.view.scrollBy([-delta.x, -delta.y]);
@@ -544,6 +599,7 @@ var draw = new(function Draw(){
 		};
 		return move;
 	})();
+
 
 
 	//// end of tools behavior definitions
@@ -634,7 +690,7 @@ var draw = new(function Draw(){
 		return zoom;
 	})();
 
-	this.selectTool = function(toolname){
+	this.changeToolTo = function(toolname){
 		if(toolname in _tools){
 			if(toolname === 'text') {
 				_textItem.visible = true;
@@ -642,12 +698,25 @@ var draw = new(function Draw(){
 				_textItem.visible = false;
 			}
 			_tools[toolname].activate();
-			_currentToolName = toolname;
+			switch(_currentToolName){
+				case "pencil":
+				case "brush":
+				case "line":
+				case "rectangle":
+				case "oval":
+				case "text":
+					_tools[_currentToolName].abort();
+			}
+			switch(toolname) {
+				case "move":
+					_tools[toolname].onMouseDown();
+			}
 			gui.changeCursor(toolname);
 			gui.highlightTool(toolname);
+			_currentToolName = toolname;
 			console.log('tool changed to', toolname);
 		} else {
-			console.error("unknown tool", toolname)
+			console.error("unknown tool", toolname);
 		}
 	};
 
