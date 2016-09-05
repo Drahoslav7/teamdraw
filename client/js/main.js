@@ -260,19 +260,23 @@ $(function(){
 			draw.zoom(e.deltaY, {x: e.clientX, y: e.clientY});
 		});
 
-		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE);
-		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT);
+		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE, ["text"]);
+		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT, ["text"]);
 
 		const LEFT_BUTTON = 0;
 		const MIDDLE_BUTTON = 1;
 		const RIGHT_BUTTON = 2;
 		toggleToolWhileHoldingMouseButton("move", RIGHT_BUTTON);
 
-		function toggleToolWhileHoldingKey (toolname, keyCode) {
+
+		function toggleToolWhileHoldingKey (toolname, keyCode, exceptions) {
 			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
-				if(event.keyCode === keyCode && !pressed) {
+				if (_.includes(exceptions, draw.getCurrentToolName())) {
+						return;
+					}
+				if (event.keyCode === keyCode && !pressed) {
 					event.preventDefault();
 					pressed = true;
 					prevToolName = draw.getCurrentToolName();
@@ -281,6 +285,9 @@ $(function(){
 			})
 			$(window).keyup(function(event){
 				if(event.keyCode === keyCode && pressed) {
+					if (_.includes(exceptions, draw.getCurrentToolName())) {
+						return;
+					}
 					event.preventDefault(); // prevent spacebar to select outlined tool
 					draw.changeToolTo(prevToolName);
 					pressed = false;

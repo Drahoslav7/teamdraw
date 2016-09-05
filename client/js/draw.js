@@ -253,10 +253,13 @@ var draw = new(function Draw(){
 			path.add(event.point);
 		};
 		pencil.onMouseDrag = function(event){
+			if (!path) {
+				return;
+			}
 			path.add(event.point);
 		};
 		pencil.onMouseUp = function(event){
-			if(!path) {
+			if (!path) {
 				return;
 			}
 			if(path.segments.length === 1) { // is dot
@@ -504,6 +507,9 @@ var draw = new(function Draw(){
 		};
 
 		text.onMouseUp = function(event){
+			if (event.event.button !== 0) {
+				return;
+			}
 			if (_textItem.content.length === 1) {
 				return;
 			}
@@ -517,7 +523,6 @@ var draw = new(function Draw(){
 			});
 		};
 		text.abort = function() {
-			_textItem.content = " ";
 		};
 		return text;
 	})();
