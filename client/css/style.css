@@ -269,3 +269,13 @@ html, body {
     transform: rotate(359deg);
   }
 }
+
+
+/* IE focus bugfix */
+#menu-button:focus,
+#userbar-button:focus,
+#toolbar-button:focus,
+#share-button:focus {
+	color: #fff;
+	background: #455e73;
+}
