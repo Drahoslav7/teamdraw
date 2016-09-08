@@ -15,11 +15,11 @@ crypto.genRandomString = function (len, chars) {
 }
 
 crypto.genToken = function () {
-	return this.genRandomString(8, "ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789");
+	return this.genRandomString(8, "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567");
 }
 
 crypto.genSecret = function () {
-	return this.genRandomString(20, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+	return this.genRandomString(16, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_");
 }
 
 
