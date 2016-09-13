@@ -60,19 +60,19 @@ io.on('connection', function (socket) {
 		if (user) {
 			return cb({	err: "user already created"	});
 		}
-		
+
 		user = new User();
 		user.addRight(TO_CHANGE_RIGHTS);
 		socket.user = user;
 
 		instance = new Instance(io);
 		var err = instance.join(user);
-		
+
 		cb({
 			err: err,
 			data: {
 				token: instance.getToken(),
-				secret: user.getSecret(), 
+				secret: user.getSecret(),
 			},
 		});
 		adminio.inform();
@@ -126,7 +126,7 @@ io.on('connection', function (socket) {
 		if (user === undefined) {
 			return cb({	err: "no user to name when loging in" });
 		}
-		
+
 		user.nick = nick;
 		var err = instance.join(user, socket);
 		if (err) {
@@ -209,13 +209,15 @@ io.on('connection', function (socket) {
 	});
 
 	function isUserAlsoOnAnotherSocket(user) {
-		return io.sockets.sockets.some(function (anotherSocket) {
+		for (var socketID in io.sockets.connected) {
+			var anotherSocket = io.sockets.connected[socketID];
 			if (anotherSocket.user) {
 				if (socket.user === anotherSocket.user && socket !== anotherSocket) {
 					return true;
 				}
 			}
-		});
+		};
+		return false;
 	}
 
 });
