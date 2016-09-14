@@ -261,7 +261,7 @@ $(function(){
 		});
 
 		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE, ["text"]);
-		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT, ["text"]);
+		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT, ["text", "selector", "move", "eraser"]);
 
 		toggleToolWhileHoldingMouseButton("move", Button.RIGHT);
 
@@ -270,7 +270,7 @@ $(function(){
 			var prevToolName = "";
 			var pressed = false;
 			$(window).keydown(function(event){
-				if (_.includes(exceptions, draw.getCurrentToolName())) {
+				if (_.includes(exceptions.concat(toolname), draw.getCurrentToolName())) {
 						return;
 					}
 				if (event.keyCode === keyCode && !pressed) {
@@ -282,7 +282,7 @@ $(function(){
 			})
 			$(window).keyup(function(event){
 				if(event.keyCode === keyCode && pressed) {
-					if (_.includes(exceptions, draw.getCurrentToolName())) {
+					if (toolname !== draw.getCurrentToolName()) {
 						return;
 					}
 					event.preventDefault(); // prevent spacebar to select outlined tool

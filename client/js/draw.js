@@ -85,6 +85,16 @@ var draw = new(function Draw(){
 		}
 	}
 
+	function cloneSelected() {
+		paper.project.selectedItems.forEach(function (item) {
+			var clone = item.clone();
+			clone.selected = false;
+			app.postAction("item", clone.exportJSON({asString:false}), function () {
+				clone.remove(); // will be replaced with update from server
+			});
+		});
+	}
+
 	function filterByN(wantedN) {
 		return {
 			n: function(providedN){
@@ -198,7 +208,10 @@ var draw = new(function Draw(){
 				getItemsNearPoint(event.point).forEach(function(item) {
 					item.selected = !item.selected;
 				});
+			} else if (event.modifiers.alt) {
+				cloneSelected();
 			}
+
 		}
 
 		selector.onMouseDrag = function(event) {
