@@ -263,10 +263,7 @@ $(function(){
 		toggleToolWhileHoldingKey("move", KeyCode.KEY_SPACE, ["text"]);
 		toggleToolWhileHoldingKey("eyedropper", KeyCode.KEY_ALT, ["text"]);
 
-		const LEFT_BUTTON = 0;
-		const MIDDLE_BUTTON = 1;
-		const RIGHT_BUTTON = 2;
-		toggleToolWhileHoldingMouseButton("move", RIGHT_BUTTON);
+		toggleToolWhileHoldingMouseButton("move", Button.RIGHT);
 
 
 		function toggleToolWhileHoldingKey (toolname, keyCode, exceptions) {
@@ -297,16 +294,18 @@ $(function(){
 
 		function toggleToolWhileHoldingMouseButton (toolname, button) {
 			var prevToolName = "";
-			$('#workarea').mousedown(function(event) {
-				if(event.button === button) {
-					event.preventDefault();
+			$('#canvas').mousedown(function(event) {
+				console.log("down", event.which);
+				if(event.which === button) {
+					// event.preventDefault();
 					prevToolName = draw.getCurrentToolName();
 					draw.changeToolTo(toolname);
 				}
 			})
-			$('#workarea').mouseup(function(event) {
-				if(event.button === button) {
-					event.preventDefault(); // prevent spacebar to select outlined tool
+			$('#canvas').mouseup(function(event) {
+				console.log("up", event.which);
+				if(event.which === button) {
+					// event.preventDefault();
 					draw.changeToolTo(prevToolName);
 				}
 			});

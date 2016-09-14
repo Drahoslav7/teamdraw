@@ -507,7 +507,7 @@ var draw = new(function Draw(){
 		};
 
 		text.onMouseUp = function(event){
-			if (event.event.button !== 0) {
+			if (event.event.which !== Button.LEFT) {
 				return;
 			}
 			if (_textItem.content.length === 1) {
