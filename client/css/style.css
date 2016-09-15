@@ -63,10 +63,6 @@ html, body {
 	background-color: #3c5162;
 }
 
-.btn-primary .badge {
-	color: #455e73;
-}
-
 .btn-warning-c {
 	background-color: #F0AD4E;
 }
@@ -183,10 +179,6 @@ html, body {
 
 .mySelf {
 	font-weight: bold;
-}
-
-.box {
-	clear: both;
 }
 
 .btn {

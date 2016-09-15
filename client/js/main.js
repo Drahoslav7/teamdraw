@@ -146,14 +146,6 @@ $(function(){
 		location = location.pathname;
 	});
 
-	$(".export-img-button").click(function(event){
-		event.preventDefault();
-		var type = $(this).attr("data-img-type");
-		console.log("exporting as",type);
-		window.open($(this).attr("href"), "_blank");
-		$("#savemodal").modal("hide");
-	});
-
 
 	/* toolbar */
 
@@ -294,10 +286,12 @@ $(function(){
 
 		function toggleToolWhileHoldingMouseButton (toolname, button) {
 			var prevToolName = "";
+			$('body').on("mousedown", function(event){
+				console.log("body mousedown");
+			});
 			$('#canvas').mousedown(function(event) {
 				console.log("down", event.which);
 				if(event.which === button) {
-					// event.preventDefault();
 					prevToolName = draw.getCurrentToolName();
 					draw.changeToolTo(toolname);
 				}
@@ -305,7 +299,6 @@ $(function(){
 			$('#canvas').mouseup(function(event) {
 				console.log("up", event.which);
 				if(event.which === button) {
-					// event.preventDefault();
 					draw.changeToolTo(prevToolName);
 				}
 			});

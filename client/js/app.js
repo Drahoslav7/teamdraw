@@ -5,7 +5,7 @@ var app = new (function App(){
 	var console = new Logger("app");
 	/////////////////////////////////
 	// private:
-	
+
 	var _token;
 	var _nick;
 	var _secret;
@@ -69,7 +69,7 @@ var app = new (function App(){
 
 	/////////////////////////////////
 	// public:
-	
+
 
 	/**
 	 * register new event
@@ -130,7 +130,7 @@ var app = new (function App(){
 	this.login = function(nick, cb) {
 		if(!nick){
 			cb("nick required");
-			return; 
+			return;
 		}
 
 		io.login(nick, function(resp){
@@ -162,7 +162,7 @@ var app = new (function App(){
 		var token = location.hash.substr(1);
 		console.log("token when joininig", token);
 		if(token in localStorage){
-			this.load(token); 
+			this.load(token);
 			io.join({
 				token: token,
 				secret: _secret, // loaded
