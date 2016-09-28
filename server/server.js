@@ -140,73 +140,79 @@ io.on('connection', function (socket) {
 		instance.emit("userlist", {
 			users: instance.getUsers()
 		});
+		afterLogin();
+
 		adminio.inform();
 	});
 
 	/**
 	 * event below should only be used after join or create
 	 */
+	function afterLogin() {
 
-	socket.on("action", function(action, cb) {
-		if (!user.hasRight(TO_DRAW)) {
-			return cb(new Error("No right to draw"));
-		}
-		var savedAction = instance.pushAction(action);
-		instance.emit("update", {
-			data: savedAction
-		});
-		cb();
-		adminio.inform();
-	});
-
-	socket.on("sync", function(lastActionId) {
-		var actions = instance.getActionsSince(lastActionId);
-		sendNextOne();
-		function sendNextOne() {
-			if(actions.length !== 0) {
-				socket.emit("update", {
-					data: actions.shift()
-				}, sendNextOne);
+		socket.on("action", function(action, cb) {
+			if (!user.hasRight(TO_DRAW)) {
+				return cb(new Error("No right to draw"));
 			}
-		}
-	});
-
-	socket.on("cursor", function(cursor) {
-		if (instance) { // why this happens before login?
-			instance.emit("cursors", [cursor]);
-		}
-	});
-
-	socket.on("disconnect", function() {
-		console.log("user disconnected");
-		if (!instance || !user) {
-			return;
-		}
-		if (!isUserAlsoOnAnotherSocket(user)) {
-			instance.leave(user);
-
-			instance.emit("userlist", {
-				users: instance.getUsers()
+			var savedAction = instance.pushAction(action);
+			instance.emit("update", {
+				data: savedAction
 			});
+			cb();
 			adminio.inform();
-			console.log("user", user.name, "leaved");
-		};
-	});
+		});
 
-	socket.on("acl", function(data) {
-		if (!user.hasRight(TO_CHANGE_RIGHTS)) {
-			return;
-		}
-		var methodName = data.what + "User";
-		if (methodName in instance) {
-			instance[methodName](data.nick);
+		socket.on("sync", function(lastActionId) {
+			var actions = instance.getActionsSince(lastActionId);
+			sendNextOne();
+			function sendNextOne() {
+				if(actions.length !== 0) {
+					socket.emit("update", {
+						data: actions.shift()
+					}, sendNextOne);
+				}
+			}
+		});
 
-			instance.emit("userlist", {
-				users: instance.getUsers()
-			});
-			adminio.inform();
-		}
-	});
+		socket.on("cursor", function(cursor) {
+			if (instance) { // why this happens before login?
+				instance.emit("cursors", [cursor]);
+			}
+		});
+
+		socket.on("disconnect", function() {
+			console.log("user disconnected");
+			if (!instance || !user) {
+				return;
+			}
+			if (!isUserAlsoOnAnotherSocket(user)) {
+				instance.leave(user);
+
+				instance.emit("userlist", {
+					users: instance.getUsers()
+				});
+				adminio.inform();
+				console.log("user", user.name, "leaved");
+			};
+		});
+
+		socket.on("acl", function(data) {
+			if (!user.hasRight(TO_CHANGE_RIGHTS)) {
+				return;
+			}
+			var methodName = data.what + "User";
+			if (methodName in instance) {
+				instance[methodName](data.nick);
+
+				instance.emit("userlist", {
+					users: instance.getUsers()
+				});
+				adminio.inform();
+			}
+		});
+
+	}
+
 
 	function isUserAlsoOnAnotherSocket(user) {
 		for (var socketID in io.sockets.connected) {

@@ -182,6 +182,8 @@ var draw = new(function Draw(){
 	}
 
 
+	_tools["none"] = new paper.Tool();
+
 	/**
 	 * tools behavior definitions
 	 */
