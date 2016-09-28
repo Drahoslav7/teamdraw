@@ -239,6 +239,10 @@ html, body {
 	display: none;
 }
 
+#helpmodal {
+	z-index: 1085;
+}
+
 #helpmodal strong {
 	font-size: 120%;
 }
