@@ -41,7 +41,7 @@ var gui = new (function () {
 			resHeight = toolbarbutton.outerHeight();
 			$("#toolbar").animate({height: resHeight});
 			toolbarbutton.html("◢");
-			
+
 			toollist.visible = false;
 		} else {
 			resHeight = toollist.outerHeight() + toolbarbutton.outerHeight();
@@ -66,7 +66,7 @@ var gui = new (function () {
 			});
 		}
 	}
-	
+
 	this.showBoldnessTool = function() {
 		if (!ghostboldnesspicker.visible) {
 			ghostboldnesspicker.animate({width: "150px"}, 150);
@@ -75,14 +75,14 @@ var gui = new (function () {
 			this.hideBoldnessTool();
 		};
 	};
-	
+
 	this.hideBoldnessTool = function() {
 		if (ghostboldnesspicker.visible) {
 			ghostboldnesspicker.animate({width: 0}, 150);
 			ghostboldnesspicker.visible = false;
 		};
 	};
-	
+
 	this.changeCursor = function(toolname){
 		var icon = "";
 		var options = {};
@@ -186,6 +186,10 @@ var gui = new (function () {
 
 	$(function () {
 
+		// do not focus
+		$('.btn-tool').focus(function (event) {
+			event.target.blur();
+		});
 
 		/*
 		 * modals seetings
@@ -246,7 +250,7 @@ var gui = new (function () {
 		toollist.visible = true;
 		ghostboldnesspicker = $("#ghost-boldnesspicker");
 		ghostboldnesspicker.visible = false;
-		
+
 		userbarbutton = $("#userbar-button");
 		userbarbutton.onlinecount = $("#online-count");
 		userlist = $("#userlist");
@@ -271,7 +275,7 @@ var gui = new (function () {
 		}, function () {
 			$(".user[title]").tooltip("hide");
 		});
-		
+
 		/**
 		 * tooltips
 		 */
