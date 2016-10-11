@@ -351,7 +351,9 @@ var draw = new(function Draw(){
 			if (!path) {
 				return;
 			}
-			path.simplify(1.2/Math.pow(paper.view.zoom, 1.5));
+			if (path.segments.length > 4) {
+				path.simplify(1.5/Math.pow(paper.view.zoom, 0.8));
+			}
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function () {
 				cachedPath.remove(); // will be replaced with update from server
