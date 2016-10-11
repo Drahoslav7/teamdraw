@@ -192,7 +192,16 @@ $(function(){
 						draw.changeToolTo("move");
 						break;
 					case KeyCode.KEY_C:
-						draw.changeToolTo("eyedropper");
+						switch (draw.getCurrentToolName()) {
+							case 'bucket':
+								draw.changeToolTo("eyedropper");
+								break;
+							case 'eyedropper':
+								draw.changeToolTo("bucket");
+								break;
+							default:
+								draw.changeToolTo(["bucket", "eyedropper"][Math.floor(Math.random()*2)]);
+						}
 						break;
 					case KeyCode.KEY_L:
 						draw.changeToolTo("line")

@@ -546,7 +546,6 @@ var draw = new(function Draw(){
 
 	_tools["eyedropper"] = (function(){
 		var eyedropper = new paper.Tool();
-		var path;
 
 		eyedropper.onMouseDown = function(event){
 			getItemsNearPoint(event.point).some(function(item){
@@ -561,9 +560,32 @@ var draw = new(function Draw(){
 			getItemsNearPoint(event.point).some(function(item){
 				return item.selected = true;
 			});
-
 		};
 		return eyedropper;
+	})();
+
+	_tools['bucket'] = (function() {
+		var bucket = new paper.Tool();
+
+		bucket.onMouseDown = function(event){
+			getItemsNearPoint(event.point).some(function(item){
+				if (item.hasFill()) {
+					item.fillColor = _color;
+				} else {
+					item.strokeColor = _color;
+				}
+				return true;
+			});
+		};
+
+		bucket.onMouseMove = function(event){ // hover
+			paper.project.deselectAll();
+			getItemsNearPoint(event.point).some(function(item){
+				return item.selected = true;
+			});
+		};
+
+		return bucket;
 	})();
 
 	_tools["eraser"] = (function(){

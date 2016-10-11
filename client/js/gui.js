@@ -96,6 +96,7 @@ var gui = new (function () {
 			case "pencil":
 				icon = "pencil";
 				options.flip = "vertical";
+				options.hotspot = [2, 4];
 				break;
 			case "brush":
 				icon = "brush";
@@ -108,6 +109,11 @@ var gui = new (function () {
 			case "eyedropper":
 				icon = "eyedropper";
 				options.flip = "vertical";
+				break;
+			case "bucket":
+				icon = "format-color-fill";
+				options.flip = "horizontal";
+				options.hotspot = [4, 13];
 				break;
 			default:
 				$("#workarea").css("cursor","");
