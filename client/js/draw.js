@@ -284,6 +284,8 @@ var draw = new(function Draw(){
 				circle.strokeWidth = path.strokeWidth/2;
 				path.remove();
 				path = circle;
+			} else {
+				path.simplify(1.2/Math.pow(paper.view.zoom, 1.5));
 			}
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
@@ -349,7 +351,7 @@ var draw = new(function Draw(){
 			if (!path) {
 				return;
 			}
-			// path.simplify();
+			path.simplify(1.2/Math.pow(paper.view.zoom, 1.5));
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function () {
 				cachedPath.remove(); // will be replaced with update from server
