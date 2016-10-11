@@ -117,6 +117,8 @@ html, body {
 
 .sp-picker-container {
 	border: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
 }
 
 #userbar {
@@ -164,8 +166,6 @@ html, body {
 #ghost-colorpicker {
 	float: left;
 	position: absolute;
-	left: 20px;
-	top: 300px;
 }
 
 #ghost-boldnesspicker {

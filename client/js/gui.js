@@ -342,9 +342,9 @@ var gui = new (function () {
 		 */
 		(function(){
 			ghostcolorpicker = $("#ghost-colorpicker");
-			var posY = $("#tool-color").position().top;
-			var posX = $("#tool-color").outerWidth(true);
-			ghostcolorpicker.css({top: posY -50 +11, left: posX + 20});
+			var posY = $("#toolbar").position().top + $("#toolbar").outerHeight() + 12.5;
+			var posX = $("#tool-color").outerWidth(true) + 20;
+			ghostcolorpicker.css({bottom: -posY, left: posX});
 			ghostcolorpicker.hide();
 
 			colorpicker = $("<input>");
