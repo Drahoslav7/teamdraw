@@ -209,6 +209,9 @@ $(function(){
 					case KeyCode.KEY_O:
 						draw.changeToolTo("oval");
 						break;
+					case KeyCode.KEY_H:
+						draw.changeToolTo("heart");
+						break;
 					case KeyCode.KEY_R:
 						draw.changeToolTo("rectangle")
 						break;

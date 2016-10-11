@@ -71,7 +71,6 @@ var draw = new(function Draw(){
 				}
 			});
 		});
-
 	});
 
 	function erase(item) {
@@ -506,6 +505,67 @@ var draw = new(function Draw(){
 		};
 		return oval;
 	})();
+
+	_tools["heart"] = (function(){
+		var heart = new paper.Tool();
+		var path;
+		var from;
+
+		heart.onMouseDown = function(event) {
+			from = event.point;
+			path = new paper.Path({
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
+		};
+		heart.onMouseDrag = function(event){
+			var to = event.point;
+			if (event.modifiers.shift) {
+				to = alignToAngle(from, to, 90, 45);
+			};
+			var w = to.subtract(from).x;
+			var h = to.subtract(from).y;
+
+			path.split(0, 0);
+			path.removeSegments(0); // all
+			path.add([0, 0]);
+
+			var mirror = path.clone();
+
+			var bottom = new paper.Point([0, -h/4]);
+			var top = new paper.Point([0, -h*3/4]);
+
+			path.cubicCurveTo(bottom, [-w/2, -(h/2)], [-w/2, -h*3/4]);
+			mirror.cubicCurveTo(bottom, [+w/2, -(h/2)], [+w/2, -h*3/4]);
+			path.cubicCurveTo([-w/2, -h*1.1], [0, -h*1.1], top);
+			mirror.cubicCurveTo([+w/2, -h*1.1], [0, -h*1.1], top);
+
+			path.join(mirror);
+			path.join();
+
+			path.translate(from.add(to.subtract(from).divide(2)));
+			path.translate([0, h/2]);
+		}
+		heart.onMouseUp = function(event){
+			if (!path) {
+				return;
+			}
+			var cachedPath = path;
+			app.postAction("item", path.exportJSON({asString:false}), function() {
+				cachedPath.remove(); // will be replaced with update from server
+			});
+		};
+		heart.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
+		};
+		return heart;
+	})();
+
 
 	_tools["text"] = (function(){
 		var text = new paper.Tool();
