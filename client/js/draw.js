@@ -525,27 +525,19 @@ var draw = new(function Draw(){
 			if (event.modifiers.shift) {
 				to = alignToAngle(from, to, 90, 45);
 			};
-			var w = to.subtract(from).x;
-			var h = to.subtract(from).y;
+			var fromToVec = to.subtract(from);
+			var w = fromToVec.x/2; // half width
+			var h = -fromToVec.y; // height
 
-			path.split(0, 0);
 			path.removeSegments(0); // all
-			path.add([0, 0]);
 
-			var mirror = path.clone();
+			path.addSegment([0, 0]);
+			path.cubicCurveTo([0, h/4], [-w, h/2], [-w, h*3/4]);
+			path.cubicCurveTo([-w, h*1.1], [0, h*1.1], [0, h*3/4]);
+			path.cubicCurveTo([0, h*1.1], [+w, h*1.1], [+w, h*3/4]);
+			path.cubicCurveTo([+w, h/2], [0, h/4], [0, 0]);
 
-			var bottom = new paper.Point([0, -h/4]);
-			var top = new paper.Point([0, -h*3/4]);
-
-			path.cubicCurveTo(bottom, [-w/2, -(h/2)], [-w/2, -h*3/4]);
-			mirror.cubicCurveTo(bottom, [+w/2, -(h/2)], [+w/2, -h*3/4]);
-			path.cubicCurveTo([-w/2, -h*1.1], [0, -h*1.1], top);
-			mirror.cubicCurveTo([+w/2, -h*1.1], [0, -h*1.1], top);
-
-			path.join(mirror);
-			path.join();
-
-			path.translate(from.add(to.subtract(from).divide(2)));
+			path.translate(from.add(fromToVec.divide(2)));
 			path.translate([0, h/2]);
 		}
 		heart.onMouseUp = function(event){
