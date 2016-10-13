@@ -89,7 +89,6 @@ html, body {
 	width: 50px;
 	margin-top: 8px;
 	position: relative;
-	overflow: hidden;
 	margin-left: 8px;
 	border-radius: 5px;
 }
@@ -107,6 +106,33 @@ html, body {
 #toollist.btn-group-vertical > .btn:first-child:not(:last-child) {
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
+}
+
+
+.tool-group {
+	width: 50px;
+	height: 38px;
+	overflow: hidden;
+	font-size: 0px;
+    white-space: nowrap;
+	transition: width 0.2s ease ;
+	transition-delay: 0.4s;
+}
+.tool-group:hover {
+	width: 150px;
+	transition-delay: 0s;
+}
+
+.tool-group .btn-tool {
+	display: inline-block;
+	white-space: nowrap;
+	word-spacing: 0px;
+}
+.tool-group .btn-tool:first-child::after {
+	content: '◢';
+	font-size: 10px;
+    line-height: 50px;
+	position: absolute;
 }
 
 .spectrum-custom {
@@ -175,6 +201,7 @@ html, body {
 	left: 20px;
 	top: 500px;
 	width: 0px;
+	border-radius: 5px;
 }
 
 .mySelf {
@@ -191,6 +218,9 @@ html, body {
 
 .btn-tool, .btn-boldness-tool {
 	height: 38px;
+	display: block;
+	border-radius: 0;
+	width: 50px;
 }
 
 .btn-tool, .btn-boldness-tool, #menu .btn {
@@ -211,6 +241,15 @@ html, body {
 .btn-tool:hover, .btn-tool.selected {
 	color: #fff;
 	background: #8c9ba9;
+}
+
+#toollist > .btn-tool:last-child {
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+.tool-group > .btn-tool:last-child {
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
 }
 
 .modal-header h3 {

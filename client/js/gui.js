@@ -36,16 +36,20 @@ var gui = new (function () {
 	};
 
 	this.toolBarResize = function () {
-		var resHeight;
-		if (toollist.visible) {
-			resHeight = toolbarbutton.outerHeight();
-			$("#toolbar").animate({height: resHeight});
+		var height;
+		if (toollist.visible) { // hide
+			height = toolbarbutton.outerHeight();
+			$("#toolbar").animate({height: height}, function(){
+				$("#toolbar").css({overflow: 'hidden'});
+			});
 			toolbarbutton.html("◢");
 
 			toollist.visible = false;
-		} else {
-			resHeight = toollist.outerHeight() + toolbarbutton.outerHeight();
-			$("#toolbar").animate({height: resHeight});
+		} else { // show
+			height = toollist.outerHeight() + toolbarbutton.outerHeight();
+			$("#toolbar").animate({height: height}, function(){
+				$("#toolbar").css({overflow: 'visible'});
+			});
 			toolbarbutton.html("◤")
 
 			toollist.visible = true;
@@ -124,9 +128,14 @@ var gui = new (function () {
 
 	this.highlightTool = function(toolname) {
 		$(".btn-tool").removeClass("selected");
-		$(".btn-tool").filter(function(i, el){
+		var toolButton = $(".btn-tool").filter(function(i, el){
 			return $(el).attr("data-tool") === toolname;
 		}).addClass("selected");
+		if (toolButton.parent().hasClass('tool-group')) {
+			var group = toolButton.parent();
+			toolButton.detach();
+			group.prepend(toolButton);
+		}
 	};
 
 	this.setColorOfPicker = function(color) {
@@ -292,7 +301,7 @@ var gui = new (function () {
 			$(this).tooltip({
 				html: true,
 				placement: "auto right",
-				delay: {show: 500, hide: 0},
+				delay: {show: 800, hide: 0},
 				container: "#tooltips",
 				trigger: "hover"
 			}).click(function(){
