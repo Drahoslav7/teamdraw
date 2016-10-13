@@ -538,8 +538,8 @@ var draw = new(function Draw(){
 			path.cubicCurveTo([+w, h/2], [0, h/4], [0, 0]);
 
 			path.translate(from.add(fromToVec.divide(2)));
-			path.translate([0, h/2]);
-		}
+			path.translate([0, -h/2]);
+		};
 		heart.onMouseUp = function(event){
 			if (!path) {
 				return;
@@ -802,6 +802,7 @@ var draw = new(function Draw(){
 				case "line":
 				case "rectangle":
 				case "oval":
+				case "heart":
 				case "text":
 					_tools[_currentToolName].abort();
 			}
