@@ -74,7 +74,7 @@
 					<i class="mdi mdi-24px mdi-arrow-all"></i>
 				</button>
 				<div class="btn-sep"></div>
-				<div class="tool-group">
+				<div class="tool-group" title="(P)encil / (B)rush">
 					<button title="(P)encil" data-tool="pencil" class="btn btn-tool">
 						<i class="mdi mdi-24px mdi-pencil"></i>
 					</button>
@@ -89,7 +89,7 @@
 				<button title="(L)ine" data-tool="line" class="btn btn-tool">
 					<i class="mdi mdi-24px mdi-minus"></i>
 				</button>
-				<div class="tool-group">
+				<div class="tool-group" title="shapes">
 					<button title="(R)ectangle" data-tool="rectangle" class="btn btn-tool">
 						<i class="mdi mdi-24px mdi-crop-square"></i>
 					</button>
@@ -104,7 +104,7 @@
 					<i class="mdi mdi-24px mdi-format-title"></i>
 				</button>
 				<div class="btn-sep"></div>
-				<div class="tool-group">
+				<div class="tool-group" title="(C)olor eyedropper / bucket">
 					<button title="(C)olor picker" data-tool="eyedropper" class="btn btn-tool">
 						<i class="mdi mdi-24px mdi-eyedropper"></i>
 					</button>
@@ -236,14 +236,21 @@
 								</p>
 							</div>
 							<div id="tips" class="tab-pane fade">
-								<p>Use <code>mouse wheel</code> or <code>PgUp</code>/<code>PgDn</code> to zoom in and out.</p>
-								<p>
-									You can select multiple items if holding <code>control</code> while using <code>selector</code> tool.
-								</p>
-								<p>
-									Hold <code>shift</code> while using <code>line</code>, <code>rectangle</code> or <code>oval</code> tool to draw regular shapes.
-								</p>
-							</div>
+								<h4>Use zoom</h4>
+								<p>Use <code>mouse wheel</code> or <code>PgUp</code>/<code>PgDn</code> to <u>zoom</u> in and out.
+
+								<h4>Use selection</h4>
+								<p>Click on object with <code>selector</code> tool to select it.
+								<p>Selected items can be <u>deleted</u> by pressing <code>delete</code>, or <u>moved</u> by dragging them.
+
+								<h4>Use keyboard</h4>
+								<p>You can use keys to switch between tools. Hold mouse over tool button to see which key is associated with that tool.
+
+								<h4>Use modificators</h4>
+								<p>You can <u>select multiple items</u> if holding <code>control</code> while using <code>selector</code> tool.
+								<p>Hold <code>shift</code> while using <code>line</code> or one of <code>shapes</code> tools to <u>draw regular shapes</u>.
+								<p>Drag selected items while holding <code>alt</code> to <u>clone</u> them.
+															</div>
 							<div id="about" class="tab-pane fade">
 								<p>
 									This tool was originally made as school project by Drahoslav Bednář and David Balvín.

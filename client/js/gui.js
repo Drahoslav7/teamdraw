@@ -226,7 +226,7 @@ var gui = new (function () {
 			"backdrop" : false,
 			"show": false,
 		}).on("show.bs.modal", function() {
-			$("[title]").tooltip("show");
+			$("[title]").not(".tool-group>.btn").tooltip("show");
 			$("#workarea").animate({
 				opacity: 0.2
 			});
@@ -296,7 +296,7 @@ var gui = new (function () {
 		 */
 		$("[title]").map(function(i, el){
 			var title = $(this).attr("title");
-			title = title.replace(/\((.)\)/, "<u>$1</u>");
+			title = title.replace(/\((.)\)/g, "<u>$1</u>");
 			$(this).attr("title", title);
 			$(this).tooltip({
 				html: true,
@@ -310,10 +310,19 @@ var gui = new (function () {
 		});
 
 		userbarbutton.tooltip("destroy").tooltip({
-			container: "body",
+			container: "#tooltips",
 			placement: "left",
 			trigger: "manual"
 		});
+
+		$(".tool-group[title]").tooltip("destroy").tooltip({
+			html: true,
+			placement: "auto right",
+			delay: {show: 800, hide: 0},
+			container: "#tooltips",
+			trigger: "manual"
+		});
+
 		/**
 		 * boldnes picker
 		 */
