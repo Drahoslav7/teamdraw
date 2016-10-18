@@ -290,6 +290,13 @@ html, body {
 	font-size: 120%;
 }
 
+#helpmodal #tips h4 {
+	margin-top: 20px;
+}
+#helpmodal #tips p {
+	padding-left: 15px;
+}
+
 .spin {
 	animation: spin 1s infinite linear;
 }
