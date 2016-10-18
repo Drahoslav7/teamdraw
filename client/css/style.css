@@ -101,6 +101,9 @@ html, body {
 
 #toollist {
 	width: inherit;
+	background: #b3bbc3;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 #toollist.btn-group-vertical > .btn:first-child:not(:last-child) {
@@ -110,23 +113,24 @@ html, body {
 
 
 .tool-group {
-	width: 50px;
+	width: auto;
+	max-width: 50px;
 	height: 38px;
 	overflow: hidden;
-	font-size: 0px;
-    white-space: nowrap;
-	transition: width 0.2s ease ;
+	transition: max-width 0.2s ease;
 	transition-delay: 0.4s;
+	display: inline-flex;
+	flex-wrap: nowrap;
 }
 .tool-group:hover {
-	width: 150px;
+	max-width: 150px;
 	transition-delay: 0s;
 }
 
 .tool-group .btn-tool {
 	display: inline-block;
-	white-space: nowrap;
 	word-spacing: 0px;
+	flex: 0 0 50px;
 }
 .tool-group .btn-tool:first-child::after {
 	content: '◢';
