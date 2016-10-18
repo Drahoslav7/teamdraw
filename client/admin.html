@@ -89,7 +89,7 @@ app.controller('MainController', [
 					<th>Users</th>
 				</tr>
 			</thead>
-			<tr ng-repeat="instance in instances | orderBy: 'creationTime'" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}">
+			<tr ng-repeat="instance in instances | orderBy : 'creationTime' : true" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}">
 				<td>{{instance.creationTime | date : "yyyy-MM-dd hh:mm"}}</td>
 				<td class="mono">
 					<a href="{{location.origin + '/#' + instance.token}}" target="_blank">
