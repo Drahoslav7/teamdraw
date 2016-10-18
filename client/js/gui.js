@@ -245,6 +245,13 @@ var gui = new (function () {
 			});
 		});
 
+		// closable with close button
+		$('.modal').on("show.bs.modal", function () {
+			$(".close", this).click((function (modal) {
+				$(modal).modal("hide");
+			}).bind(null, this));
+		});
+
 		/**
 		 * Cursor presets
 		 */
