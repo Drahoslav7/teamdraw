@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="css/materialdesignicons.min.css">
 
 	<!-- libs -->
+	<script src="js/libs/angular.min.js"></script>
 	<script src="js/libs/jquery.min.js"></script>
 	<script src="js/libs/bootstrap.min.js"></script>
 	<script src="js/libs/socket.io.js"></script>
@@ -19,7 +20,16 @@
 	<script src="js/logger.js"></script>
 
 <style>
-
+.mono {
+	font-family: monospace;
+}
+.dead {
+	opacity: 0.5;
+	background: #f6f6f6;
+}
+.activity {
+	background: #fafffa;
+}
 </style>
 <script>
 var console = new Logger('admin');
@@ -27,26 +37,74 @@ var console = new Logger('admin');
 var url = location.protocol + "//" + server.hostname + ":" + server.port + "/admin";
 var socket = io.connect(url);
 
-$(function() {
-	socket.on("instances", handleInstances)
-	socket.emit("get instances", null, handleInstances);
+var app = angular.module('administration', []);
 
-	function handleInstances(instances) {
-		instances = Object.keys(instances).map(key => instances[key]);
-		instances = instances.sort((a,b) => (a.creationTime < b.creationTime ? +1 : -1));
-		console.log("instances", instances);
-		$("textarea").val(JSON.stringify(instances, null, '\t'));
+app.controller('MainController', [
+	'$scope',
+	function ($scope) {
+		$scope.instances = [];
+
+		$scope.isOnline = isOnline;
+		$scope.isDead = isDead;
+		$scope.isActive = isActive;
+
+
+		socket.on("instances", handleInstances)
+		socket.emit("get instances", null, handleInstances);
+
+		function handleInstances(instances) {
+			$scope.instances = Object.keys(instances).map(key => instances[key]);
+			$scope.$apply();
+			console.log('instances', $scope.instances);
+		}
+
+		function isOnline (instance) {
+			return instance.users.some( user => user.online );
+		}
+
+		function isDead (instance) {
+			return instance.users.length === 1 && instance.users[0].nick === undefined && !instance.users[0].online;
+		}
+
+		function isActive (instance) {
+			return isOnline(instance);
+		}
 	}
-});
+]);
+
 
 </script>
 
 </head>
-<body>
+<body ng-app="administration" ng-controller="MainController">
 	<div class="container">
 		<h1>TeamDraw Admin</h1>
 		<div></div>
-		<textarea id="instances" cols="150" rows="20"></textarea>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Created</th>
+					<th>Token</th>
+					<th>Actions</th>
+					<th>Users</th>
+				</tr>
+			</thead>
+			<tr ng-repeat="instance in instances | orderBy: 'creationTime'" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}">
+				<td>{{instance.creationTime | date : "yyyy-MM-dd hh:mm"}}</td>
+				<td class="mono">
+					<a href="{{location.origin + '/#' + instance.token}}" target="_blank">
+						{{instance.token}}
+					</a>
+				</td>
+				<td>{{instance.actionsLength}}</td>
+				<td>
+					<div ng-repeat="user in instance.users">
+						<span class="mdi" ng-class="{ 'mdi-checkbox-blank-circle': user.online, 'mdi-checkbox-blank-circle-outline': !user.online }"></span>
+						{{user.rights}} | {{user.nick}}
+					</div>
+				</td>
+			</tr>
+		</table>
 	</div>
 </body>
 </html>
