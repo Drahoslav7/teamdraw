@@ -411,6 +411,53 @@ var draw = new(function Draw(){
 		return line;
 	})();
 
+	_tools["arrow"] = (function(){
+		var arrow = new paper.Tool();
+		var path;
+		var from;
+		arrow.onMouseDown = function(event){
+			path = new paper.Path({
+				strokeCap: 'round',
+				strokeJoin: 'round',
+				strokeColor: _color,
+				strokeWidth: _size,
+			});
+			from = event.point;
+			path.add(from);
+			path.add(from);
+		};
+		arrow.onMouseDrag = function(event){
+			path.removeSegments(1); // all except first
+			var to = event.point;
+			if (event.modifiers.shift) { // only multiples of 15 degree
+				to = alignToAngle(from, to, 15);
+			}
+
+			path.add(to);
+			var toFrom = from.subtract(to).normalize().multiply(15);
+			path.add(to.add(toFrom.rotate(+15)));
+			path.add(to.add(toFrom.rotate(-15)));
+			path.add(to);
+		};
+		arrow.onMouseUp = function(event){
+			if (!path) {
+				return;
+			}
+			var cachedPath = path;
+			app.postAction("item", path.exportJSON({asString:false}), function() {
+				cachedPath.remove(); // will be replaced with update from server
+
+			});
+		};
+		arrow.abort = function() {
+			if (path) {
+				path.remove();
+			}
+			path = undefined;
+		};
+		return arrow;
+	})();
+
 	_tools["rectangle"] = (function(){
 		var rectangle = new paper.Tool();
 		var path;

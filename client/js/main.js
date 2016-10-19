@@ -204,7 +204,10 @@ $(function(){
 						}
 						break;
 					case KeyCode.KEY_L:
-						draw.changeToolTo("line")
+						draw.changeToolTo("line");
+						break;
+					case KeyCode.KEY_A:
+						draw.changeToolTo("arrow");
 						break;
 					case KeyCode.KEY_O:
 						draw.changeToolTo("oval");
@@ -213,7 +216,7 @@ $(function(){
 						draw.changeToolTo("heart");
 						break;
 					case KeyCode.KEY_R:
-						draw.changeToolTo("rectangle")
+						draw.changeToolTo("rectangle");
 						break;
 					case KeyCode.KEY_T:
 						draw.changeToolTo("text");
