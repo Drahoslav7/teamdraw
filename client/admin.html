@@ -22,6 +22,7 @@
 <style>
 .mono {
 	font-family: monospace;
+	font-size: 118%;
 }
 .dead {
 	opacity: 0.5;
@@ -79,7 +80,9 @@ app.controller('MainController', [
 <body ng-app="administration" ng-controller="MainController">
 	<div class="container">
 		<h1>TeamDraw Admin</h1>
-		<div></div>
+		<menu class="menu">
+			<a href="/" target="_blank"><span class="mdi mdi-file-outline"></span>new session</a>
+		</menu>
 		<table class="table">
 			<thead>
 				<tr>
