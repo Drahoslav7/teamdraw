@@ -432,12 +432,13 @@ var draw = new(function Draw(){
 			if (event.modifiers.shift) { // only multiples of 15 degree
 				to = alignToAngle(from, to, 15);
 			}
+			var back = to.subtract(from).normalize().multiply(18);
+			path.add(to.subtract(back.multiply(0.8)));
+			path.add(to.subtract(back.rotate(+15)));
+			path.add(to);
+			path.add(to.subtract(back.rotate(-15)));
+			path.add(to.subtract(back.multiply(0.8)));
 
-			path.add(to);
-			var toFrom = from.subtract(to).normalize().multiply(15);
-			path.add(to.add(toFrom.rotate(+15)));
-			path.add(to.add(toFrom.rotate(-15)));
-			path.add(to);
 		};
 		arrow.onMouseUp = function(event){
 			if (!path) {
