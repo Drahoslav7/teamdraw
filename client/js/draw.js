@@ -1046,13 +1046,14 @@ function CursorManager(project) {
 				}
 			}
 		};
-		setTimeout(function() {
-			if (_cursors[name].lastActivity + 1000*20 <= Date.now()) {
+		var now = Date.now();
+		setTimeout(function(then) {
+			if (_cursors[name].lastActivity === then) {
 				setInactive(name);
 			}
-		}, 1000*15);
+		}, 1000*20, now);
 		setActive(name);
-		_cursors[name].lastActivity = Date.now();
+		_cursors[name].lastActivity = now;
 	};
 
 	function findBorderPoint (rectangle, destination) {
