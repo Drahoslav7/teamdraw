@@ -1,6 +1,56 @@
 # IO protocol
 
-## server -> client 
+methods withou + use no callback  
+methods with + might return error in callback 
+with more + returs objects in callback  which might contains err and more data (eg. token/secret)
+
+	client			server			client
+		|	create		|				|
+		|++------------>|				|
+		|				|				|
+		|	login		|				|
+		|++------------>|				|
+
+
+		|	action		|				|
+		|+------------->|				|
+
+
+		|				|	join		|
+		|				|<------------++|
+		|				|				|
+		|				|	login		|
+		|	users		|<------------++|
+		|<--------------|				|
+		|				|	sync		|
+		|				|<--------------|
+		|				|	actions		|
+		|				|-------------->|
+
+
+		|	cursor		|				|
+		|-------------->|	cursors		|
+		|				|-------------->|
+		
+
+		|	action		|				|
+		|+------------->|	actions		|
+		|				|-------------->|
+
+
+		|				|				|
+		|				|				|
+		|				|				|
+
+
+
+
+
+## client -> server methods
+
+	// todo
+
+## server -> client methods
 
 **'actions'** => ACTIONS // nová akce uživatele
 
