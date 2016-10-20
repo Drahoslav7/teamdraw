@@ -14,6 +14,8 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 		|	action		|				|
 		|+------------->|				|
+		|	actions		|				|
+		|<--------------|				|
 
 
 		|				|	join		|
@@ -34,8 +36,9 @@ methods with ++ returs objects in callback  which might contains err and more da
 		
 
 		|	action		|				|
-		|+------------->|	actions		|
-		|				|-------------->|
+		|+------------->|				|
+		|	actions		|	acitons		|
+		|<--------------|-------------->|
 
 
 		|				|				|
