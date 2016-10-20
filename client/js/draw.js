@@ -439,7 +439,6 @@ var draw = new(function Draw(){
 			var cachedPath = path;
 			app.postAction("item", path.exportJSON({asString:false}), function() {
 				cachedPath.remove(); // will be replaced with update from server
-
 			});
 		};
 		line.abort = function() {
@@ -965,17 +964,32 @@ function CursorManager(project) {
 
 	var mainLayer = project.activeLayer;
 	var cursorsLayer = new paper.Layer();
+	cursorsLayer.transformContent = false;
 	mainLayer.activate();
 
 	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
 		cursor.pivot = [5, 1];
+		cursor.scale(0.7);
+		cursor.fillColor = '#fff';
+		cursor.strokeColor = '#000';
+		cursor.strokeWidth = 1;
+		cursor.strokeScaling = false;
+		cursor.set({
+			shadowColor: new paper.Color(0, 0, 0, 0.25),
+			shadowBlur: 2,
+			shadowOffset: [3, 1.5],
+		});
 		_cursorTemplate = cursor;
 		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
 	});
 
 	this.copeZoom = function(scaleFactor) {
 		_cursorTemplate.scale(1/scaleFactor);
+		for (cursorName in _cursors) {
+			_cursors[cursorName].scale(1/scaleFactor);
+		}
 	};
+
 	this.exists = function(name){
 		return !!(name in _cursors);
 	};
@@ -985,9 +999,10 @@ function CursorManager(project) {
 			throw "cursor with this name already exist";
 		}
 		var randomPoint = paper.Point.random().multiply(paper.view.size).add(paper.view.bounds);
-		var cursor = _cursorSymbol.place(randomPoint)
+		var cursor = _cursorTemplate.clone(); // _cursorSymbol.place(randomPoint)
 		cursor.pivot = _cursorTemplate.pivot;
 		cursor.opacity = 0;
+		cursor.fillColor = colorFromName(name);
 		cursorsLayer.addChild(cursor);
 		_cursors[name] = cursor;
 	};
@@ -1032,4 +1047,17 @@ function CursorManager(project) {
 		var cursor = _cursors[name];
 		cursor.opacity = 1;
 	};
+	function colorFromName (name) {
+		var ang = 0;
+		for (var i = name.length - 1; i >= 0; i--) {
+			ang += name[i].charCodeAt() + 1;
+			ang *= (i+1)*name[i].charCodeAt();
+			ang %= 360;
+		}
+		return new paper.Color({
+			hue: ang,
+			saturation: 1,
+			brightness: 0.9,
+		});
+	}
 }
