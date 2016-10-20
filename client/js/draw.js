@@ -848,6 +848,7 @@ var draw = new(function Draw(){
 				case "pencil":
 				case "brush":
 				case "line":
+				case "arrow":
 				case "rectangle":
 				case "oval":
 				case "heart":
