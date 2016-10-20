@@ -10,6 +10,8 @@ methods with ++ returs objects in callback  which might contains err and more da
 		|				|				|
 		|	login		|				|
 		|++------------>|				|
+		|	users		|				|
+		|<--------------|				|
 
 
 		|	action		|				|
@@ -22,8 +24,9 @@ methods with ++ returs objects in callback  which might contains err and more da
 		|				|<------------++|
 		|				|				|
 		|				|	login		|
-		|	users		|<------------++|
-		|<--------------|				|
+		|				|<------------++|
+		|	users		|	users		|
+		|<--------------|-------------->|
 		|				|	sync		|
 		|				|<--------------|
 		|				|	actions		|
@@ -37,7 +40,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 		|	action		|				|
 		|+------------->|				|
-		|	actions		|	acitons		|
+		|	actions		|	actions		|
 		|<--------------|-------------->|
 
 
