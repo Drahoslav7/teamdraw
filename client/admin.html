@@ -49,14 +49,27 @@ app.controller('MainController', [
 		$scope.isDead = isDead;
 		$scope.isActive = isActive;
 
-
-		socket.on("instances", handleInstances)
 		socket.emit("get instances", null, handleInstances);
+		socket.on("instances", handleInstances);
+		socket.on("instance", handleInstance);
 
 		function handleInstances(instances) {
-			$scope.instances = Object.keys(instances).map(key => instances[key]);
+			$scope.instances = Object.keys(instances).map(key => instances[key]); // obj to array
 			$scope.$apply();
 			console.log('instances', $scope.instances);
+		}
+
+		function handleInstance(instance) {
+			var updated = $scope.instances.some(function (old, i, arr) {
+				if (old.token === instance.token) {
+					arr[i] = instance;
+					return true;
+				}
+			});
+			if (!updated) {
+				$scope.instances.push(instance);
+			}
+			$scope.$apply();
 		}
 
 		function isOnline (instance) {
@@ -93,7 +106,7 @@ app.controller('MainController', [
 				</tr>
 			</thead>
 			<tr ng-repeat="instance in instances | orderBy : 'creationTime' : true" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}">
-				<td>{{instance.creationTime | date : "yyyy-MM-dd HH:mm"}}</td>
+				<td>{{instance.creationTime | date : "yyyy-MM-dd  HH:mm"}}</td>
 				<td class="mono">
 					<a href="{{location.origin + '/#' + instance.token}}" target="_blank">
 						{{instance.token}}

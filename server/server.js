@@ -75,7 +75,7 @@ io.on('connection', function (socket) {
 				secret: user.getSecret(),
 			},
 		});
-		adminio.inform();
+		adminio.inform(instance);
 	});
 
 	/**
@@ -108,7 +108,7 @@ io.on('connection', function (socket) {
 			err: err,
 			secret: user.getSecret(),
 		});
-		adminio.inform();
+		adminio.inform(instance);
 	});
 
 	/**
@@ -140,7 +140,7 @@ io.on('connection', function (socket) {
 		instance.emit("users", instance.getUsers());
 		afterLogin();
 
-		adminio.inform();
+		adminio.inform(instance);
 	});
 
 	socket.on("disconnect", function() {
@@ -152,7 +152,7 @@ io.on('connection', function (socket) {
 			instance.leave(user);
 
 			instance.emit("users", instance.getUsers());
-			adminio.inform();
+			adminio.inform(instance);
 			console.log("user", user.name, "leaved");
 		};
 	});
@@ -169,7 +169,7 @@ io.on('connection', function (socket) {
 			var savedAction = instance.pushAction(action);
 			instance.emit("actions", [savedAction]);
 			cb();
-			adminio.inform();
+			adminio.inform(instance);
 		});
 
 		socket.on("sync", function(lastActionId) {
@@ -200,7 +200,7 @@ io.on('connection', function (socket) {
 				instance[methodName](data.nick);
 
 				instance.emit("users", instance.getUsers());
-				adminio.inform();
+				adminio.inform(instance);
 			}
 		});
 
@@ -228,9 +228,13 @@ io.on('connection', function (socket) {
 
 var adminio = io.of("/admin");
 
-adminio.inform = function() {
+adminio.inform = function(instance) {
 	if (this.sockets.length !== 0) {
-		this.emit("instances", Instance.getAll());
+		if (!instance) {
+			this.emit("instances", Instance.getAll());
+		} else {
+			this.emit("instance", instance);
+		}
 	}
 }
 
