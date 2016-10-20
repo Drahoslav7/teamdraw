@@ -959,7 +959,7 @@ function almostEquals (a, b, e) {
 
 function CursorManager(project) {
 	var _cursorTemplate;
-	var _cursorSymbol;
+	var _hintTemplate;
 	var _cursors = {};
 
 	var mainLayer = project.activeLayer;
@@ -967,26 +967,34 @@ function CursorManager(project) {
 	cursorsLayer.transformContent = false;
 	mainLayer.activate();
 
+	var style = {
+		fillColor: '#fff',
+		strokeColor: '#000',
+		strokeWidth: 1,
+		strokeScaling: false,
+		shadowColor: new paper.Color(0, 0, 0, 0.25),
+		shadowBlur: 2,
+		shadowOffset: [3, 1.5],
+		visible: false,
+	};
+
+	var hint = new paper.Shape.Circle([0, 0], 3);
+	hint.set(style);
+
 	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
 		cursor.pivot = [5, 1];
 		cursor.scale(0.7);
-		cursor.fillColor = '#fff';
-		cursor.strokeColor = '#000';
-		cursor.strokeWidth = 1;
-		cursor.strokeScaling = false;
-		cursor.set({
-			shadowColor: new paper.Color(0, 0, 0, 0.25),
-			shadowBlur: 2,
-			shadowOffset: [3, 1.5],
-		});
+		cursor.set(style);
 		_cursorTemplate = cursor;
-		_cursorSymbol = new paper.SymbolDefinition(cursor, true);
+		_hintTemplate = hint;
 	});
 
 	this.copeZoom = function(scaleFactor) {
 		_cursorTemplate.scale(1/scaleFactor);
+		_hintTemplate.scale(1/scaleFactor);
 		for (cursorName in _cursors) {
-			_cursors[cursorName].scale(1/scaleFactor);
+			_cursors[cursorName].cursor.scale(1/scaleFactor);
+			_cursors[cursorName].hint.scale(1/scaleFactor);
 		}
 	};
 
@@ -998,20 +1006,28 @@ function CursorManager(project) {
 		if (name in _cursors) {
 			throw "cursor with this name already exist";
 		}
-		var randomPoint = paper.Point.random().multiply(paper.view.size).add(paper.view.bounds);
-		var cursor = _cursorTemplate.clone(); // _cursorSymbol.place(randomPoint)
-		cursor.pivot = _cursorTemplate.pivot;
-		cursor.opacity = 0;
-		cursor.fillColor = colorFromName(name);
+		var color = colorFromName(name); // todo get from app?
+
+		var cursor = _cursorTemplate.clone();
+		cursor.fillColor = color;
 		cursorsLayer.addChild(cursor);
-		_cursors[name] = cursor;
+
+		var hint = _hintTemplate.clone();
+		hint.fillColor = color;
+		cursorsLayer.addChild(cursor);
+
+		_cursors[name] = {
+			cursor: cursor,
+			hint: hint,
+		};
 	};
 	this.moveCursorTo = function (name, position, duration) {
 		var steps = Math.floor(duration * (60/1000)) || 1;
 		if (!(name in _cursors)) {
 			throw "cursor with this name does not exist";
 		}
-		var cursor = _cursors[name];
+		var cursor = _cursors[name].cursor;
+		var hint = _cursors[name].hint;
 		var destination = new paper.Point(position);
 		var step = destination.subtract(cursor.position).divide(steps);
 		cursor.onFrame = function(event) {
@@ -1019,33 +1035,70 @@ function CursorManager(project) {
 				cursor.onFrame = null;
 			} else {
 				cursor.translate(step);
+				var borderPoint = findBorderPoint(paper.view.bounds, cursor.position);
+				if (borderPoint) {
+					cursor.visible = false;
+					hint.visible = true;
+					hint.position = borderPoint
+				} else {
+					hint.visible = false;
+					cursor.visible = true;
+				}
 			}
 		};
 		setTimeout(function() {
-			if (cursor.data.lastActivity + 1000*15 <= Date.now()) {
+			if (_cursors[name].lastActivity + 1000*20 <= Date.now()) {
 				setInactive(name);
 			}
 		}, 1000*15);
 		setActive(name);
-		cursor.data.lastActivity = Date.now();
+		_cursors[name].lastActivity = Date.now();
 	};
 
-	function setInactive(name) {
-		var cursor = _cursors[name];
-		if (cursor.opacity === 1) {
-			cursor.onFrame = function(event) {
-				if (cursor.opacity <= 0) {
-					cursor.onFrame = null;
-					cursor.opacity = 0;
-				} else {
-					cursor.opacity -= 0.02;
-				}
-			};
+	function findBorderPoint (rectangle, destination) {
+		if (destination.isInside(rectangle)) {
+			return null;
 		}
+		var centerToDest = destination.subtract(rectangle.center);
+
+		var a = (rectangle.width/2) * Math.sign(centerToDest.x);
+		var b = (a / centerToDest.x) * centerToDest.y;
+		var centerToBounds = new paper.Point([a, b]);
+		var borderPoint = rectangle.center.add(centerToBounds);
+
+		if (borderPoint.isInside(rectangle)) {
+			return borderPoint;
+		}
+
+		var b = (rectangle.height/2) * Math.sign(centerToDest.y);
+		var a = (b / centerToDest.y) * centerToDest.x;
+		var centerToBounds = new paper.Point([a, b]);
+		var borderPoint = rectangle.center.add(centerToBounds);
+
+		if (borderPoint.isInside(rectangle)) {
+			return borderPoint;
+		}
+
+		return null;
+	}
+
+	function setInactive(name) {
+		var cursor = _cursors[name].cursor;
+		var hint = _cursors[name].hint;
+		cursor.onFrame = hint.onFrame = fade;
+
+		function fade(event) {
+			if (this.opacity <= 0) {
+				this.onFrame = null;
+				this.opacity = 0;
+			} else {
+				this.opacity -= 0.02;
+			}
+		};
 	};
 	function setActive(name) {
-		var cursor = _cursors[name];
-		cursor.opacity = 1;
+		_cursors[name].cursor.opacity = 1;
+		_cursors[name].hint.opacity = 1;
 	};
 	function colorFromName (name) {
 		var ang = 0;
