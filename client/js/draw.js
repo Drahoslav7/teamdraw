@@ -978,15 +978,18 @@ function CursorManager(project) {
 		visible: false,
 	};
 
-	var hint = new paper.Shape.Circle([0, 0], 3);
+	var hint = new paper.Shape.Circle([0, 0], 4);
 	hint.set(style);
 
 	cursorsLayer.importSVG('/img/cursor.svg', function(cursor) {
-		cursor.pivot = [5, 1];
 		cursor.scale(0.7);
+		cursor.pivot = [7, 4];
+		cursor.position = [0, 0];
 		cursor.set(style);
 		_cursorTemplate = cursor;
 		_hintTemplate = hint;
+		cursor.remove();
+		hint.remove();
 	});
 
 	this.copeZoom = function(scaleFactor) {
@@ -1014,7 +1017,7 @@ function CursorManager(project) {
 
 		var hint = _hintTemplate.clone();
 		hint.fillColor = color;
-		cursorsLayer.addChild(cursor);
+		cursorsLayer.addChild(hint);
 
 		_cursors[name] = {
 			cursor: cursor,
@@ -1110,8 +1113,8 @@ function CursorManager(project) {
 		}
 		return new paper.Color({
 			hue: ang,
-			saturation: 1,
-			brightness: 0.9,
+			saturation: .8,
+			lightness: .8,
 		});
 	}
 }
