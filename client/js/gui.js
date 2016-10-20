@@ -172,6 +172,12 @@ var gui = new (function () {
 			penciltoggler.addClass('mdi-pencil-off');
 		}
 
+		userElement.hover(function() {
+			penciltoggler.css({color: user.color});
+		}, function() {
+			penciltoggler.css({color: 'inherit'});
+		});
+
 		if (me.rights.toChangeRights) {
 			penciltoggler.hover(function() {
 				$(this).toggleClass("mdi-pencil mdi-pencil-off");

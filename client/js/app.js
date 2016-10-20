@@ -50,6 +50,9 @@ var app = new (function App(){
 	//
 
 	io.on("users", function(users){
+		users.forEach(function(user) {
+			user.color = colorFromName(user.nick);
+		});
 		fire("userlist update", users);
 	});
 
@@ -245,4 +248,19 @@ function onlyOncePerInterval (func, interval) {
 			}, interval);
 		}
 	};
+}
+
+
+function colorFromName (name) {
+	var ang = 0;
+	for (var i = name.length - 1; i >= 0; i--) {
+		ang += name[i].charCodeAt() + 1;
+		ang *= (i+1)*name[i].charCodeAt();
+		ang %= 360;
+	}
+	return new paper.Color({
+		hue: ang,
+		saturation: .8,
+		lightness: .8,
+	}).toCSS();
 }

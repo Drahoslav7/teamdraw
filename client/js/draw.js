@@ -59,7 +59,7 @@ var draw = new(function Draw(){
 		app.on("userlist update", function(users) {
 			users.forEach(function(user) {
 				if (app.getNick() !== user.nick && !cursorManager.exists(user.nick)) {
-					cursorManager.new(user.nick);
+					cursorManager.new(user.nick, user.color);
 				}
 			});
 		});
@@ -1005,11 +1005,10 @@ function CursorManager(project) {
 		return !!(name in _cursors);
 	};
 
-	this.new = function(name) {
+	this.new = function(name, color) {
 		if (name in _cursors) {
 			throw "cursor with this name already exist";
 		}
-		var color = colorFromName(name); // todo get from app?
 
 		var cursor = _cursorTemplate.clone();
 		cursor.fillColor = color;
@@ -1104,17 +1103,4 @@ function CursorManager(project) {
 		_cursors[name].cursor.opacity = 1;
 		_cursors[name].hint.opacity = 1;
 	};
-	function colorFromName (name) {
-		var ang = 0;
-		for (var i = name.length - 1; i >= 0; i--) {
-			ang += name[i].charCodeAt() + 1;
-			ang *= (i+1)*name[i].charCodeAt();
-			ang %= 360;
-		}
-		return new paper.Color({
-			hue: ang,
-			saturation: .8,
-			lightness: .8,
-		});
-	}
 }
