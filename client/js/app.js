@@ -49,18 +49,20 @@ var app = new (function App(){
 
 	//
 
-	io.on("userlist", function(msg){
-		fire("userlist update", msg.users);
+	io.on("users", function(users){
+		fire("userlist update", users);
 	});
 
 	io.on("cursors", function(cursors){
 		fire("cursors update", cursors);
 	});
 
-	io.on("update", function(msg, cb){
-		// TODO check continuity
-		_actions.push(msg.data);
-		fire("update", msg.data);
+	io.on("actions", function(actions, cb){
+		actions.forEach(function (action) {
+			// TODO check continuity
+			_actions.push(action);
+			fire("action update", action);
+		});
 		if (cb) {
 			cb();
 		}

@@ -61,6 +61,7 @@ $(function(){
 	});
 
 	app.on("connected", function(){
+		app.sync();
 		neterrormodal.modal("hide");
 
 		$("#alert").fadeIn("fast");
@@ -302,17 +303,17 @@ $(function(){
 		function toggleToolWhileHoldingMouseButton (toolname, button) {
 			var prevToolName = "";
 			$('body').on("mousedown", function(event){
-				console.log("body mousedown");
+				// console.log("body mousedown");
 			});
 			$('#canvas').mousedown(function(event) {
-				console.log("down", event.which);
+				// console.log("down", event.which);
 				if(event.which === button) {
 					prevToolName = draw.getCurrentToolName();
 					draw.changeToolTo(toolname);
 				}
 			})
 			$('#canvas').mouseup(function(event) {
-				console.log("up", event.which);
+				// console.log("up", event.which);
 				if(event.which === button) {
 					draw.changeToolTo(prevToolName);
 				}

@@ -71,17 +71,60 @@ var draw = new(function Draw(){
 				}
 			});
 		});
+
+		app.on("action update", function(action) {
+			if (action.type === "item") {
+				var json = action.data;
+				var n = action.n;
+				var className = json[0];
+				if (!(className in paper)) {
+					console.error("unknown item type", className);
+					return;
+				}
+				var item = new paper[className];
+				item.importJSON(json);
+				item.n = n; // for deleting and manipulation purposes
+			}
+			if (action.type === "erase") {
+				var ns = action.data;
+				var items = paper.project.getItems(filterByNs(ns));
+				if (items.length === 0) {
+					console.error("no items with ns=%d to erase", ns);
+					return;
+				}
+				items.forEach(function(item){
+					item.remove();
+				})
+			}
+			if (action.type === "translate") {
+				var ns = action.data.ns;
+				var delta = action.data.delta;
+				paper.project.getItems(filterByNs(ns)).forEach(function(item) {
+					item.translate(delta);
+				});
+			}
+		});
+
 	});
 
-	function erase(item) {
-		if (item.visible) { // prevent from multiple delete action on one item
-			item.visible = false;
-			app.postAction("erase", item.n, function(err) {
-				if (err) {
-					item.visible = true;
-				}
-			});
+	function eraseItems(items) {
+		items = items.filter(function (item) { // only delete visible
+			return item.visible;
+		});
+		if (items.length === 0) {
+			return; // nothing to delete
 		}
+		items.forEach(function (item) { // to prevent multiple deletions
+			item.visible = false;
+		});
+		var itemNumbers = items.map(function (item) {return item.n});
+		app.postAction("erase", itemNumbers, function (err) {
+			if (err) {
+				items.forEach(function (item) {
+					item.visible = true;
+				});
+			}
+		});
 	}
 
 	function cloneSelected() {
@@ -94,12 +137,9 @@ var draw = new(function Draw(){
 		});
 	}
 
-	function filterByN(wantedN) {
+	function filterByNs(wantedN) {
 		return {
 			n: function(providedN){
-				if(typeof wantedN === "number"){
-					return providedN === wantedN;
-				}
 				if(wantedN instanceof Array){
 					return wantedN.some(function(wantedN){
 						return providedN === wantedN;
@@ -695,16 +735,10 @@ var draw = new(function Draw(){
 		var path;
 
 		eraser.onMouseDown = function(event) {
-			getItemsNearPoint(event.point).forEach(function(item) {
-				erase(item);
-			});
-
+			eraseItems(getItemsNearPoint(event.point));
 		};
 		eraser.onMouseDrag = function(event) {
-			getItemsNearEvent(event).forEach(function(item) {
-				erase(item);
-			});
-
+			eraseItems(getItemsNearEvent(event));
 		};
 		eraser.onMouseMove = function(event){ // hover
 
@@ -749,37 +783,6 @@ var draw = new(function Draw(){
 
 
 	//// end of tools behavior definitions
-
-	app.on("update", function(action) {
-		if (action.type === "item") {
-			var json = action.data;
-			var n = action.n;
-			var className = json[0];
-			if (!(className in paper)) {
-				console.error("unknown item type", className);
-				return;
-			}
-			var item = new paper[className];
-			item.importJSON(json);
-			item.n = n; // for deleting and manipulation purposes
-		}
-		if (action.type === "erase") {
-			var n = action.data;
-			var item = paper.project.getItem(filterByN(n));
-			if (!item) {
-				console.error("nothing with n=%d to erase", n);
-				return;
-			}
-			item.remove();
-		}
-		if (action.type === "translate") {
-			var ns = action.data.ns;
-			var delta = action.data.delta;
-			paper.project.getItems(filterByN(ns)).forEach(function(item) {
-				item.translate(delta);
-			});
-		}
-	});
 
 	// init end
 
@@ -885,9 +888,7 @@ var draw = new(function Draw(){
 	};
 
 	this.deleteSelected = function() {
-		paper.project.selectedItems.forEach(function(item){
-			erase(item);
-		});
+		eraseItems(paper.project.selectedItems);
 	};
 
 	this.moveSelected = function(dirrection) {
@@ -911,9 +912,8 @@ var draw = new(function Draw(){
 				x += step; break;
 		}
 
-		var itemNumbers = [];
-		paper.project.selectedItems.forEach(function(item){
-			itemNumbers.push(item.n);
+		var itemNumbers = paper.project.selectedItems.map(function(item) {
+			return item.n;
 		});
 		app.postAction('translate', {
 			ns: itemNumbers,

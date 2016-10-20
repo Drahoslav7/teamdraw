@@ -137,12 +137,24 @@ io.on('connection', function (socket) {
 			err: err
 		});
 
-		instance.emit("userlist", {
-			users: instance.getUsers()
-		});
+		instance.emit("users", instance.getUsers());
 		afterLogin();
 
 		adminio.inform();
+	});
+
+	socket.on("disconnect", function() {
+		console.log("user disconnected");
+		if (!instance || !user) {
+			return;
+		}
+		if (!isUserAlsoOnAnotherSocket(user)) {
+			instance.leave(user);
+
+			instance.emit("users", instance.getUsers());
+			adminio.inform();
+			console.log("user", user.name, "leaved");
+		};
 	});
 
 	/**
@@ -155,58 +167,39 @@ io.on('connection', function (socket) {
 				return cb(new Error("No right to draw"));
 			}
 			var savedAction = instance.pushAction(action);
-			instance.emit("update", {
-				data: savedAction
-			});
+			instance.emit("actions", [savedAction]);
 			cb();
 			adminio.inform();
 		});
 
 		socket.on("sync", function(lastActionId) {
 			var actions = instance.getActionsSince(lastActionId);
-			sendNextOne();
-			function sendNextOne() {
-				if(actions.length !== 0) {
-					socket.emit("update", {
-						data: actions.shift()
-					}, sendNextOne);
+			sendNextBatch();
+			function sendNextBatch() {
+				var batchSize = Math.max(Math.floor(Math.log(actions.length)), 1);
+				var batch = [];
+				while (batchSize--) {
+					if (actions.length !== 0) {
+						batch.push(actions.shift());
+					}
 				}
+				socket.emit("actions", batch, sendNextBatch);
 			}
 		});
 
 		socket.on("cursor", function(cursor) {
-			if (instance) { // why this happens before login?
-				instance.emit("cursors", [cursor]);
-			}
+			instance.emit("cursors", [cursor]);
 		});
 
-		socket.on("disconnect", function() {
-			console.log("user disconnected");
-			if (!instance || !user) {
-				return;
-			}
-			if (!isUserAlsoOnAnotherSocket(user)) {
-				instance.leave(user);
-
-				instance.emit("userlist", {
-					users: instance.getUsers()
-				});
-				adminio.inform();
-				console.log("user", user.name, "leaved");
-			};
-		});
-
-		socket.on("acl", function(data) {
+		socket.on("acl", function(data, cb) {
 			if (!user.hasRight(TO_CHANGE_RIGHTS)) {
-				return;
+				return cb(new Error("No right to change rights"));
 			}
 			var methodName = data.what + "User";
 			if (methodName in instance) {
 				instance[methodName](data.nick);
 
-				instance.emit("userlist", {
-					users: instance.getUsers()
-				});
+				instance.emit("users", instance.getUsers());
 				adminio.inform();
 			}
 		});
