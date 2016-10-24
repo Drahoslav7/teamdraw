@@ -248,7 +248,32 @@ adminio.inform = function(instance) {
 adminio.on("connection", function(socket) {
 	console.log("admin connection");
 
-	socket.on("get instances", function(data, callback) {
+	socket.on("get instances", function (data, callback) {
 		callback(Instance.getAll());
+	});
+
+	socket.on("remove user from instance", function (data, callback) {
+		var user = User.get(data.secret);
+		var instance = Instance.get(data.token);
+		if (!instance) {
+			return callback(new Error("instance not here"));
+		}
+		if (!user) {
+			return callback(new Error("user not here"));
+		}
+		instance.remove(user);
+		callback(null);
+		adminio.inform(instance);
+
+	});
+
+	socket.on("destroy instance", function (data, callback) {
+		var instance = Instance.get(data.token);
+		if (!instance) {
+			return callback(new Error("instance not here"));
+		}
+		instance.destroy();
+		callback(null);
+		adminio.inform();
 	});
 });

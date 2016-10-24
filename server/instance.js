@@ -48,7 +48,8 @@ function Instance(io) {
 		}
 
 		if (userSocket) {
-			userSocket.join(_token);
+			user.socket = userSocket;
+			user.socket.join(_token);
 		}
 		user.online = true
 
@@ -62,8 +63,21 @@ function Instance(io) {
 				user.online = false;
 			}
 		});
-		;
 	};
+
+	this.remove = function (user) {
+		if (user.socket) {
+			user.socket.leave(_token);
+		}
+		_users = _users.filter(u => u !== user);
+	};
+
+	this.destroy = function () {
+		_users.forEach(function(user) {
+			this.remove(user);
+		}.bind(this));
+		delete instances[_token];
+	}
 
 
 	this.getToken = function() {

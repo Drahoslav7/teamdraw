@@ -20,16 +20,32 @@
 	<script src="js/logger.js"></script>
 
 <style>
-.mono {
+.instance .mono {
 	font-family: monospace;
 	font-size: 118%;
 }
-.dead {
+.instance.dead {
 	opacity: 0.5;
 	background: #f6f6f6;
 }
-.activity {
+.instance.activity {
 	background: #fafffa;
+}
+
+.instance .destroy {
+	cursor: pointer;
+	visibility: hidden;
+}
+.instance.dead .destroy {
+	visibility: visible;
+}
+
+.user .remove {
+	cursor: pointer;
+	visibility: hidden;
+}
+.user:hover .remove {
+	visibility: visible;
 }
 </style>
 <script>
@@ -48,6 +64,29 @@ app.controller('MainController', [
 		$scope.isOnline = isOnline;
 		$scope.isDead = isDead;
 		$scope.isActive = isActive;
+
+		$scope.kickUserFromInstance = function (instance, user) {
+			if(!confirm("Really kick " + user.nick + "?")) {
+				return;
+			}
+			socket.emit("remove user from instance", {
+				token: instance.token,
+				secret: user.secret,
+			}, function(err) {
+				console.error(err);
+			});
+		};
+
+		$scope.destroyInstance = function (instance) {
+			if(!confirm("Really destroy instace "+instance.token+"?")) {
+				return;
+			}
+			socket.emit("destroy instance", {
+				token: instance.token,
+			}, function(err) {
+				console.error(err);
+			});
+		};
 
 		socket.emit("get instances", null, handleInstances);
 		socket.on("instances", handleInstances);
@@ -77,7 +116,7 @@ app.controller('MainController', [
 		}
 
 		function isDead (instance) {
-			return instance.users.length === 1 && instance.users[0].nick === undefined && !instance.users[0].online;
+			return instance.users.length === 0 || instance.users.length === 1 && instance.users[0].nick === undefined && !instance.users[0].online;
 		}
 
 		function isActive (instance) {
@@ -105,7 +144,7 @@ app.controller('MainController', [
 					<th>Users</th>
 				</tr>
 			</thead>
-			<tr ng-repeat="instance in instances | orderBy : 'creationTime' : true" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}">
+			<tr ng-repeat="instance in instances | orderBy : 'creationTime' : true" ng-class="{'dead': isDead(instance), 'activity': isActive(instance)}" class="instance">
 				<td>{{instance.creationTime | date : "yyyy-MM-dd  HH:mm"}}</td>
 				<td class="mono">
 					<a href="{{location.origin + '/#' + instance.token}}" target="_blank">
@@ -114,10 +153,14 @@ app.controller('MainController', [
 				</td>
 				<td>{{instance.actionsLength}}</td>
 				<td>
-					<div ng-repeat="user in instance.users">
+					<div ng-repeat="user in instance.users" class="user">
 						<span class="mdi" ng-class="{ 'mdi-checkbox-blank-circle': user.online, 'mdi-checkbox-blank-circle-outline': !user.online }"></span>
 						{{user.rights}} | {{user.nick}}
+						<span class="remove mdi mdi-close-circle" ng-click="kickUserFromInstance(instance, user)" title="kick user"></span>
 					</div>
+				</td>
+				<td>
+					<span class="destroy mdi mdi-delete-forever" ng-click="destroyInstance(instance)" title="destroy instance"></span>
 				</td>
 			</tr>
 		</table>

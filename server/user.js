@@ -10,6 +10,10 @@ global.TO_CHANGE_RIGHTS = 1<<2;
 
 var users = {};
 
+User.get = function(secret) {
+	return users[secret];
+};
+
 function User(secret) {
 
 	var _secret;
