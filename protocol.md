@@ -1,7 +1,9 @@
 # IO protocol
 
-methods without + use no callback  
-methods with + might return error in callback  
+methods without + use no callback
+
+methods with + might return error in callback
+
 methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)
 
 	client			server			client
@@ -36,7 +38,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 		|	cursor		|				|
 		|-------------->|	cursors		|
 		|				|-------------->|
-		
+
 
 		|	action		|				|
 		|+------------->|				|
@@ -54,7 +56,29 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 ## client -> server methods
 
-	// todo
+**'create'** // empty
+**callback** -> CREATE_CALLBACK
+
+	CREATE_CALLBACK := {
+		err: ERR, // if err not null data another might be undefined or invalid
+		token: TOKEN, // token of newly created instance
+		secret: SECRET // secret of newly created user
+	}
+
+**'join'** -> JOIN_REQUEST
+
+	JOIN_REQUEST -> {
+		token: TOKEN,
+		secret: undefined | SECRET
+	}
+
+**callback** <- CREATE_CALLBACK
+
+	JOIN_CALLBACK := {
+		err: ERR, // if err not null data another might be undefined or invalid
+		secret: SECRET // secret of newly created or (existing) user
+	}
+
 
 ## server -> client methods
 
@@ -76,7 +100,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 	TRANSLATION_DATA := {
 		ns: NS, // čisla objektů
-		delta: POINT // rozdíl změny pozice 
+		delta: POINT // rozdíl změny pozice
 	}
 
 	ERASE_DATA := NS // čísla objektů
