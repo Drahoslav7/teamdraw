@@ -55,25 +55,23 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("create", function(data, cb){
 		if (instance) {
-			return cb({	err: "instance already created"	});
+			return cb({	err: new Error("instance already created")	});
 		}
 		if (user) {
-			return cb({	err: "user already created"	});
+			return cb({	err: new Error("user already created")	});
 		}
+
+		instance = new Instance(io);
 
 		user = new User();
 		user.addRight(TO_CHANGE_RIGHTS);
 		socket.user = user;
-
-		instance = new Instance(io);
 		var err = instance.join(user);
 
 		cb({
 			err: err,
-			data: {
-				token: instance.getToken(),
-				secret: user.getSecret(),
-			},
+			token: instance.getToken(),
+			secret: user.getSecret(),
 		});
 		adminio.inform(instance);
 	});
@@ -88,20 +86,21 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("join", function(data, cb){
 		if (instance) {
-			return cb({	err: "already joined to instance" });
+			return cb({	err: new Error("already joined to instance") });
 		}
 		if (user) {
-			return cb({	err: "user already created"	});
+			return cb({	err: new Error("user already created") });
 		}
 
 		instance = Instance.get(data.token);
 
 		if (!instance) {
-			return cb({	err: "instance with this token does not exists"	});
+			return cb({	err: new Error("instance with this token does not exists") });
 		}
 
-		user = new User(data.secret);
+		user = new User(data.secret); // might actually return existing user
 		socket.user = user;
+		// TODO set dafault rights
 		var err = instance.join(user);
 
 		cb({
@@ -188,6 +187,7 @@ io.on('connection', function (socket) {
 		});
 
 		socket.on("cursor", function(cursor) {
+			// TODO optimise - wait for more a bit then release
 			instance.emit("cursors", [cursor]);
 		});
 

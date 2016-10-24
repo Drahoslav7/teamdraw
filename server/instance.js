@@ -13,7 +13,7 @@ Instance.getAll = function() {
 
 function Instance(io) {
 	// private:
-	
+
 	var _actions = []; // this has to be syncing across clients
 	var _token; // globally unicate identifier of instance
 	var _users = []; // collection of obejcts {secret: string, nick: string, rights: number}
@@ -36,29 +36,21 @@ function Instance(io) {
 	this.join = function(user, userSocket) {
 
 		if (user.nick) {
-			if (_users.some(function(otherUser) {
-				return otherUser.nick === user.nick && user !== otherUser;
-			})) {
-				return "nick already taken";
+			if (_users.some(otherUser => otherUser.nick === user.nick && user !== otherUser)) {
+				return new Error("nick already taken");
 			};
 		}
 
-		// update if exists
-		var existingUser = _users.find(function(otherUser, i) {
-			if (user === otherUser) {
-				return true;
-			}
-		});
+		var existingUser = _users.find(otherUser => user === otherUser);
 
-		if (existingUser) {
-			existingUser.online = true;
-		} else {
+		if (!existingUser) {
 			_users.push(user);
 		}
 
 		if (userSocket) {
 			userSocket.join(_token);
 		}
+		user.online = true
 
 		console.log(user.nick, "joined", _token);
 		return null;
@@ -68,7 +60,7 @@ function Instance(io) {
 		_users.forEach( anotherUser => {
 			if (user === anotherUser) {
 				user.online = false;
-			} 
+			}
 		});
 		;
 	};

@@ -153,8 +153,8 @@ var app = new (function App(){
 		var conf = {}; // TODO nastavení?
 		io.create(conf, function (resp){
 			if(resp.err === null){
-				setToken(resp.data.token);
-				_secret = resp.data.secret;
+				setToken(resp.token);
+				_secret = resp.secret;
 				app.save();
 				cb(null);
 			} else {
