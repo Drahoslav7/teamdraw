@@ -1,10 +1,8 @@
 # IO protocol
 
-methods without + use no callback
-
-methods with + might return error in callback
-
-methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)
+methods without + use no callback  
+methods with + might return error in callback  
+methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)  
 
 	client			server			client
 		|	create		|				|
@@ -57,7 +55,8 @@ methods with ++ returs objects in callback  which might contains err and more da
 ## client -> server methods
 
 **'create'** // empty
-**callback** -> CREATE_CALLBACK
+
+**create_callback** -> CREATE_CALLBACK
 
 	CREATE_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
@@ -72,7 +71,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 		secret: undefined | SECRET
 	}
 
-**callback** <- CREATE_CALLBACK
+**join_callback** <- JOIN_CALLBACK
 
 	JOIN_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
