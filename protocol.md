@@ -71,13 +71,17 @@ methods with ++ returs objects in callback  which might contains err and more da
 		secret: undefined | SECRET
 	}
 
+
 	JOIN_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
 		secret: SECRET // secret of newly created or (existing) user
 	}
 
 
-**'login'** -> NICK <- LOGIN_CALLBACK
+**'login'** -> LOGIN_REQUEST <- LOGIN_CALLBACK
+
+	LOGIN_REQUEST := NICK
+
 
 	LOGIN_CALLBACK := {
 		err: ERR
@@ -95,6 +99,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 		type: ACTION_TYPE, // same as in ACTIONS
 		data: ACTION_DATA, // same as in ACTIONS 
 	}
+
 
 	ACTION_RESPONSE := ERR
 
