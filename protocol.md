@@ -1,8 +1,8 @@
 # IO protocol
 
-methods without + use no callback
-methods with + might return error in callback
-methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)
+methods without + use no callback  
+methods with + might return error in callback  
+methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)  
 
 	client			server			client
 		|	create		|				|
