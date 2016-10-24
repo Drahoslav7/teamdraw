@@ -84,37 +84,53 @@ methods with ++ returs objects in callback  which might contains err and more da
 	}
 
 
+**'sync'** -> SYNC_REQUEST
+
+	SYNC_REQUEST := N // last action ID
+
+
+**'action'** -> ACTION_REQUEST <- ACTION_RESPONSE
+	
+	ACTION_REQUEST := {
+		type: ACTION_TYPE, // same as in ACTIONS
+		data: ACTION_DATA, // same as in ACTIONS 
+	}
+
+	ACTION_RESPONSE := ERR
+
+
+
 ## server -> client methods
 
-**'actions'** => ACTIONS // nová akce uživatele
+**'actions'** => ACTIONS // new user action
 
 	ACTIONS := [ACTION, …]
 
 	ACTION := {
-		type: TYPE,	// typ akce
-		data: DATA,	// data akce
-		n: N		// pořadové číslo akce
+		type: ACTION_TYPE,
+		data: ACTION_DATA,
+		n: N		// serial number of action
 	}
 
-	TYPE := 'item' | 'erase' | 'translate'
+	ACTION_TYPE := 'item' | 'erase' | 'translate'
 
-	DATA := ITEM_DATA | ERASE_DATA | TRANSLATION_DATA
+	ACTION_DATA := ITEM_DATA | ERASE_DATA | TRANSLATION_DATA
 
-	ITEM_DATA := [PAPER_CLASS_NAME, PAPER_DATA] // To co vrací paper.Item.prototype.exportJSON({asString:false});
+	ITEM_DATA := [PAPER_CLASS_NAME, PAPER_DATA] // returned by paper.Item.prototype.exportJSON({asString:false});
 
 	TRANSLATION_DATA := {
-		ns: NS, // čisla objektů
-		delta: POINT // rozdíl změny pozice
+		ns: NS, // serial numbers of objets
+		delta: POINT // position difference
 	}
 
-	ERASE_DATA := NS // čísla objektů
+	ERASE_DATA := NS // serial numbers of objets
 
-	PAPER_CLASS_NAME := 'Path' | 'PointText' // *String* třída paper.js
+	PAPER_CLASS_NAME := 'Path' | 'PointText' // *String* classname of paper.js
 
-	PAPER_DATA := // {Mixed}
+	PAPER_DATA := // {Mixed} depends on paper.js
 
 
-**'users'** => USERS // seznam připojených uživatelů
+**'users'** => USERS // list of connected users
 
 	USERS := [USER, …]
 
@@ -130,12 +146,12 @@ methods with ++ returs objects in callback  which might contains err and more da
 	RIGHT := true | false // *Booelan*
 
 
-**'cursors'** => CURSORS // kurzory s novou pozicí
+**'cursors'** => CURSORS // cursors with new position
 
 	CURSORS := [CURSOR, …]
 
 	CURSOR := {
-		name: NICK, // odpovídá nicku uživatele kurzoru
+		name: NICK, // correspond with nick of cursor's user
 		position: POINT
 	}
 
