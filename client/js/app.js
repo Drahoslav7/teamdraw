@@ -138,13 +138,13 @@ var app = new (function App(){
 			return;
 		}
 
-		io.login(nick, function(resp){
-			if(resp.err === null){
+		io.login(nick, function(err){
+			if(err === null){
 				setNick(nick);
 				fire("logged on");
 				app.save();
 			}
-			cb(resp.err);
+			cb(err);
 		});
 	};
 
@@ -201,7 +201,6 @@ var app = new (function App(){
 
 	this.postCursorPosition = onlyOncePerInterval(function (position) {
 		io.postCursor({
-			name: app.getNick(),
 			position: position,
 		});
 	}, 125);
@@ -215,19 +214,23 @@ var app = new (function App(){
 
 	this.toggleMuteToUser = function(user) {
 		if(user.rights.toDraw) {
-			io.acl("mute", user.nick);
+			io.acl("mute", user.nick, aclErrorHandler);
 		} else {
-			io.acl("unmute", user.nick);
+			io.acl("unmute", user.nick, aclErrorHandler);
 		}
 	};
 
 	this.toggleBlindToUser = function(user) {
 		if(user.rights.toSee) {
-			io.acl("blind", user.nick);
+			io.acl("blind", user.nick, aclErrorHandler);
 		} else {
-			io.acl("unblind", user.nick);
+			io.acl("unblind", user.nick, aclErrorHandler);
 		}
 	};
+
+	function aclErrorHandler(err) {
+		console.error(err);
+	}
 
 
 });

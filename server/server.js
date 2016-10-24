@@ -37,6 +37,10 @@ var Instance = require("./instance");
 
 console.log("Server is running on port", PORT);
 
+Error.prototype.toJSON = function() {
+	return this.message;
+};
+
 /**
  * MAIN IO
  */
@@ -119,22 +123,21 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("login", function(nick, cb){
 		console.log("login", nick);
-		if (instance === undefined) {
-			return cb({	err: "no instance to login to" });
+		if (!instance) {
+			return cb(new Error("no instance to login to"));
 		}
-		if (user === undefined) {
-			return cb({	err: "no user to name when loging in" });
+		if (!user) {
+			return cb(new Error("no user to name when loging in"));
 		}
 
 		user.nick = nick;
 		var err = instance.join(user, socket);
 		if (err) {
 			user.nick = undefined;
+			return cb(err);
 		}
 
-		cb({
-			err: err
-		});
+		cb(null);
 
 		instance.emit("users", instance.getUsers());
 		afterLogin();
@@ -167,7 +170,7 @@ io.on('connection', function (socket) {
 			}
 			var savedAction = instance.pushAction(action);
 			instance.emit("actions", [savedAction]);
-			cb();
+			cb(null);
 			adminio.inform(instance);
 		});
 
@@ -188,6 +191,7 @@ io.on('connection', function (socket) {
 
 		socket.on("cursor", function(cursor) {
 			// TODO optimise - wait for more a bit then release
+			cursor.name = user.nick;
 			instance.emit("cursors", [cursor]);
 		});
 
@@ -201,6 +205,9 @@ io.on('connection', function (socket) {
 
 				instance.emit("users", instance.getUsers());
 				adminio.inform(instance);
+				cb(null);
+			} else {
+				cb(new Error('Unknown acl action'));
 			}
 		});
 

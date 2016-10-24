@@ -2,7 +2,7 @@
 var io = new (function Client(){
 
 	var console = new Logger('io');
-	
+
 	var io = window.io;
 	var socket = io.connect(location.protocol + "//" + server.hostname + ":" + server.port);
 
@@ -11,29 +11,30 @@ var io = new (function Client(){
 	// with response
 
 	this.login = function(nick, cb){
-		socket.emit("login", nick, function(response){
-			cb(response);
-		});
+		socket.emit("login", nick, cb);
 	};
 
 	this.create = function(data, cb){
-		socket.emit("create", data, function(response){
-			cb(response);
-		});
+		socket.emit("create", data, cb);
 	};
 
 	this.join = function(data, cb){
-		socket.emit("join", data, function(response){
-			cb(response);
-		});
+		socket.emit("join", data, cb);
 	};
 
 	this.postAction = function(action, cb){
 		socket.emit("action", action, cb);
 	}
 
-	// without response
+	this.acl = function(action, userNick, cb){
+		socket.emit("acl", {
+			what: action,
+			nick: userNick,
+		}, cb);
+	}
 
+
+	// without response
 
 	this.postCursor = function(cursor){
 		socket.emit("cursor", cursor);
@@ -43,12 +44,6 @@ var io = new (function Client(){
 		socket.emit("sync", lastActionId);
 	}
 
-	this.acl = function(action, userNick){
-		socket.emit("acl", {
-			what: action,
-			nick: userNick,
-		});
-	}
 
 
 });
