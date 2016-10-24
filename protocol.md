@@ -56,7 +56,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 **'create'** // empty
 
-**create_callback** -> CREATE_CALLBACK
+**create_callback** <- CREATE_CALLBACK
 
 	CREATE_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
