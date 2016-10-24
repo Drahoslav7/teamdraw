@@ -1,15 +1,15 @@
 # IO protocol
 
-methods without + use no callback  
-methods with + might return error in callback  
-methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)  
+methods without + use no callback
+methods with + might return error in callback
+methods with ++ returs objects in callback  which might contains err and more data (eg. token/secret)
 
 	client			server			client
 		|	create		|				|
 		|++------------>|				|
 		|				|				|
 		|	login		|				|
-		|++------------>|				|
+		|+------------->|				|
 		|	users		|				|
 		|<--------------|				|
 
@@ -24,7 +24,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 		|				|<------------++|
 		|				|				|
 		|				|	login		|
-		|				|<------------++|
+		|				|<-------------+|
 		|	users		|	users		|
 		|<--------------|-------------->|
 		|				|	sync		|
@@ -55,16 +55,16 @@ methods with ++ returs objects in callback  which might contains err and more da
 ## client -> server methods
 
 
-**'create'**  -> undefined <- CREATE_CALLBACK
+**'create'**  -> undefined <- CREATE_RESPONSE
 
-	CREATE_CALLBACK := {
+	CREATE_RESPONSE := {
 		err: ERR, // if err not null data another might be undefined or invalid
 		token: TOKEN, // token of newly created instance
 		secret: SECRET // secret of newly created user
 	}
 
 
-**'join'** -> JOIN_REQUEST <- JOIN_CALLBACK
+**'join'** -> JOIN_REQUEST <- JOIN_RESPONSE
 
 	JOIN_REQUEST -> {
 		token: TOKEN,
@@ -72,20 +72,18 @@ methods with ++ returs objects in callback  which might contains err and more da
 	}
 
 
-	JOIN_CALLBACK := {
+	JOIN_RESPONSE := {
 		err: ERR, // if err not null data another might be undefined or invalid
 		secret: SECRET // secret of newly created or (existing) user
 	}
 
 
-**'login'** -> LOGIN_REQUEST <- LOGIN_CALLBACK
+**'login'** -> LOGIN_REQUEST <- LOGIN_RESPONSE
 
 	LOGIN_REQUEST := NICK
 
 
-	LOGIN_CALLBACK := {
-		err: ERR
-	}
+	LOGIN_RESPONSE := ERR
 
 
 **'sync'** -> SYNC_REQUEST
@@ -94,16 +92,34 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 
 **'action'** -> ACTION_REQUEST <- ACTION_RESPONSE
-	
+
 	ACTION_REQUEST := {
 		type: ACTION_TYPE, // same as in ACTIONS
-		data: ACTION_DATA, // same as in ACTIONS 
+		data: ACTION_DATA, // same as in ACTIONS
 	}
 
 
 	ACTION_RESPONSE := ERR
 
 
+**'cursor'** -> CURSOR_REQUEST
+
+	CURSOR_REQUEST := {
+		position: POINT // position of cursor
+	}
+
+
+**'acl'** -> ACL_REQUEST <- ACL_RESPONSE
+
+	ACL_REQUEST := {
+		what: ACL_ACTION,
+		nick: NICK,
+	}
+
+	ACL_ACTION := 'mute' | 'unmute' | 'blind' | 'unblind'
+
+
+	ACL_RESPONSE := ERR
 
 ## server -> client methods
 
