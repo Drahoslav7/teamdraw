@@ -54,9 +54,8 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 ## client -> server methods
 
-**'create'** // empty
 
-**create_callback** <- CREATE_CALLBACK
+**'create'**  -> undefined <- CREATE_CALLBACK
 
 	CREATE_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
@@ -64,18 +63,24 @@ methods with ++ returs objects in callback  which might contains err and more da
 		secret: SECRET // secret of newly created user
 	}
 
-**'join'** -> JOIN_REQUEST
+
+**'join'** -> JOIN_REQUEST <- JOIN_CALLBACK
 
 	JOIN_REQUEST -> {
 		token: TOKEN,
 		secret: undefined | SECRET
 	}
 
-**join_callback** <- JOIN_CALLBACK
-
 	JOIN_CALLBACK := {
 		err: ERR, // if err not null data another might be undefined or invalid
 		secret: SECRET // secret of newly created or (existing) user
+	}
+
+
+**'login'** -> NICK <- LOGIN_CALLBACK
+
+	LOGIN_CALLBACK := {
+		err: ERR
 	}
 
 
@@ -135,9 +140,11 @@ methods with ++ returs objects in callback  which might contains err and more da
 	}
 
 
-*-*
+## Mixed
 
 	NICK := "nick" // any *String*
+	TOKEN := "ABCD2345" // base32 *String*
+	SECRET := "abcdABCD123456_-" // base64 *String*
 
 	POINT := {
 		x: N,
