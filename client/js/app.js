@@ -46,6 +46,7 @@ var app = new (function App(){
 	io.on("reconnect", connectionOk)
 	io.on("connect_error", connectionNotOk);
 	io.on("reconnect_error", connectionNotOk);
+	io.on("disconnect", connectionNotOk);
 
 	//
 

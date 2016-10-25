@@ -4,7 +4,7 @@ $(function(){
 
 	var console = new Logger("main");
 
-	var errormodal = $("#errormodal");
+	var tokenerrormodal = $("#tokenerrormodal");
 	var neterrormodal = $("#neterrormodal");
 	var helpmodal = $("#helpmodal");
 
@@ -21,7 +21,7 @@ $(function(){
 		app.join(function(err, firstTime){
 			// TODO err
 			if(err){
-				errormodal.modal("show");
+				tokenerrormodal.modal("show");
 			}
 			console.error(err);
 			if(firstTime || !app.getNick()){
@@ -139,11 +139,11 @@ $(function(){
 	});
 
 
-	$("#helpmodal .btn-primary").click(function(){
+	$(".btn-primary", helpmodal).click(function(){
 		helpmodal.modal("hide");
 	});
 
-	$("#errormodal .btn-primary").click(function(){
+	$(".btn-primary", tokenerrormodal).click(function(){
 		location = location.pathname;
 	});
 

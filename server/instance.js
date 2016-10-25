@@ -48,8 +48,7 @@ function Instance(io) {
 		}
 
 		if (userSocket) {
-			user.socket = userSocket;
-			user.socket.join(_token);
+			userSocket.join(_token);
 		}
 		user.online = true
 
@@ -66,8 +65,12 @@ function Instance(io) {
 	};
 
 	this.remove = function (user) {
-		if (user.socket) {
-			user.socket.leave(_token);
+		for (var socketID in io.sockets.connected) {
+			var socket = io.sockets.connected[socketID];
+			if (socket.user === user) {
+				socket.leave(_token);
+				socket.disconnect();
+			}
 		}
 		_users = _users.filter(u => u !== user);
 	};

@@ -224,7 +224,7 @@ var gui = new (function () {
 
 		$("#signmodal").modal(preventClose);
 
-		$("#errormodal").modal(preventClose);
+		$("#tokenerrormodal").modal(preventClose);
 
 		$("#neterrormodal").modal(preventClose);
 

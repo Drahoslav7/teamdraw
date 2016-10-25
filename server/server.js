@@ -59,10 +59,10 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("create", function(data, cb){
 		if (instance) {
-			return cb({	err: new Error("instance already created")	});
+			return cb({ err: new Error("instance already created") });
 		}
 		if (user) {
-			return cb({	err: new Error("user already created")	});
+			return cb({ err: new Error("user already created") });
 		}
 
 		instance = new Instance(io);
@@ -70,7 +70,7 @@ io.on('connection', function (socket) {
 		user = new User();
 		user.addRight(TO_CHANGE_RIGHTS);
 		socket.user = user;
-		var err = instance.join(user);
+		var err = instance.join(user); // should not fail ever
 
 		cb({
 			err: err,
@@ -90,16 +90,16 @@ io.on('connection', function (socket) {
 	 */
 	socket.on("join", function(data, cb){
 		if (instance) {
-			return cb({	err: new Error("already joined to instance") });
+			return cb({ err: new Error("already joined to instance") });
 		}
 		if (user) {
-			return cb({	err: new Error("user already created") });
+			return cb({ err: new Error("user already created") });
 		}
 
 		instance = Instance.get(data.token);
 
 		if (!instance) {
-			return cb({	err: new Error("instance with this token does not exists") });
+			return cb({ err: new Error("instance with this token does not exists") });
 		}
 
 		user = new User(data.secret); // might actually return existing user
@@ -151,12 +151,14 @@ io.on('connection', function (socket) {
 			return;
 		}
 		if (!isUserAlsoOnAnotherSocket(user)) {
-			instance.leave(user);
+			instance.leave(user); // means go offline, but stay in instance
 
 			instance.emit("users", instance.getUsers());
 			adminio.inform(instance);
 			console.log("user", user.name, "leaved");
 		};
+		user = undefined;
+		instance = undefined;
 	});
 
 	/**

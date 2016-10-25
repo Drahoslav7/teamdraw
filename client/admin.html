@@ -51,7 +51,8 @@
 <script>
 var console = new Logger('admin');
 
-var url = location.protocol + "//" + server.hostname + ":" + server.port + "/admin";
+var url = `${ location.protocol }//${ server.hostname }:${ server.port }/admin`;
+
 var socket = io.connect(url);
 
 var app = angular.module('administration', []);
