@@ -103,6 +103,17 @@ var draw = new(function Draw(){
 					item.translate(delta);
 				});
 			}
+			if (action.type === "color") {
+				var ns = action.data.ns;
+				var color = action.data.color;
+				paper.project.getItems(filterByNs(ns)).forEach(function(item) {
+					if (item.hasFill()) {
+						item.fillColor = color;
+					} else {
+						item.strokeColor = color;
+					}
+				});
+			}
 		});
 
 	});
@@ -708,22 +719,33 @@ var draw = new(function Draw(){
 	_tools['bucket'] = (function() {
 		var bucket = new paper.Tool();
 
+		bucket.onMouseMove = function(event){ // hover
+			paper.project.deselectAll();
+			getItemsNearPoint(event.point).some(function(item) {
+				return item.selected = true;
+			});
+		};
+
 		bucket.onMouseDown = function(event){
-			getItemsNearPoint(event.point).some(function(item){
+			var ns = [];
+			getItemsNearPoint(event.point).some(function(item) {
 				if (item.hasFill()) {
 					item.fillColor = _color;
 				} else {
 					item.strokeColor = _color;
 				}
+				ns.push(item.n);
 				return true;
 			});
-		};
+			if (ns.length !== 0) {
+				app.postAction("color", {
+					ns: ns,
+					color: _color,
+				}, function(err) {
 
-		bucket.onMouseMove = function(event){ // hover
-			paper.project.deselectAll();
-			getItemsNearPoint(event.point).some(function(item){
-				return item.selected = true;
-			});
+				});
+			}
+
 		};
 
 		return bucket;
@@ -766,7 +788,7 @@ var draw = new(function Draw(){
 				y: 0,
 			};
 		};
-		move.onMouseDrag = function (event){
+		move.onMouseDrag = function (event) {
 			if (dontDrag) {
 				dontDrag = false;
 				return;
