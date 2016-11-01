@@ -728,10 +728,13 @@ var draw = new(function Draw(){
 
 		bucket.onMouseDown = function(event){
 			var ns = [];
+			var oldColors = {};
 			getItemsNearPoint(event.point).some(function(item) {
 				if (item.hasFill()) {
+					oldColors[item.n] = item.fillColor;
 					item.fillColor = _color;
 				} else {
+					oldColors[item.n] = item.strokeColor;
 					item.strokeColor = _color;
 				}
 				ns.push(item.n);
@@ -742,7 +745,15 @@ var draw = new(function Draw(){
 					ns: ns,
 					color: _color,
 				}, function(err) {
-
+					if (err) {
+						paper.project.getItems(filterByNs(ns)).forEach(function (item) {
+							if (item.hasFill()) {
+								item.fillColor = oldColors[item.n];
+							} else {
+								item.strokeColor = oldColors[item.n];
+							}
+						});
+					}
 				});
 			}
 
