@@ -175,7 +175,7 @@ $(function(){
 
 		// key bindings
 		$(window).keydown(function(event){
-			if(draw.getCurrentToolName() !== "text") {
+			if(draw.getCurrentToolName() !== "text" && draw.getCurrentToolName() !== "textEdit") {
 				switch(event.keyCode){
 					case KeyCode.KEY_S:
 						draw.changeToolTo("selector");

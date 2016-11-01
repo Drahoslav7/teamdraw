@@ -84,6 +84,33 @@ var draw = new(function Draw(){
 				var item = new paper[className];
 				item.importJSON(json);
 				item.n = n; // for deleting and manipulation purposes
+
+				if (className === "PointText") {
+					item.onDoubleClick = function() {
+						if (_currentToolName === "selector") {
+							paper.project.deselectAll();
+							item.selected = true;
+							draw.changeToolTo("textEdit");
+						}
+					}
+				}
+			}
+			if (action.type === "edit") {
+				var n = action.data.n;
+				var text = action.data.text;
+
+				var item = paper.project.getItem(filterByNs([n]));
+
+				if (!item) {
+					console.error("no items with n=%d to edit", n);
+					return;
+				}
+
+				if (text === "") {
+					item.remove();
+				}
+
+				item.content = text;
 			}
 			if (action.type === "erase") {
 				var ns = action.data;
@@ -685,6 +712,65 @@ var draw = new(function Draw(){
 		return text;
 	})();
 
+	_tools["textEdit"] = (function() {
+		var textTool = new paper.Tool()
+
+		var textItem;
+
+		textTool.onKeyDown = function(event){
+			textItem.content = textItem.content.slice(0, -1);
+			if (event.key === 'backspace') {
+				event.preventDefault();
+				textItem.content = textItem.content.slice(0, -1);
+			} else {
+				textItem.content += event.character;
+			}
+			textItem.content += " ";
+		};
+
+		textTool.onMouseUp = function(event){
+			
+		}
+
+		function onFrame(event) {
+			if (event.count % 25 === 0) {
+				this.content = this.content.replace(/(_| )$/, function(match) {
+					return match === "_" ? " ": "_";
+				});
+			}
+		};
+
+		textTool.onMouseUp = function(event) {
+			draw.changeToolTo("selector");
+			
+			if (textItem.oldText === textItem.content) {
+				return; // No Edit
+			}
+			app.postAction("edit", {
+				n: textItem.n,
+				text: textItem.content
+			}, function(err) {
+				if (err) {
+					textItem.content = textItem.oldText;
+				}
+			})
+		}
+
+		textTool.init = function(){
+			textItem = paper.project.selectedItems[0];
+			textItem.oldText = textItem.content;
+			textItem.content += " ";
+			textItem.onFrame = onFrame;
+		}
+
+		textTool.abort = function(){
+			textItem.content = textItem.content.slice(0, -1);
+			textItem.onFrame = null;
+		};
+
+		return textTool;
+	})();
+
 	_tools["eyedropper"] = (function(){
 		var eyedropper = new paper.Tool();
 
@@ -855,7 +941,11 @@ var draw = new(function Draw(){
 				case "oval":
 				case "heart":
 				case "text":
+				case "textEdit":
 					_tools[_currentToolName].abort();
+			}
+			if (toolname === "textEdit") {
+				_tools[toolname].init();
 			}
 			switch(toolname) {
 				case "move":
