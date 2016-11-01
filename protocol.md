@@ -133,9 +133,9 @@ methods with ++ returs objects in callback  which might contains err and more da
 		n: N		// serial number of action
 	}
 
-	ACTION_TYPE := 'item' | 'erase' | 'translate'
+	ACTION_TYPE := 'item' | 'erase' | 'translate' | 'textEdit'
 
-	ACTION_DATA := ITEM_DATA | ERASE_DATA | TRANSLATION_DATA
+	ACTION_DATA := ITEM_DATA | ERASE_DATA | TRANSLATION_DATA | TEXTEDIT_DATA
 
 	ITEM_DATA := [PAPER_CLASS_NAME, PAPER_DATA] // returned by paper.Item.prototype.exportJSON({asString:false});
 
@@ -145,6 +145,11 @@ methods with ++ returs objects in callback  which might contains err and more da
 	}
 
 	ERASE_DATA := NS // serial numbers of objets
+	
+	TEXTEDIT_DATA := {
+		n: N, // serial number of object
+		text: STRING // Text
+	}
 
 	PAPER_CLASS_NAME := 'Path' | 'PointText' // *String* classname of paper.js
 
