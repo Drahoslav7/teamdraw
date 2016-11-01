@@ -95,7 +95,7 @@ var draw = new(function Draw(){
 					}
 				}
 			}
-			if (action.type === "edit") {
+			if (action.type === "textEdit") {
 				var n = action.data.n;
 				var text = action.data.text;
 
@@ -757,7 +757,7 @@ var draw = new(function Draw(){
 			if (textItem.oldText === textItem.content) {
 				return; // No Edit
 			}
-			app.postAction("edit", {
+			app.postAction("textEdit", {
 				n: textItem.n,
 				text: textItem.content
 			}, function(err) {
