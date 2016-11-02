@@ -797,20 +797,13 @@ var draw = new(function Draw(){
 		pathEditTool.onMouseDown = function(event) {
 			var hitResult = item.hitTest(event.point, {
 				segments: true,
-				tolerance: 5,
+				tolerance: 3,
 			});
 			console.log('hr', hitResult);
 			if (hitResult) {
 				if (hitResult.type === "segment") {
 					segment = hitResult.segment;
 				}
-			}
-			if (!item.hitTest(event.point, {
-				segments: true,
-				stroke: true,
-				tolerance: 20,
-			})) {
-				draw.changeToolTo("selector");
 			}
 		}
 
@@ -821,12 +814,21 @@ var draw = new(function Draw(){
 		};
 
 		pathEditTool.onMouseUp = function(event) {
+			if (!item.hitTest(event.point, {
+				segments: true,
+				stroke: true,
+				tolerance: 20,
+			})) {
+				draw.changeToolTo("selector");
+			}
 		}
 
 		pathEditTool.init = function() {
 			item = paper.project.selectedItems[0];
-			paper.settings.handleSize = 7;
-			// item.selected = true;
+			paper.settings.handleSize = 8;
+			if(!item) {
+				draw.changeToolTo("selector");
+			}
 		}
 
 		pathEditTool.abort = function() {
