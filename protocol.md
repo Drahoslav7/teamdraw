@@ -116,14 +116,14 @@ methods with ++ returs objects in callback  which might contains err and more da
 		nick: NICK,
 	}
 
-	ACL_ACTION := 'mute' | 'unmute' | 'blind' | 'unblind'
+	ACL_ACTION := "mute" | "unmute" | "blind" | "unblind"
 
 
 	ACL_RESPONSE := ERR
 
 ## server -> client methods
 
-**'actions'** => ACTIONS // new user action
+**'actions'** -> ACTIONS // new user action
 
 	ACTIONS := [ACTION, …]
 
@@ -133,7 +133,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 		n: N		// serial number of action
 	}
 
-	ACTION_TYPE := 'item' | 'erase' | 'translate' | 'textEdit' | 'color'
+	ACTION_TYPE := "item" | "erase" | "translate" | "textEdit" | "color"
 
 	ACTION_DATA := ITEM_DATA | ERASE_DATA | TRANSLATION_DATA | TEXTEDIT_DATA | COLOR_DATA
 
@@ -161,7 +161,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 	PAPER_DATA := // {Mixed} depends on paper.js
 
 
-**'users'** => USERS // list of connected users
+**'users'** -> USERS // list of connected users
 
 	USERS := [USER, …]
 
@@ -177,7 +177,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 	RIGHT := true | false // *Booelan*
 
 
-**'cursors'** => CURSORS // cursors with new position
+**'cursors'** -> CURSORS // cursors with new position
 
 	CURSORS := [CURSOR, …]
 
@@ -193,7 +193,7 @@ methods with ++ returs objects in callback  which might contains err and more da
 	TOKEN := "ABCD2345" // base32 *String*
 	SECRET := "abcdABCD123456_-" // base64 *String*
 	
-	COLOR := "#000000" // any CSS color
+	COLOR := "#000000" // any CSS color *String*
 	
 	STRING := "text" // any *String*
 
@@ -204,4 +204,4 @@ methods with ++ returs objects in callback  which might contains err and more da
 
 	NS := [N,N, …]
 
-	N :=  1 // any *Integer*
+	N :=  1 // any *Number*
