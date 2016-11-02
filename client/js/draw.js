@@ -1,5 +1,14 @@
 var draw = new(function Draw(){
 
+	// const SPACE = " "; //  space;
+	// const LINE =  "_"; // low line
+
+	const SPACE = "\u2002"; // en space
+	const LINE =  "\u23bd"; // Horizontal Scan Line-9
+
+	// const SPACE = "\u200d"; // zero space;
+	// const LINE =  "\u0332"; // combining low line
+
 	var console = new Logger("draw");
 
 	var _currentToolName = '';
@@ -8,8 +17,6 @@ var draw = new(function Draw(){
 	var _size;
 
 	var _tools = {};
-
-	var _objects = [];
 
 	var _textItem;
 
@@ -32,18 +39,12 @@ var draw = new(function Draw(){
 		};
 
 		_textItem = new paper.PointText({
-			// fontFamily: 'Consolas',
+			// fontFamily: 'Consolas, monospace',
 			fontSize: 20,
-			content: " ",
+			content: SPACE,
 			visible: false,
 		});
-		_textItem.onFrame = function(event) {
-			if (event.count % 25 === 0) {
-				this.content = this.content.replace(/(_| )$/, function(match) {
-					return match === "_" ? " ": "_";
-				});
-			}
-		};
+		_textItem.onFrame = blinkCursor;
 
 		draw.setColor('#333');
 		draw.setSize(2);
@@ -65,7 +66,7 @@ var draw = new(function Draw(){
 		});
 
 		app.on("cursors update", function(cursors) {
-			cursors.forEach(function(cursor){
+			cursors.forEach(function(cursor) {
 				if (app.getNick() !== cursor.name) {
 					cursorManager.moveCursorTo(cursor.name, cursor.position, 125);
 				}
@@ -116,12 +117,12 @@ var draw = new(function Draw(){
 				var ns = action.data;
 				var items = paper.project.getItems(filterByNs(ns));
 				if (items.length === 0) {
-					console.error("no items with ns=%d to erase", ns);
+					console.error("no items with ns=%s to erase", String(ns));
 					return;
 				}
-				items.forEach(function(item){
+				items.forEach(function(item) {
 					item.remove();
-				})
+				});
 			}
 			if (action.type === "translate") {
 				var ns = action.data.ns;
@@ -144,6 +145,14 @@ var draw = new(function Draw(){
 		});
 
 	});
+
+	function blinkCursor(event) {
+		if (event.count % 25 === 0) {
+			this.content = this.content.replace(new RegExp("("+LINE+"|"+SPACE+")$"), function(match) {
+				return match === LINE ? SPACE : LINE;
+			});
+		}
+	}
 
 	function eraseItems(items) {
 		items = items.filter(function (item) { // only delete visible
@@ -695,7 +704,7 @@ var draw = new(function Draw(){
 			} else {
 				_textItem.content += event.character;
 			}
-			_textItem.content += " ";
+			_textItem.content += SPACE;
 		};
 
 		text.onMouseMove = function(event){
@@ -712,9 +721,9 @@ var draw = new(function Draw(){
 			_textItem.content = _textItem.content.slice(0, -1);
 			app.postAction("item", _textItem.exportJSON({asString:false}), function(err) {
 				if (err) {
-					_textItem.content += " ";
+					_textItem.content += SPACE;
 				} else {
-					_textItem.content = " ";
+					_textItem.content = SPACE;
 				}
 			});
 		};
@@ -724,11 +733,11 @@ var draw = new(function Draw(){
 	})();
 
 	_tools["textEdit"] = (function() {
-		var textTool = new paper.Tool()
+		var textTool = new paper.Tool();
 
 		var textItem;
 
-		textTool.onKeyDown = function(event){
+		textTool.onKeyDown = function(event) {
 			textItem.content = textItem.content.slice(0, -1);
 			if (event.key === 'backspace') {
 				event.preventDefault();
@@ -736,24 +745,12 @@ var draw = new(function Draw(){
 			} else {
 				textItem.content += event.character;
 			}
-			textItem.content += " ";
-		};
-
-		textTool.onMouseUp = function(event){
-			
-		}
-
-		function onFrame(event) {
-			if (event.count % 25 === 0) {
-				this.content = this.content.replace(/(_| )$/, function(match) {
-					return match === "_" ? " ": "_";
-				});
-			}
+			textItem.content += SPACE;
 		};
 
 		textTool.onMouseUp = function(event) {
 			draw.changeToolTo("selector");
-			
+
 			if (textItem.oldText === textItem.content) {
 				return; // No Edit
 			}
@@ -767,14 +764,14 @@ var draw = new(function Draw(){
 			})
 		}
 
-		textTool.init = function(){
+		textTool.init = function() {
 			textItem = paper.project.selectedItems[0];
 			textItem.oldText = textItem.content;
-			textItem.content += " ";
-			textItem.onFrame = onFrame;
+			textItem.content += SPACE;
+			textItem.onFrame = blinkCursor;
 		}
 
-		textTool.abort = function(){
+		textTool.abort = function() {
 			textItem.content = textItem.content.slice(0, -1);
 			textItem.onFrame = null;
 		};
