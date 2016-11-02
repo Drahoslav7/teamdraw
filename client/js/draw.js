@@ -86,12 +86,17 @@ var draw = new(function Draw(){
 				item.importJSON(json);
 				item.n = n; // for deleting and manipulation purposes
 
-				if (className === "PointText") {
-					item.onDoubleClick = function() {
-						if (_currentToolName === "selector") {
-							paper.project.deselectAll();
-							item.selected = true;
-							draw.changeToolTo("textEdit");
+				item.onDoubleClick = function () {
+					if (_currentToolName == "selector") {
+						paper.project.deselectAll();
+						this.selected = true;
+						switch(this.className) {
+							case "Path":
+								draw.changeToolTo("pathEdit");
+								break;
+							case "PointText":
+								draw.changeToolTo("textEdit");
+								break;
 						}
 					}
 				}
@@ -779,6 +784,59 @@ var draw = new(function Draw(){
 		return textTool;
 	})();
 
+
+	_tools["pathEdit"] = (function() {
+		var pathEditTool = new paper.Tool();
+
+		var item;
+		var segment;
+
+		pathEditTool.onKeyDown = function(event) {
+
+		};
+		pathEditTool.onMouseDown = function(event) {
+			var hitResult = item.hitTest(event.point, {
+				segments: true,
+				tolerance: 5,
+			});
+			console.log('hr', hitResult);
+			if (hitResult) {
+				if (hitResult.type === "segment") {
+					segment = hitResult.segment;
+				}
+			}
+			if (!item.hitTest(event.point, {
+				segments: true,
+				stroke: true,
+				tolerance: 20,
+			})) {
+				draw.changeToolTo("selector");
+			}
+		}
+
+		pathEditTool.onMouseDrag = function(event) {
+			if (segment) {
+				segment.point = segment.point.add(event.delta);
+			}
+		};
+
+		pathEditTool.onMouseUp = function(event) {
+		}
+
+		pathEditTool.init = function() {
+			item = paper.project.selectedItems[0];
+			paper.settings.handleSize = 7;
+			// item.selected = true;
+		}
+
+		pathEditTool.abort = function() {
+			paper.settings.handleSize = 4;
+			item.selected = false;
+		};
+
+		return pathEditTool;
+	})();
+
 	_tools["eyedropper"] = (function(){
 		var eyedropper = new paper.Tool();
 
@@ -972,14 +1030,17 @@ var draw = new(function Draw(){
 				case "heart":
 				case "text":
 				case "textEdit":
+				case "pathEdit":
 					_tools[_currentToolName].abort();
 			}
-			if (toolname === "textEdit") {
-				_tools[toolname].init();
-			}
 			switch(toolname) {
+				case "textEdit":
+				case "pathEdit":
+					_tools[toolname].init();
+					break;
 				case "move":
 					_tools[toolname].onMouseDown();
+					break;
 			}
 			gui.changeCursor(toolname);
 			gui.highlightTool(toolname);
