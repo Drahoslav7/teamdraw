@@ -25,6 +25,7 @@ var draw = new(function Draw(){
 	/* init */
 	$(function(){
 		paper.setup("canvas");
+		paper.settings.hitTolerance = 3;
 		paper.view.scrollBy([-paper.view.center.x, -paper.view.center.y]); // center first
 		paper.view.onResize = function(event){
 			paper.view.scrollBy([-event.delta.width/2, - event.delta.height/2]);
@@ -338,6 +339,23 @@ var draw = new(function Draw(){
 						item.visible = true;
 					});
 				});
+			}
+		}
+
+		selector.onKeyDown = function (event) {
+			if (event.key === "enter") {
+				var item = paper.project.selectedItems[0];
+				if (!item) {
+					return;
+				}
+				paper.project.deselectAll();
+				item.selected = true;
+				if (item.className === "Path") {
+					draw.changeToolTo("pathEdit");
+				}
+				if (item.className === "PointText") {
+					draw.changeToolTo("textEdit");
+				}
 			}
 		}
 
@@ -799,10 +817,10 @@ var draw = new(function Draw(){
 				segments: true,
 				tolerance: 3,
 			});
-			console.log('hr', hitResult);
 			if (hitResult) {
 				if (hitResult.type === "segment") {
 					segment = hitResult.segment;
+					segment.selected = true;
 				}
 			}
 		}
@@ -814,9 +832,14 @@ var draw = new(function Draw(){
 		};
 
 		pathEditTool.onMouseUp = function(event) {
-			if (!item.hitTest(event.point, {
+			if (segment) {
+				segment.selected = false;
+				segment = undefined;
+			}
+			if (!item || !item.hitTest(event.point, {
 				segments: true,
 				stroke: true,
+				fill: true,
 				tolerance: 20,
 			})) {
 				draw.changeToolTo("selector");
@@ -825,15 +848,16 @@ var draw = new(function Draw(){
 
 		pathEditTool.init = function() {
 			item = paper.project.selectedItems[0];
-			paper.settings.handleSize = 8;
 			if(!item) {
 				draw.changeToolTo("selector");
+			} else {
+				paper.settings.handleSize = 8;
 			}
 		}
 
 		pathEditTool.abort = function() {
 			paper.settings.handleSize = 4;
-			item.selected = false;
+			segment = undefined;
 		};
 
 		return pathEditTool;
@@ -1016,12 +1040,13 @@ var draw = new(function Draw(){
 
 	this.changeToolTo = function(toolname){
 		if(toolname in _tools){
+			gui.changeCursor(toolname);
+			gui.highlightTool(toolname);
 			if(toolname === 'text') {
 				_textItem.visible = true;
 			} else {
 				_textItem.visible = false;
 			}
-			_tools[toolname].activate();
 			switch(_currentToolName){
 				case "pencil":
 				case "brush":
@@ -1044,8 +1069,7 @@ var draw = new(function Draw(){
 					_tools[toolname].onMouseDown();
 					break;
 			}
-			gui.changeCursor(toolname);
-			gui.highlightTool(toolname);
+			_tools[toolname].activate();
 			_currentToolName = toolname;
 			console.log('tool changed to', toolname);
 		} else {
