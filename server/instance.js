@@ -1,162 +1,119 @@
-var crypto = require("./crypto");
-require("./user");
+const crypto = require("./crypto")
+require("./user")
 
-var instances = {};
+const instances = {}
 
-Instance.get = function(token) {
-	return instances[token];
-};
-
-Instance.getAll = function() {
-	return instances;
-};
+Instance.get = (token) => instances[token]
+Instance.getAll = () => instances
 
 function Instance(io) {
 	// private:
 
-	var _actions = []; // this has to be syncing across clients
-	var _token; // globally unicate identifier of instance
-	var _users = []; // collection of obejcts {secret: string, nick: string, rights: number}
-	var _creationTime = new Date();
+	let _actions = [] // this has to be syncing across clients
+	let _token // globally unicate identifier of instance
+	let _users = [] // collection of obejcts {secret: string, nick: string, rights: number}
+	let _creationTime = new Date()
 
 	do {
-		_token = crypto.genToken();
-	} while(_token in instances);
+		_token = crypto.genToken()
+	} while(_token in instances)
 
-	instances[_token] = this;
+	instances[_token] = this
 
 	// public:
 
+	this.canUseNick = (user) =>
+		!_users.some(otherUser => otherUser.nick === user.nick && user !== otherUser)
+
 	/**
-	 * this had to be called twice, without nick when creating or joining
-	 * and with nick when logging
+	 * this had to be called once, without nick when creating or joining
 	 * @param  {User} user to (re)join
 	 * @return {error}        error if some
 	 */
-	this.join = function(user, userSocket) {
-
-		if (user.nick) {
-			if (_users.some(otherUser => otherUser.nick === user.nick && user !== otherUser)) {
-				return new Error("nick already taken");
-			};
+	this.join = (user, userSocket) => {
+		let alreadyIn = _users.some(otherUser => user === otherUser)
+		if (!alreadyIn) {
+			_users.push(user)
 		}
 
-		var existingUser = _users.find(otherUser => user === otherUser);
-
-		if (!existingUser) {
-			_users.push(user);
-		}
-
-		if (userSocket) {
-			userSocket.join(_token);
-		}
+		userSocket.join(_token)
 		user.online = true
 
-		console.log(user.nick, "joined", _token);
-		return null;
-	};
+		console.log(user.nick, "joined", _token)
+		return null
+	}
 
-	this.leave = function (user) {
-		_users.forEach( anotherUser => {
-			if (user === anotherUser) {
-				user.online = false;
-			}
-		});
-	};
-
-	this.remove = function (user) {
-		for (var socketID in io.sockets.connected) {
-			var socket = io.sockets.connected[socketID];
+	this.remove = (user) => {
+		for (let socketID in io.sockets.connected) {
+			let socket = io.sockets.connected[socketID]
 			if (socket.user === user) {
-				socket.leave(_token);
-				socket.disconnect();
+				socket.leave(_token)
+				socket.disconnect()
 			}
 		}
-		_users = _users.filter(u => u !== user);
-	};
-
-	this.destroy = function () {
-		_users.forEach(function(user) {
-			this.remove(user);
-		}.bind(this));
-		delete instances[_token];
+		_users = _users.filter(u => u !== user)
 	}
 
+	this.destroy = () => {
+		_users.forEach((user) => {
+			this.remove(user)
+		})
+		delete instances[_token]
+	}
 
-	this.getToken = function() {
-		return _token;
-	};
+	this.getToken = () => _token
 
-	this.getUsers = function() {
-		var users = [];
-		_users.forEach(function(user) {
-			if (user.nick && user.online) {
-				users.push({
-					nick: user.nick,
-					rights: {
-						toSee: user.hasRight(TO_SEE),
-						toDraw: user.hasRight(TO_DRAW),
-						toChangeRights: user.hasRight(TO_CHANGE_RIGHTS),
-					}
-				});
+	this.getUsers = () => _users
+		.filter((user) => user.nick && user.online) // only online loged in
+		.map((user) => ({
+			nick: user.nick,
+			rights: {
+				toSee: user.hasRight(TO_SEE),
+				toDraw: user.hasRight(TO_DRAW),
+				toChangeRights: user.hasRight(TO_CHANGE_RIGHTS),
 			}
-		});
-		return users;
-	};
+		}))
 
-	this.pushAction = function(action) {
-		_actions.push(action);
-		action.n = _actions.length;
-		return action;
-	};
-
-	this.getActionsSince = function(n){
-		return _actions.filter(function(action){
-			return action.n > n;
-		});
-	};
-
-	this.emit = function() {
-		io.to(_token).emit.apply(io.to(_token), arguments);
-	};
-
-	this.muteUser = function(nick) {
-		var user = _users.find(user => user.nick === nick);
-		if(user) {
-			user.removeRight(TO_DRAW);
-		}
-	};
-
-	this.blindUser = function(nick) {
-		var user = _users.find(user => user.nick === nick);
-		if(user) {
-			user.removeRight(TO_SEE);
-		}
+	this.pushAction = (action) => {
+		_actions.push(action)
+		action.n = _actions.length
+		return action
 	}
 
-	this.unmuteUser = function(nick) {
-		var user = _users.find(user => user.nick === nick);
-		if(user) {
-			user.addRight(TO_DRAW);
-		}
-	};
+	this.getActionsSince = (n) =>
+		_actions.filter(action => action.n > n)
 
-	this.unblindUser = function(nick) {
-		var user = _users.find(user => user.nick === nick);
-		if(user) {
-			user.addRight(TO_SEE);
-		}
+	this.emit = (...args) => {
+		io.to(_token).emit(...args)
 	}
 
-	this.toJSON = function() {
-		return {
-			token: _token,
-			creationTime: _creationTime,
-			users: _users,
-			actionsLength: _actions.length,
-		};
-	};
+	this.muteUser = (nick) => {
+		const user = _users.find(user => user.nick === nick)
+		user &&	user.removeRight(TO_DRAW)
+	}
+
+	this.blindUser = (nick) => {
+		const user = _users.find(user => user.nick === nick)
+		user &&	user.removeRight(TO_SEE)
+	}
+
+	this.unmuteUser = (nick) => {
+		const user = _users.find(user => user.nick === nick)
+		user &&	user.addRight(TO_DRAW)
+	}
+
+	this.unblindUser = (nick) => {
+		const user = _users.find(user => user.nick === nick)
+		user &&	user.addRight(TO_SEE)
+	}
+
+	this.toJSON = () => ({
+		token: _token,
+		creationTime: _creationTime,
+		users: _users,
+		actionsLength: _actions.length,
+	})
 
 }
 
-module.exports = Instance;
+module.exports = Instance
