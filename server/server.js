@@ -111,6 +111,7 @@ io.on('connection', (socket) => {
 			err: err,
 			secret: user.getSecret(),
 		})
+		synchronize(0)
 		adminio.inform(instance)
 	})
 
@@ -174,15 +175,7 @@ io.on('connection', (socket) => {
 			adminio.inform(instance)
 		})
 
-		socket.on("sync", (lastActionId) => {
-			let actions = instance.getActionsSince(lastActionId)
-			const sendNextBatch = () => {
-				let batchSize = Math.max(Math.floor(Math.log(actions.length)), 1)
-				let batch = actions.splice(0, batchSize)
-				socket.emit("actions", batch, sendNextBatch)
-			}
-			sendNextBatch()
-		})
+		socket.on("sync", synchronize)
 
 		socket.on("cursor", (cursor) => {
 			// TODO optimise - wait for more a bit then release
@@ -207,6 +200,16 @@ io.on('connection', (socket) => {
 
 	}
 
+
+	function synchronize(lastActionId) {
+		let actions = instance.getActionsSince(lastActionId)
+		const sendNextBatch = () => {
+			let batchSize = Math.max(Math.floor(Math.log(actions.length)), 1)
+			let batch = actions.splice(0, batchSize)
+			socket.emit("actions", batch, sendNextBatch)
+		}
+		sendNextBatch()
+	}
 
 	function isUserAlsoOnAnotherSocket(user) {
 		for (let socketID in io.sockets.connected) {
