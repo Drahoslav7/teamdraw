@@ -28,6 +28,7 @@ function Instance(io) {
 	/**
 	 * this had to be called once, without nick when creating or joining
 	 * @param  {User} user to (re)join
+	 * @param  {socket}
 	 * @return {error}        error if some
 	 */
 	this.join = (user, userSocket) => {
