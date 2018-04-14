@@ -12,7 +12,7 @@ const Logger = function (name, color) {
 
 	this.error = function(err, ...args) {
 		if (err !== null) {
-			return this.err(...args, arguments)
+			return this.err(err, ...args)
 		}
 	}
 	return this

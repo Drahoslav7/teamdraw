@@ -87,7 +87,7 @@ $(function() {
 	$("#save-button, #save-button-neterror").click(() => {
 		$("#savemodal").modal("show")
 	})
-	$('#savemodal .save-file').click(() => {
+	$('#savemodal .save-file').click(function() {
 		console.log('click')
 		let fileType = $(this).attr('data-type')
 		draw.getBlob(fileType, (blob) => {
@@ -148,7 +148,7 @@ $(function() {
 
 	/* toolbar */
 
-	$(".btn-tool[data-tool]").click(() => {
+	$(".btn-tool[data-tool]").click(function() {
 		draw.changeToolTo($(this).attr("data-tool"))
 	})
 
