@@ -1,5 +1,5 @@
 /* config */
 const server = {
 	hostname: location.hostname || "localhost",
-	port: 7890,
+	port: 11001,
 }
