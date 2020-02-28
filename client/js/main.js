@@ -112,7 +112,7 @@ $(function() {
 				if (err === null) {
 					console.log("nick ok")
 					$("#signmodal").modal("hide")
-					if (!(firstRun in localStorage)) {
+					if (!('firstRun' in localStorage)) {
 						$("#helpmodal").modal("show")
 						localStorage.firstRun = ""
 					}
