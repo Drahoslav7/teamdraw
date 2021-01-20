@@ -52,6 +52,15 @@ io.on('connection', (socket) => {
 
 	/* app actions */
 
+	socket.on("check", (data, cb) => {
+		const instance = Instance.get(data.token)
+		if (!instance) {
+			cb(new Error("instance does not exists"))
+		} else {
+			cb()
+		}
+	})
+
 	/**
 	 * Create new instance
 	 * @param  {object} data {}

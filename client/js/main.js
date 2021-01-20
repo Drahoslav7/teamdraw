@@ -7,32 +7,86 @@ $(function() {
 	const tokenerrormodal = $("#tokenerrormodal")
 	const neterrormodal = $("#neterrormodal")
 	const helpmodal = $("#helpmodal")
+	const signbutton = document.querySelector('#signbutton')
+	const listTile = document.querySelector('#sessionlist-title')
 
 
 	// init
 
-	if (location.hash === "" || location.hash === "#") {
-		app.create(function(err) {
-			// TODO err
-			console.error(err)
-			$("#signmodal").modal("show")
-		})
-	} else {
-		app.join(function(err, firstTime) {
-			// TODO err
-			if (err) {
-				tokenerrormodal.modal("show")
-			}
-			console.error(err)
-			if (firstTime || !app.getNick()) {
+	function init () {
+		if (location.hash === "" || location.hash === "#") {
+			initSessionList()
+			app.create(function(err) {
+				signbutton.innerHTML = `Create new`
+				signbutton.dataset.token = location.hash
 				$("#signmodal").modal("show")
-			} else { // already loggged in
-				app.login(app.getNick(), function(err) {
-					// TODO err
-					console.error(err)
-				})
+				// TODO err
+				console.error(err)
+			})
+		} else {
+			listTile.remove()
+			app.join(function(err, firstTime) {
+				// TODO err
+				if (err) {
+					tokenerrormodal.modal("show")
+				}
+				console.error(err)
+				if (firstTime || !app.getNick()) {
+					signbutton.innerHTML = `Join`
+					signbutton.dataset.token = location.hash
+					$("#signmodal").modal("show")
+				} else { // already loggged in
+					app.login(app.getNick(), function(err) {
+						// TODO err
+						console.error(err)
+					})
+				}
+			})
+		}
+	}
+
+	init()
+
+	/* init old sessions list */
+	async function initSessionList () {
+		const currentNick = localStorage.nick || ''
+		const sessions = Object.entries(localStorage)
+			.filter(([key, val]) => key.length === 8 && key !=='length')
+			.map(([key, val]) => {
+				try {
+					return JSON.parse(val)
+				} catch(e) {
+					return {}
+				}
+			})
+			.filter(({ nick }) => currentNick === nick)
+		console.log('ses', sessions)
+		const verifiedSessions = await app.checkSessions(sessions)
+		const sessionTokens = verifiedSessions
+			.map(({ token }) => token)
+
+		console.log('sessionTokens', sessionTokens)
+
+		if (sessionTokens.length > 0) {
+			const list = document.querySelector('#sessionlist')
+			sessionTokens.forEach(token => {
+				const item = document.createElement('li')
+				const anchor = document.createElement('a')
+				anchor.href = `//${location.host}#${token}`
+				anchor.innerText = token
+				anchor.id = token
+				item.appendChild(anchor)
+				list.appendChild(item)
+			})
+		} else {
+			listTile.remove()
+		}
+
+		window.onhashchange = () => {
+			if (sessionTokens.some(token => '#' + token === location.hash)) {
+				location.reload()
 			}
-		})
+		}
 	}
 
 	/* app events */

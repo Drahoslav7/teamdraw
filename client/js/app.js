@@ -118,6 +118,24 @@ const app = new (function App() {
 	 * io methods *
 	 **************/
 
+
+	this.checkSessions = async (sessions) => {
+		const verifiedSessions = []
+		for (let session of sessions) {
+			await new Promise((resolve) => {
+				io.check(session, (err) => {
+					if (!err) {
+						verifiedSessions.push(session)
+					} else {
+						localStorage.removeItem([session.token])
+					}
+					resolve()
+				})
+			})
+		}
+		return verifiedSessions
+	}
+
 	/**
 	 * register user with given name
 	 * @param  {string}   nick nick of user

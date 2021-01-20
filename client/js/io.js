@@ -10,6 +10,10 @@ var io = new (function Client(){
 
 	// with response
 
+	this.check = function(data, cb){
+		socket.emit("check", data, cb)
+	};
+
 	this.login = function(nick, cb){
 		socket.emit("login", nick, cb);
 	};

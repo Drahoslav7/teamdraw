@@ -316,6 +316,9 @@ html, body {
   }
 }
 
+#sessionlist a:target {
+	font-weight: bold;
+}
 
 /* IE focus bugfix */
 #menu-button:focus,
